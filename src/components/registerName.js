@@ -7,7 +7,7 @@ export default function RegisterName(props) {
   return (
     <View style={styles.container}>
       <Text>RegisterName</Text>
-      <Button title="go registerName" onPress={() => navigation.navigate('SplashScreen')} />
+      <Button title="go GroupMap" onPress={() => navigation.navigate('GroupMap')} />
     </View>
   );
 }
