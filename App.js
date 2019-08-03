@@ -1,19 +1,13 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { createSwitchNavigator, createAppContainer } from 'react-navigation';
+import RegisterName from './src/components/registerName';
+import SplashScreen from './src/components/splashScreen';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>HELLO MINSOO</Text>
-    </View>
-  );
-}
+const App = createSwitchNavigator(
+  {
+    SplashScreen: { screen: SplashScreen },
+    RegisterName: { screen: RegisterName }
+  },
+  { initialRouteName: 'SplashScreen' }
+);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-});
+export default createAppContainer(App);
