@@ -1,37 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';
+import { Layout } from '../layout';
 import * as url from '../apiUrl';
 
+const sizes = [10, 20, 40, 23, 35, 95, 100, 150, 33];
+
 export default function RegisterName(props) {
-  const [test, setTest] = useState(null);
+  const [fontSizeList, setFontSizeList] = useState([10]);
   const { navigation } = props;
+
   useEffect(() => {
-    fetch(url.test(), { method: 'GET' })
-      .then((res) => res.json())
-      .then((resJson) => {
-        setTest(resJson.result);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (fontSizeList.length === 10) {
+      setTimeout(() => {
+        navigation.navigate('RegisterName');
+      }, 500);
+    } else {
+      setTimeout(() => {
+        setFontSizeList([...fontSizeList, sizes[fontSizeList.length]]);
+      }, 200);
+    }
   });
 
   return (
-    <View style={styles.splash}>
-      <Text>HELLO</Text>
-      {test ? (
-        test.map((elem) => {
-          return (
-            <Text key={elem.name}>
-              {elem.age}, {elem.name}
-            </Text>
-          );
-        })
-      ) : (
-        <ActivityIndicator size="small" color="#0099ED" />
-      )}
-      <Button title="go registerName" onPress={() => navigation.navigate('RegisterName')} />
-    </View>
+    <Layout>
+      <View style={styles.splash}>
+        {fontSizeList.map((size) => (
+          <Text
+            key={`key_${size}_jinzza`}
+            style={{
+              fontFamily: 'scdreamBold',
+              fontSize: size,
+              color: '#fff',
+              position: 'absolute'
+              // top: size / 10,
+              // left: size / 10
+            }}
+          >
+            진짜
+          </Text>
+        ))}
+      </View>
+    </Layout>
   );
 }
 
@@ -39,6 +48,8 @@ const styles = StyleSheet.create({
   splash: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#0099ED',
+    color: '#fff'
   }
 });
