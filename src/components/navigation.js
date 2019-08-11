@@ -65,10 +65,6 @@ export default function Navigation(props) {
 const styles = StyleSheet.create({
   naviContainer: {
     flex: 1,
-    paddingTop: 48,
-    paddingLeft: 20,
-    paddingRight: 27,
-    paddingBottom: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
@@ -76,8 +72,14 @@ const styles = StyleSheet.create({
   },
   navigation: {
     flex: 1,
+    paddingTop: 48,
+    paddingLeft: 20,
+    paddingRight: 27,
+    paddingBottom: 20,
     flexDirection: 'row',
-    alignContent: 'space-between'
+    alignContent: 'space-between',
+    color: '#fff',
+    backgroundColor: '#0099ed'
   },
   groupInfo: {
     flex: 1,
