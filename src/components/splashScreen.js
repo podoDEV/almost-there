@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { Layout } from '../layout';
-import * as url from '../apiUrl';
 
 const sizes = [10, 20, 40, 23, 35, 95, 100, 150, 33];
 
