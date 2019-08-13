@@ -24,10 +24,10 @@ export default function GroupMap(props) {
   return (
     <Layout>
       <View style={styles.container}>
-        <Navigation />
         <View style={styles.mapContainer}>
           <Map />
         </View>
+        <Navigation />
       </View>
     </Layout>
   );
