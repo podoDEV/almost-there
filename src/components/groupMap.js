@@ -20,10 +20,10 @@ export default function GroupMap(props) {
   return (
     <Layout>
       <View style={styles.container}>
-        <Navigation />
         <View style={styles.mapContainer}>
           <Text>GOOGLE MAP AREA</Text>
         </View>
+        <Navigation />
       </View>
     </Layout>
   );

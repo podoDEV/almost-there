@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { SimpleLineIcons } from '@expo/vector-icons';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import { SimpleLineIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Layout } from '../layout';
 
 export default function Navigation(props) {
   const members = [
-    { name: '박민수', abbr: 'MS' },
+    { name: '박민수', abbr: 'MS', admin: true },
     { name: '한정', abbr: 'HJ' },
     { name: '김희범', abbr: 'HB' },
     { name: '이기정', abbr: 'KJ' },
-    { name: '김자영', abbr: 'JY' },
+    { name: '김자영', abbr: 'JY', admin: true },
     { name: '전해성', abbr: 'HS' }
   ];
   const [fold, toggleFold] = useState(true);
@@ -23,12 +23,13 @@ export default function Navigation(props) {
             <SimpleLineIcons
               style={styles.foldButton}
               name={fold ? 'arrow-up' : 'arrow-down'}
-              size={13}
-              color="#0099ED"
+              size={12}
+              color="#fff"
               onPress={() => toggleFold(!fold)}
             />
           </View>
           <View style={styles.scheduleBrief}>
+            <Ionicons name="ios-timer" size={23} style={styles.timerIcon} />
             <Text style={styles.scheduleBriefText}>11:00 오전</Text>
           </View>
         </View>
@@ -39,20 +40,33 @@ export default function Navigation(props) {
                 <Text style={styles.title}>멤버</Text>
                 {members.map((member) => (
                   <View key={member.name} style={styles.person}>
-                    <Text style={styles.personAbbr}>{member.abbr}</Text>
+                    <Image style={styles.personImage} source={require('../../assets/thumb.jpeg')} />
                     <Text style={styles.personName}>{member.name}</Text>
+                    {member.admin && (
+                      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <MaterialCommunityIcons
+                          name="crown"
+                          color="#F5A623"
+                          size={15}
+                          style={{ marginLeft: 3 }}
+                        />
+                      </View>
+                    )}
                   </View>
                 ))}
               </View>
             </View>
             <View style={styles.meetingInfoBox}>
+              <View style={styles.schedule}>
+                <Text style={styles.title}>모임시간</Text>
+                <Text style={styles.detail}>매주 토요일 오전 11:00</Text>
+              </View>
               <View style={styles.place}>
                 <Text style={styles.title}>모임장소</Text>
                 <Text style={styles.detail}>할리스 강남역점 B1층</Text>
               </View>
-              <View style={styles.schedule}>
-                <Text style={styles.title}>모임시간</Text>
-                <Text style={styles.detail}>매주 토요일 오전 11:00</Text>
+              <View style={styles.editIconContainer}>
+                <Ionicons name="ios-options" color="#0099ED" size={19} />
               </View>
             </View>
           </View>
@@ -64,34 +78,36 @@ export default function Navigation(props) {
 
 const styles = StyleSheet.create({
   naviContainer: {
-    flex: 1,
+    position: 'absolute',
+    width: '100%',
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.1
   },
   navigation: {
-    flex: 1,
-    paddingTop: 48,
-    paddingLeft: 20,
-    paddingRight: 27,
-    paddingBottom: 20,
+    paddingTop: 55,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 11,
     flexDirection: 'row',
     alignContent: 'space-between',
-    color: '#fff',
-    backgroundColor: '#0099ed'
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 153, 237, 0.8)'
   },
   groupInfo: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    alignItems: 'center'
   },
   groupName: {
     fontFamily: 'scdreamBold',
     fontSize: 22,
-    color: '#0099ED'
+    color: '#fff'
   },
-  foldIcon: {},
+  foldIcon: {
+    color: '#fff'
+  },
   scheduleBrief: {
     flex: 1,
     flexDirection: 'row',
@@ -100,17 +116,21 @@ const styles = StyleSheet.create({
   scheduleBriefText: {
     fontFamily: 'scdream',
     fontSize: 22,
-    color: '#0099ED'
+    color: '#fff'
   },
   infoContainer: {
     flex: 5,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingLeft: 19,
+    paddingRight: 27,
+    paddingVertical: 17
   },
   meetingInfoBox: {
-    flex: 3
+    flex: 3,
+    paddingBottom: 10
   },
   memberInfoBox: {
-    flex: 5
+    flex: 4
   },
   person: {
     flex: 1,
@@ -125,16 +145,21 @@ const styles = StyleSheet.create({
   personAbbr: {
     width: 32,
     height: 32,
+    fontSize: 11,
+    color: '#000',
+    marginRight: 14,
+    fontFamily: 'scdream'
+  },
+  personImage: {
+    width: 32,
+    height: 32,
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#0099ED',
     marginVertical: 5,
-    fontSize: 11,
-    color: '#000',
-    marginRight: 14,
+    marginRight: 15,
     paddingHorizontal: 7,
-    paddingVertical: 8,
-    fontFamily: 'scdream'
+    paddingVertical: 8
   },
   member: {
     flex: 1
@@ -147,7 +172,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'scdreamBold',
-    color: '#0099ED'
+    color: '#0099ED',
+    fontSize: 11,
+    marginBottom: 14
   },
   detail: {
     fontFamily: 'scdream',
@@ -157,5 +184,12 @@ const styles = StyleSheet.create({
   foldButton: {
     flex: 1,
     marginLeft: 13
+  },
+  timerIcon: {
+    marginRight: 4,
+    color: '#fff'
+  },
+  editIconContainer: {
+    alignSelf: 'flex-end'
   }
 });
