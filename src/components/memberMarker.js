@@ -8,6 +8,14 @@ export default class MemberMarker extends React.Component {
   }
 
   render() {
+    if (
+      this.props.region == null ||
+      this.props.region.latitude == null ||
+      this.props.region.longitude == null
+    ) {
+      return null;
+    }
+
     return (
       <Marker
         coordinate={{
