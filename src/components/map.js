@@ -19,17 +19,16 @@ export default class Map extends React.Component {
   }
 
   getGroupInfo() {
-    fetch(url.memberInfos(), { method: 'GET' })
+    fetch(url.getGroup(1), { method: 'GET' })
       .then((res) => res.json())
       .then((resJson) => {
-        var result = resJson.result[0];
-        var memberInfoList = this.getMemberInfos(result.members);
+        var memberInfoList = this.getMemberInfos(resJson.members);
 
         this.setState({
           destination: {
-            name: result.destination.name,
-            latitude: result.destination.location.latitude,
-            longitude: result.destination.location.longitude
+            name: resJson.destination.name,
+            latitude: resJson.destination.location.latitude,
+            longitude: resJson.destination.location.longitude
           },
           members: memberInfoList
         });
@@ -40,10 +39,8 @@ export default class Map extends React.Component {
   }
 
   getMemberInfos(memberInfos) {
+    // TODO 자기 위치는 빼고 그려주기? 자기 위치는 현재 위치에서 계속 갱신?
     var memberInfoList = [];
-
-    console.log(memberInfos);
-
     for (let memberInfo of memberInfos) {
       memberInfoList.push({
         id: memberInfo.uuid,
@@ -51,8 +48,6 @@ export default class Map extends React.Component {
         region: memberInfo.location
       });
     }
-    console.log(memberInfoList);
-
     return memberInfoList;
   }
 
@@ -79,6 +74,7 @@ export default class Map extends React.Component {
       }
     );
 
+    //TODO groupInfo 위치를 바꾸던지 해야 할듯?
     this.getGroupInfo();
     this.map.animateToRegion(this.state.region);
   }
@@ -89,6 +85,10 @@ export default class Map extends React.Component {
     });
   }
 
+  updateMyLocation() {
+    // TODO 서버에 내 위치 업데이트 10초 단위로, 원할때 수동으로 업데이트 가능하게 버튼도 있어야 함
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -96,6 +96,7 @@ export default class Map extends React.Component {
           style={styles.map}
           ref={(el) => (this.map = el)}
           onMapReady={this.getCurrentLocation.bind(this)}
+          // custom User Location으로 바꾸기
           // showsUserLocation={true}
           followUserLocation={true}
           onRegionChange={this.onRegionChange.bind(this)}
