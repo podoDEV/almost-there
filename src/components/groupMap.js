@@ -4,7 +4,6 @@ import { Layout } from '../layout';
 import * as url from '../apiUrl';
 import Navigation from './navigation';
 import Map from './map';
-import { SimpleLineIcons } from '@expo/vector-icons';
 
 export default function GroupMap(props) {
   const [members, setMembers] = useState([]);
