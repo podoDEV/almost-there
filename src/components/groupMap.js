@@ -13,7 +13,8 @@ export default function GroupMap(props) {
         return res.json();
       })
       .then((resJson) => {
-        setMembers(resJson);
+        console.log(resJson);
+        // setMembers(resJson);
       });
   }, []);
 

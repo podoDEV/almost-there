@@ -32,7 +32,7 @@ export default class Map extends React.Component {
     clearInterval(this.state.timerId);
     this.state.timerId = setInterval(() => this.updateMyLocationAndReRender(), 10000);
   }
-  //
+
   getGroupInfo() {
     fetch(url.getGroup(1), { method: 'GET' })
       .then((res) => res.json())

@@ -3,6 +3,7 @@ import { Layout } from '../layout';
 import { StyleSheet, Text, View, TextInput, AsyncStorage } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
+import * as url from '../apiUrl';
 
 export default function RegisterName(props) {
   const { navigation } = props;
@@ -14,17 +15,56 @@ export default function RegisterName(props) {
   }, []);
 
   async function getUserSession() {
-    const sessionId = await AsyncStorage.getItem('SESSION_ID');
-    if (sessionId) {
-      userInfo.sessionId = sessionId;
-      navigation.navigate('GroupMap');
+    const userName = await AsyncStorage.getItem('USER_NAME');
+    if (userName) {
+      userInfo.name = await userName;
+      await navigation.navigate('GroupMap');
+    } else {
+      const { uuid } = userInfo;
+      fetch(url.getMembers(uuid), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((resJson) => {
+          if (resJson.length) {
+            const { name, id } = resJson[0];
+            userInfo.name = name;
+            userInfo.id = id;
+            navigation.navigate('GroupMap');
+          }
+        });
     }
   }
 
   async function handlePressIcon() {
     try {
-      await AsyncStorage.setItem('SESSION_ID', '1234');
-      await navigation.navigate('GroupMap');
+      fetch(url.postMembers(), {
+        method: 'POST',
+        body: JSON.stringify({
+          name,
+          uuid: userInfo.uuid
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((resJson) => {
+          const { id, name } = resJson;
+          userInfo.id = id;
+          userInfo.name = name;
+          navigation.navigate('GroupMap');
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     } catch (err) {
       // @TODO: 에러 팝업!
       console.error(err);
