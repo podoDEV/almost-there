@@ -28,16 +28,16 @@ export default class Map extends React.Component {
     this.state.timerId = setInterval(() => this.updateMyLocationAndReRender(), 10000);
   }
 
-  renderMarkers() {
+  renderMarkers = () => {
     clearInterval(this.state.timerId);
     this.state.timerId = setInterval(() => this.updateMyLocationAndReRender(), 10000);
-  }
+  };
   //
   getGroupInfo() {
     fetch(url.getGroup(1), { method: 'GET' })
       .then((res) => res.json())
       .then((resJson) => {
-        var memberInfoList = this.getMemberInfos(resJson.members);
+        const memberInfoList = this.getMemberInfos(resJson.members);
         this.setState({
           destination: {
             name: resJson.destination.name,
@@ -70,13 +70,13 @@ export default class Map extends React.Component {
 
   updateMyLocationAndReRender = () => {
     //TODO 약속장소 위치 받아와서 10m?안에 있는지 거리 계산하기
-    var options = {
+    const options = {
       enableHighAccuracy: true,
       timeout: 20000,
       maximumAge: 1000
     };
 
-    var getPositions = new Promise(function(resolve, reject) {
+    const getPositions = new Promise(function(resolve, reject) {
       navigator.geolocation.getCurrentPosition(resolve, reject, options);
     });
 
@@ -109,7 +109,9 @@ export default class Map extends React.Component {
         longitude: this.state.region.longitude
       })
     })
-      .then(this.getGroupInfo())
+      .then(() => {
+        this.getGroupInfo();
+      })
       .catch((error) => {
         console.error(error);
       });
@@ -163,7 +165,7 @@ export default class Map extends React.Component {
             />
           )}
         </MapView>
-        <Button onPress={this.renderMarkers.bind(this)} title="약속 장소 도착!" />
+        <Button onPress={this.renderMarkers} title="약속 장소 도착!" />
       </View>
     );
   }

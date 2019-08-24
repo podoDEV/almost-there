@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Layout } from '../layout';
-import * as url from '../apiUrl';
 import Navigation from './navigation';
 import Map from './map';
 
-export default function GroupMap(props) {
-  const [members, setMembers] = useState([]);
+export default function EditGroupMenu(props) {
   useEffect(() => {
-    fetch(url.getMembers(), { method: 'GET' })
-      .then((res) => {
-        return res.json();
-      })
-      .then((resJson) => {
-        setMembers(resJson);
-      });
+    // @TODO: 해당 멤버 정보 prop으로 넘겨주기
   }, []);
 
   return (
@@ -23,7 +15,7 @@ export default function GroupMap(props) {
         <View style={styles.mapContainer}>
           <Map />
         </View>
-        <Navigation navigation={props.navigation} />
+        <Navigation />
       </View>
     </Layout>
   );
