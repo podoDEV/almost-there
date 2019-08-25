@@ -3,6 +3,7 @@ import { Layout } from '../layout';
 import { StyleSheet, Text, View, TextInput, AsyncStorage } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
+import * as url from '../apiUrl';
 
 export default function RegisterName(props) {
   const { navigation } = props;
@@ -13,18 +14,102 @@ export default function RegisterName(props) {
     getUserSession();
   }, []);
 
+  function login() {
+    fetch(url.login(), {
+      method: 'POST',
+      body: JSON.stringify({
+        uuid: userInfo.uuid
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((resJson) => {
+        const { accessToken } = resJson;
+        userInfo.accessToken = accessToken;
+        AsyncStorage.setItem('ACCESS_TOKEN', accessToken, () => {
+          navigation.navigate('GroupMap');
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
   async function getUserSession() {
-    const sessionId = await AsyncStorage.getItem('SESSION_ID');
-    if (sessionId) {
-      userInfo.sessionId = sessionId;
-      navigation.navigate('GroupMap');
+    const accessToken = await AsyncStorage.getItem('ACCESS_TOKEN');
+    if (accessToken) {
+      fetch(url.membersMe(), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          }
+        })
+        .then((resJson) => {
+          const { name, id } = resJson;
+          userInfo.name = name;
+          userInfo.id = id;
+          userInfo.accessToken = accessToken;
+          navigation.navigate('GroupMap');
+        })
+        .catch((err) => {
+          console.log('need to register name', err);
+        });
+    } else {
+      const { uuid } = userInfo;
+      fetch(url.getMembers(uuid), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((resJson) => {
+          console.log(resJson, 'res');
+          if (resJson.length) {
+            const { name, id } = resJson[0];
+            userInfo.name = name;
+            userInfo.id = id;
+            login();
+          }
+        });
     }
   }
 
   async function handlePressIcon() {
     try {
-      await AsyncStorage.setItem('SESSION_ID', '1234');
-      await navigation.navigate('GroupMap');
+      fetch(url.postMembers(), {
+        method: 'POST',
+        body: JSON.stringify({
+          name,
+          uuid: userInfo.uuid
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((resJson) => {
+          const { id, name } = resJson;
+          userInfo.id = id;
+          userInfo.name = name;
+          navigation.navigate('GroupMap');
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     } catch (err) {
       // @TODO: 에러 팝업!
       console.error(err);
