@@ -5,7 +5,7 @@ export const userInfo = {
   id: null,
   name: null,
   uuid: Constants.installationId,
-  sessionId: null
+  accessToken: null
 };
 
 export const GlobalContext = createContext(userInfo);

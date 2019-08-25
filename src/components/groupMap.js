@@ -7,13 +7,13 @@ import Map from './map';
 
 export default function GroupMap(props) {
   const [members, setMembers] = useState([]);
+
   useEffect(() => {
     fetch(url.getMembers(), { method: 'GET' })
       .then((res) => {
         return res.json();
       })
       .then((resJson) => {
-        console.log(resJson);
         // setMembers(resJson);
       });
   }, []);
