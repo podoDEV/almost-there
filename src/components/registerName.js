@@ -75,7 +75,6 @@ export default function RegisterName(props) {
           return res.json();
         })
         .then((resJson) => {
-          console.log(resJson, 'res');
           if (resJson.length) {
             const { name, id } = resJson[0];
             userInfo.name = name;

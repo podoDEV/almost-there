@@ -29,10 +29,10 @@ export default class Map extends React.Component {
     this.timerId = setInterval(() => this.updateMyLocationAndReRender(), 10000);
   }
 
-  renderMarkers() {
+  renderMarkers = () => {
     clearInterval(this.timerId);
     this.timerId = setInterval(() => this.updateMyLocationAndReRender(), 10000);
-  }
+  };
 
   getGroupInfo() {
     const { accessToken } = this.context;
@@ -144,13 +144,10 @@ export default class Map extends React.Component {
 
     markerLocations.push(this.state.destination);
 
-    console.log(markerLocations);
-
-    // @TODO: 이건 무슨함수?
-    // this.mapRef.fitToCoordinates(markerLocations, {
-    //   edgePadding: DEFAULT_PADDING,
-    //   animated: true
-    // });
+    this.mapRef.current.fitToCoordinates(markerLocations, {
+      edgePadding: DEFAULT_PADDING,
+      animated: true
+    });
 
     this.state.markerLoaded = true;
   }
@@ -184,7 +181,7 @@ export default class Map extends React.Component {
             />
           )}
         </MapView>
-        <Button onPress={this.renderMarkers.bind(this)} title="약속 장소 도착!" />
+        <Button onPress={this.renderMarkers} title="약속 장소 도착!" />
       </View>
     );
   }

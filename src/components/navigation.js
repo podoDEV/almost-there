@@ -22,7 +22,7 @@ export default function Navigation(props) {
             <Text style={styles.groupName}>포도</Text>
             <SimpleLineIcons
               style={styles.foldButton}
-              name={fold ? 'arrow-up' : 'arrow-down'}
+              name={fold ? 'arrow-down' : 'arrow-up'}
               size={12}
               color="#fff"
               onPress={() => toggleFold(!fold)}
