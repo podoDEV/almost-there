@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { GlobalContext } from '../context';
 import { Layout } from '../layout';
 import * as url from '../apiUrl';
 import Navigation from './navigation';
 import Map from './map';
 
 export default function GroupMap(props) {
-  const [members, setMembers] = useState([]);
+  const [groupInfo, setGroupInfo] = useState(null);
+  const { accessToken } = useContext(GlobalContext);
 
   useEffect(() => {
     fetch(url.getMembers(), { method: 'GET' })
@@ -15,6 +17,21 @@ export default function GroupMap(props) {
       })
       .then((resJson) => {
         // setMembers(resJson);
+        fetch(url.getGroup(1), {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${accessToken}` }
+        })
+          .then((res) => {
+            if (res.status === 200) {
+              return res.json();
+            }
+          })
+          .then((resJson) => {
+            setGroupInfo(resJson);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       });
   }, []);
 
@@ -24,7 +41,7 @@ export default function GroupMap(props) {
         <View style={styles.mapContainer}>
           <Map />
         </View>
-        <Navigation />
+        <Navigation groupInfo={groupInfo} />
       </View>
     </Layout>
   );

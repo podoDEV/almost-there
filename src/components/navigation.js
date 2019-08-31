@@ -1,48 +1,67 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { SimpleLineIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Layout } from '../layout';
 
+function getParsingDate(date) {
+  const d = new Date(date);
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  const year = d.getFullYear();
+  const hour = d.getHours();
+  const minitues = d.getMinutes();
+
+  return `${year}-${month}-${day} ${hour}:${minitues}`;
+}
+
 export default function Navigation(props) {
-  const members = [
-    { name: '박민수', abbr: 'MS', admin: true },
-    { name: '한정', abbr: 'HJ' },
-    { name: '김희범', abbr: 'HB' },
-    { name: '이기정', abbr: 'KJ' },
-    { name: '김자영', abbr: 'JY', admin: true },
-    { name: '전해성', abbr: 'HS' }
-  ];
+  const [isLoaded, setIsLoaded] = useState(false);
+  const { groupInfo } = props;
   const [fold, toggleFold] = useState(true);
+
+  useEffect(() => {
+    if (!isLoaded && props.groupInfo) {
+      setIsLoaded(true);
+    }
+  }, [props.groupInfo]);
 
   return (
     <Layout>
       <View style={styles.naviContainer}>
-        <View style={styles.navigation}>
-          <View style={styles.groupInfo}>
-            <Text style={styles.groupName}>포도</Text>
-            <SimpleLineIcons
-              style={styles.foldButton}
-              name={fold ? 'arrow-down' : 'arrow-up'}
-              size={12}
-              color="#fff"
-              onPress={() => toggleFold(!fold)}
-            />
-          </View>
-          <View style={styles.scheduleBrief}>
-            <Ionicons name="ios-timer" size={23} style={styles.timerIcon} />
-            <Text style={styles.scheduleBriefText}>11:00 오전</Text>
-          </View>
-        </View>
-        {!fold && (
-          <View style={styles.infoContainer}>
-            <View style={styles.memberInfoBox}>
-              <View style={styles.member}>
-                <Text style={styles.title}>멤버</Text>
-                {members.map((member) => (
-                  <View key={member.name} style={styles.person}>
-                    <Image style={styles.personImage} source={require('../../assets/thumb.jpeg')} />
-                    <Text style={styles.personName}>{member.name}</Text>
-                    {member.admin && (
+        {isLoaded && (
+          <View>
+            <View style={styles.navigation}>
+              <View style={styles.groupInfo}>
+                <Text style={styles.groupName}>{groupInfo.name}</Text>
+                <TouchableOpacity onPress={() => toggleFold(!fold)} style={styles.foldButtonArea}>
+                  <SimpleLineIcons
+                    style={styles.foldButton}
+                    name={fold ? 'arrow-down' : 'arrow-up'}
+                    size={12}
+                    color="#fff"
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.scheduleBrief}>
+                <Ionicons name="ios-timer" size={23} style={styles.timerIcon} />
+                <Text style={styles.scheduleBriefText}>
+                  {getParsingDate(groupInfo.appointedAt)}
+                </Text>
+              </View>
+            </View>
+            {!fold && (
+              <View style={styles.infoContainer}>
+                <View style={styles.memberInfoBox}>
+                  <View style={styles.member}>
+                    <Text style={styles.title}>멤버</Text>
+                    {groupInfo.members.map((member) => (
+                      <View key={member.name} style={styles.person}>
+                        <Image
+                          style={styles.personImage}
+                          source={require('../../assets/thumb.jpeg')}
+                        />
+                        <Text style={styles.personName}>{member.name}</Text>
+                        {/* {member.admin && (
                       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <MaterialCommunityIcons
                           name="crown"
@@ -51,24 +70,26 @@ export default function Navigation(props) {
                           style={{ marginLeft: 3 }}
                         />
                       </View>
-                    )}
+                    )} */}
+                      </View>
+                    ))}
                   </View>
-                ))}
+                </View>
+                <View style={styles.meetingInfoBox}>
+                  <View style={styles.schedule}>
+                    <Text style={styles.title}>모임시간</Text>
+                    <Text style={styles.detail}>{getParsingDate(groupInfo.appointedAt)}</Text>
+                  </View>
+                  <View style={styles.place}>
+                    <Text style={styles.title}>모임장소</Text>
+                    <Text style={styles.detail}>{groupInfo.destination.name}</Text>
+                  </View>
+                  {/* <View style={styles.editIconContainer}>
+                    <Ionicons name="ios-options" color="#0099ED" size={19} />
+                  </View> */}
+                </View>
               </View>
-            </View>
-            <View style={styles.meetingInfoBox}>
-              <View style={styles.schedule}>
-                <Text style={styles.title}>모임시간</Text>
-                <Text style={styles.detail}>매주 토요일 오전 11:00</Text>
-              </View>
-              <View style={styles.place}>
-                <Text style={styles.title}>모임장소</Text>
-                <Text style={styles.detail}>할리스 강남역점 B1층</Text>
-              </View>
-              <View style={styles.editIconContainer}>
-                <Ionicons name="ios-options" color="#0099ED" size={19} />
-              </View>
-            </View>
+            )}
           </View>
         )}
       </View>
@@ -108,6 +129,15 @@ const styles = StyleSheet.create({
   foldIcon: {
     color: '#fff'
   },
+  foldButton: {
+    flex: 1,
+    marginLeft: 13
+  },
+  foldButtonArea: {
+    flex: 1,
+    paddingTop: 5,
+    width: 10
+  },
   scheduleBrief: {
     flex: 1,
     flexDirection: 'row',
@@ -123,7 +153,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: 19,
     paddingRight: 27,
-    paddingVertical: 17
+    paddingVertical: 17,
+    minHeight: 200
   },
   meetingInfoBox: {
     flex: 3,
