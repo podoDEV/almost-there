@@ -3,15 +3,35 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { SimpleLineIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Layout } from '../layout';
 
+// @TODO: 이런거 다 유틸로 빼야해
 function getParsingDate(date) {
   const d = new Date(date);
+
   const month = d.getMonth() + 1;
   const day = d.getDate();
   const year = d.getFullYear();
   const hour = d.getHours();
   const minitues = d.getMinutes();
 
+  return {
+    month,
+    day,
+    year,
+    hour,
+    minitues
+  };
+}
+
+function fullDate(date) {
+  const { month, day, year, hour, minitues } = getParsingDate(date);
+
   return `${year}-${month}-${day} ${hour}:${minitues}`;
+}
+
+function briefDate(date) {
+  const { hour, minitues } = getParsingDate(date);
+
+  return `${hour}:${minitues}`;
 }
 
 export default function Navigation(props) {
@@ -23,7 +43,7 @@ export default function Navigation(props) {
     if (!isLoaded && props.groupInfo) {
       setIsLoaded(true);
     }
-  }, [props.groupInfo]);
+  });
 
   return (
     <Layout>
@@ -44,9 +64,7 @@ export default function Navigation(props) {
               </View>
               <View style={styles.scheduleBrief}>
                 <Ionicons name="ios-timer" size={23} style={styles.timerIcon} />
-                <Text style={styles.scheduleBriefText}>
-                  {getParsingDate(groupInfo.appointedAt)}
-                </Text>
+                <Text style={styles.scheduleBriefText}>{briefDate(groupInfo.appointedAt)}</Text>
               </View>
             </View>
             {!fold && (
@@ -78,7 +96,7 @@ export default function Navigation(props) {
                 <View style={styles.meetingInfoBox}>
                   <View style={styles.schedule}>
                     <Text style={styles.title}>모임시간</Text>
-                    <Text style={styles.detail}>{getParsingDate(groupInfo.appointedAt)}</Text>
+                    <Text style={styles.detail}>{fullDate(groupInfo.appointedAt)}</Text>
                   </View>
                   <View style={styles.place}>
                     <Text style={styles.title}>모임장소</Text>
