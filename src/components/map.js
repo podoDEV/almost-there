@@ -26,15 +26,20 @@ export default class Map extends React.Component {
 
   componentDidMount() {
     this.updateMyLocationAndReRender();
-    this.timerId = setInterval(() => this.updateMyLocationAndReRender(), 10000);
+
+    this.timerId = setInterval(() => {
+      this.updateMyLocationAndReRender();
+    }, 10000);
   }
 
-  renderMarkers() {
+  renderMarkers = () => {
     clearInterval(this.timerId);
-    this.timerId = setInterval(() => this.updateMyLocationAndReRender(), 10000);
-  }
+    this.timerId = setInterval(() => {
+      this.updateMyLocationAndReRender();
+    }, 10000);
+  };
 
-  getGroupInfo() {
+  getGroupInfo = () => {
     const { accessToken } = this.context;
     // @TODO: groupId 받아와서 찍어줘야함.
     fetch(url.getGroup(1), { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } })
@@ -64,9 +69,9 @@ export default class Map extends React.Component {
       .catch((error) => {
         console.error(error);
       });
-  }
+  };
 
-  getMemberInfos(memberInfos) {
+  getMemberInfos = (memberInfos) => {
     const memberInfoList = [];
     for (let memberInfo of memberInfos) {
       memberInfoList.push({
@@ -76,7 +81,7 @@ export default class Map extends React.Component {
       });
     }
     return memberInfoList;
-  }
+  };
 
   updateMyLocationAndReRender = () => {
     //TODO 약속장소 위치 받아와서 10m?안에 있는지 거리 계산하기
@@ -86,6 +91,7 @@ export default class Map extends React.Component {
       maximumAge: 1000
     };
 
+    // @TODO: 이부분이 초기 렌더링 때 안불러짐
     const getPositions = new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resolve, reject, options);
     });
@@ -136,7 +142,7 @@ export default class Map extends React.Component {
   };
 
   fitToAllMarkers() {
-    var markerLocations = [];
+    const markerLocations = [];
 
     for (let member of this.state.members) {
       markerLocations.push(member.region);
@@ -144,13 +150,10 @@ export default class Map extends React.Component {
 
     markerLocations.push(this.state.destination);
 
-    console.log(markerLocations);
-
-    // @TODO: 이건 무슨함수?
-    // this.mapRef.fitToCoordinates(markerLocations, {
-    //   edgePadding: DEFAULT_PADDING,
-    //   animated: true
-    // });
+    this.mapRef.current.fitToCoordinates(markerLocations, {
+      edgePadding: DEFAULT_PADDING,
+      animated: true
+    });
 
     this.state.markerLoaded = true;
   }
@@ -184,7 +187,7 @@ export default class Map extends React.Component {
             />
           )}
         </MapView>
-        <Button onPress={this.renderMarkers.bind(this)} title="약속 장소 도착!" />
+        <Button onPress={this.renderMarkers} title="약속 장소 도착!" />
       </View>
     );
   }
