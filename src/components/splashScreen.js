@@ -60,7 +60,10 @@ export default function RegisterName(props) {
           userInfo.name = name;
           userInfo.id = id;
           userInfo.accessToken = accessToken;
-          navigation.navigate('GroupMap');
+          AsyncStorage.setItem('ACCESS_TOKEN', accessToken, () => {
+            navigation.navigate('GroupMap');
+          });
+          console.log(userInfo);
         })
         .catch((err) => {
           console.log('need to register name', err);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Layout } from '../layout';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput, AsyncStorage } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
@@ -10,9 +10,7 @@ export default function RegisterName(props) {
   const [name, setName] = useState('');
   const userInfo = useContext(GlobalContext);
 
-  useEffect(() => {
-  }, []);
-
+  useEffect(() => {}, []);
 
   async function handlePressIcon() {
     try {
@@ -30,10 +28,40 @@ export default function RegisterName(props) {
           return res.json();
         })
         .then((resJson) => {
-          const { id, name } = resJson;
+          const {
+            member: { id, name },
+            accessToken
+          } = resJson;
+
+          console.log(id, name, accessToken);
+
+          userInfo.accessToken = accessToken;
           userInfo.id = id;
           userInfo.name = name;
-          navigation.navigate('GroupMap');
+
+          AsyncStorage.setItem('ACCESS_TOKEN', accessToken);
+        })
+        .then(() => {
+          const code = '6W1888';
+          fetch(url.joinGroup(userInfo.id), {
+            method: 'POST',
+            body: JSON.stringify({
+              code
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${userInfo.accessToken}`
+            }
+          })
+            .then((res) => {
+              return res.json();
+            })
+            .then((resJson) => {
+              navigation.navigate('GroupMap');
+            })
+            .catch((err) => {
+              console.error(err);
+            });
         })
         .catch((err) => {
           console.error(err);
