@@ -21,6 +21,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.podo.almostthere",
       "buildNumber": "7"
+    },
+    "android": {
+      "package": "com.podo.almostthere"
     }
   }
 }

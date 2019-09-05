@@ -4,6 +4,8 @@ import MapView from 'react-native-maps';
 import MemberMarker from './memberMarker';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
+import { MaterialIcons } from '@expo/vector-icons';
+import ActionButton from 'react-native-action-button';
 
 const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.28;
@@ -12,12 +14,12 @@ const DEFAULT_PADDING = { top: 100, right: 100, bottom: 100, left: 100 };
 
 export default class Map extends React.Component {
   timerId = null;
+  markerLoaded = false;
   mapRef = React.createRef();
   state = {
     region: null,
     destination: null,
-    members: null,
-    markerLoaded: false
+    members: null
   };
 
   componentWillUnmount() {
@@ -56,7 +58,7 @@ export default class Map extends React.Component {
         const memberInfoList = this.getMemberInfos(members);
         this.setState(
           {
-            destination: { name, latitude, longitude },
+            destination: { name, latitude, longitude, isDestination: true },
             members: memberInfoList
           },
           () => {
@@ -184,10 +186,15 @@ export default class Map extends React.Component {
                 longitude: this.state.destination.longitude
               }}
               name={this.state.destination.name}
+              markerState={this.state.destination.isDestination}
             />
           )}
         </MapView>
-        <Button onPress={this.renderMarkers} title="약속 장소 도착!" />
+        <ActionButton
+          buttonColor="#0099ED"
+          renderIcon={() => <MaterialIcons name="gps-fixed" size={45} color="#fff" />}
+          onPress={this.renderMarkers}
+        />
       </View>
     );
   }
