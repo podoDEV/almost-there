@@ -42,7 +42,7 @@ export default function RegisterName(props) {
           AsyncStorage.setItem('ACCESS_TOKEN', accessToken);
         })
         .then(() => {
-          const code = '6W1888';
+          const code = '32E550';
           fetch(url.joinGroup(userInfo.id), {
             method: 'POST',
             body: JSON.stringify({
