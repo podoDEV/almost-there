@@ -33,8 +33,6 @@ export default function RegisterName(props) {
             accessToken
           } = resJson;
 
-          console.log(id, name, accessToken);
-
           userInfo.accessToken = accessToken;
           userInfo.id = id;
           userInfo.name = name;

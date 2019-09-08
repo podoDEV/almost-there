@@ -176,7 +176,13 @@ export default class Map extends React.Component {
         >
           {this.state.members &&
             this.state.members.map((members) => {
-              return <MemberMarker key={members.id} region={members.region} name={members.name} />;
+              return (
+                <MemberMarker
+                  key={`marker_${members.name}`}
+                  region={members.region}
+                  name={members.name}
+                />
+              );
             })}
           {this.state.destination && (
             <MemberMarker

@@ -4,7 +4,7 @@
     "slug": "almost-there",
     "privacy": "public",
     "sdkVersion": "34.0.0",
-    "platforms": ["ios", "android", "web"],
+    "platforms": ["ios", "android"],
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,7 +20,8 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.podo.almostthere",
-      "buildNumber": "7"
+      "usesNonExemptEncryption": false,
+      "buildNumber": "8"
     },
     "android": {
       "package": "com.podo.almostthere"

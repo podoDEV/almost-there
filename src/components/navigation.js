@@ -73,7 +73,7 @@ export default function Navigation(props) {
                   <View style={styles.member}>
                     <Text style={styles.title}>멤버</Text>
                     {groupInfo.members.map((member) => (
-                      <View key={member.name} style={styles.person}>
+                      <View key={`info_${member.name}`} style={styles.person}>
                         <Image
                           style={styles.personImage}
                           source={require('../../assets/thumb.jpeg')}

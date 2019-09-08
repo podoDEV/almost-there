@@ -41,7 +41,6 @@ export default class MemberMarker extends React.Component {
         </Marker>
       );
     } else {
-      console.log(this.props.region.latitude, this.props.region.longitude);
       return (
         <Marker
           coordinate={{
