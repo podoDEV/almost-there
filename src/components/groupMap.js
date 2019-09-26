@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { GlobalContext, userInfo } from '../context';
+import { GlobalContext } from '../context';
 import { Layout } from '../layout';
 import * as url from '../apiUrl';
 import Navigation from './navigation';
@@ -12,15 +12,13 @@ export default function GroupMap(props) {
 
   useEffect(() => {
     fetch(url.getMembers(), { method: 'GET' })
-      .then((res) => {
-        return res.json();
-      })
+      .then((res) => res.json())
       .then(() => {
-        // setMembers(resJson);
-        fetch(url.getGroup(1), {
+        const options = {
           method: 'GET',
           headers: { Authorization: `Bearer ${accessToken}` }
-        })
+        };
+        fetch(url.getGroup(1), options)
           .then((res) => {
             if (res.status === 200) {
               return res.json();
@@ -41,7 +39,7 @@ export default function GroupMap(props) {
         <View style={styles.mapContainer}>
           <Map />
         </View>
-        <Navigation groupInfo={groupInfo} />
+        <Navigation groupInfo={groupInfo} navigation={props.navigation} />
       </View>
     </Layout>
   );
