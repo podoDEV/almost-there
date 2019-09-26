@@ -10,11 +10,9 @@ export default function RegisterName(props) {
   const [name, setName] = useState('');
   const userInfo = useContext(GlobalContext);
 
-  useEffect(() => {}, []);
-
   async function handlePressIcon() {
     try {
-      fetch(url.postMembers(), {
+      const options = {
         method: 'POST',
         body: JSON.stringify({
           name,
@@ -23,10 +21,9 @@ export default function RegisterName(props) {
         headers: {
           'Content-Type': 'application/json'
         }
-      })
-        .then((res) => {
-          return res.json();
-        })
+      };
+      fetch(url.postMembers(), options)
+        .then((res) => res.json())
         .then((resJson) => {
           const {
             member: { id, name },
@@ -41,7 +38,7 @@ export default function RegisterName(props) {
         })
         .then(() => {
           const code = '32E550';
-          fetch(url.joinGroup(userInfo.id), {
+          const joinGroupOptions = {
             method: 'POST',
             body: JSON.stringify({
               code
@@ -50,12 +47,11 @@ export default function RegisterName(props) {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${userInfo.accessToken}`
             }
-          })
-            .then((res) => {
-              return res.json();
-            })
-            .then((resJson) => {
-              navigation.navigate('GroupMap');
+          };
+          fetch(url.joinGroup(userInfo.id), joinGroupOptions)
+            .then((res) => res.json())
+            .then(() => {
+              navigation.navigate('RegisterPhoto');
             })
             .catch((err) => {
               console.error(err);
@@ -65,7 +61,6 @@ export default function RegisterName(props) {
           console.error(err);
         });
     } catch (err) {
-      // @TODO: 에러 팝업!
       console.error(err);
     }
   }

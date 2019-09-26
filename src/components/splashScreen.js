@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from 'react';
-import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
+import { StyleSheet, View, AsyncStorage } from 'react-native';
+import LottieView from 'lottie-react-native';
 import { GlobalContext } from '../context';
 import { Layout } from '../layout';
 import * as url from '../apiUrl';
@@ -11,11 +12,11 @@ export default function RegisterName(props) {
   useEffect(() => {
     setTimeout(() => {
       getUserSession();
-    }, 1000);
+    }, 2000);
   }, []);
 
   function login() {
-    fetch(url.login(), {
+    const options = {
       method: 'POST',
       body: JSON.stringify({
         uuid: userInfo.uuid
@@ -23,10 +24,9 @@ export default function RegisterName(props) {
       headers: {
         'Content-Type': 'application/json'
       }
-    })
-      .then((res) => {
-        return res.json();
-      })
+    };
+    fetch(url.login(), options)
+      .then((res) => res.json())
       .then((resJson) => {
         const { accessToken } = resJson;
         userInfo.accessToken = accessToken;
@@ -63,22 +63,20 @@ export default function RegisterName(props) {
           AsyncStorage.setItem('ACCESS_TOKEN', accessToken, () => {
             navigation.navigate('GroupMap');
           });
-          console.log(userInfo);
         })
         .catch((err) => {
           console.log('need to register name', err);
         });
     } else {
       const { uuid } = userInfo;
-      fetch(url.getMembers(uuid), {
+      const options = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
-      })
-        .then((res) => {
-          return res.json();
-        })
+      };
+      fetch(url.getMembers(uuid), options)
+        .then((res) => res.json())
         .then((resJson) => {
           if (resJson.length) {
             const { name, id } = resJson[0];
@@ -95,7 +93,16 @@ export default function RegisterName(props) {
   return (
     <Layout>
       <View style={styles.splash}>
-        <Text>진짜</Text>
+        <LottieView
+          ref={(animation) => {
+            this.animation = animation;
+          }}
+          style={{
+            flex: 1
+          }}
+          source={require('../../assets/lottie/splash.json')}
+          autoPlay
+        />
       </View>
     </Layout>
   );
@@ -104,9 +111,6 @@ export default function RegisterName(props) {
 const styles = StyleSheet.create({
   splash: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0099ED',
-    color: '#fff'
+    backgroundColor: '#0099ED'
   }
 });

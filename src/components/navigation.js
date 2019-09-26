@@ -1,38 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import { SimpleLineIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import spacetime from 'spacetime';
+import { SimpleLineIcons, Ionicons, EvilIcons } from '@expo/vector-icons';
 import { Layout } from '../layout';
-
-// @TODO: 이런거 다 유틸로 빼야해
-function getParsingDate(date) {
-  const d = new Date(date);
-
-  const month = d.getMonth() + 1;
-  const day = d.getDate();
-  const year = d.getFullYear();
-  const hour = d.getHours();
-  const minitues = d.getMinutes();
-
-  return {
-    month,
-    day,
-    year,
-    hour,
-    minitues
-  };
-}
-
-function fullDate(date) {
-  const { month, day, year, hour, minitues } = getParsingDate(date);
-
-  return `${year}-${month}-${day} ${hour}:${minitues}`;
-}
-
-function briefDate(date) {
-  const { hour, minitues } = getParsingDate(date);
-
-  return `${hour}:${minitues}`;
-}
 
 export default function Navigation(props) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -64,7 +34,9 @@ export default function Navigation(props) {
               </View>
               <View style={styles.scheduleBrief}>
                 <Ionicons name="ios-timer" size={23} style={styles.timerIcon} />
-                <Text style={styles.scheduleBriefText}>{briefDate(groupInfo.appointedAt)}</Text>
+                <Text style={styles.scheduleBriefText}>
+                  {spacetime(groupInfo.appointedAt).unixFmt('hh:mm')}
+                </Text>
               </View>
             </View>
             {!fold && (
@@ -72,8 +44,8 @@ export default function Navigation(props) {
                 <View style={styles.memberInfoBox}>
                   <View style={styles.member}>
                     <Text style={styles.title}>멤버</Text>
-                    {groupInfo.members.map((member) => (
-                      <View key={`info_${member.name}`} style={styles.person}>
+                    {groupInfo.members.map((member, idx) => (
+                      <View key={`info_${idx}`} style={styles.person}>
                         <Image
                           style={styles.personImage}
                           source={require('../../assets/thumb.jpeg')}
@@ -96,15 +68,22 @@ export default function Navigation(props) {
                 <View style={styles.meetingInfoBox}>
                   <View style={styles.schedule}>
                     <Text style={styles.title}>모임시간</Text>
-                    <Text style={styles.detail}>{fullDate(groupInfo.appointedAt)}</Text>
+                    <Text style={styles.detail}>
+                      {spacetime(groupInfo.appointedAt).unixFmt('yyyy-MM-dd hh:mm')}
+                    </Text>
                   </View>
                   <View style={styles.place}>
                     <Text style={styles.title}>모임장소</Text>
                     <Text style={styles.detail}>{groupInfo.destination.name}</Text>
                   </View>
-                  {/* <View style={styles.editIconContainer}>
-                    <Ionicons name="ios-options" color="#0099ED" size={19} />
-                  </View> */}
+                  <View style={styles.editIconContainer}>
+                    <EvilIcons
+                      name="gear"
+                      color="#0099ED"
+                      size={25}
+                      onPress={() => props.navigation.navigate('EditGroup')}
+                    />
+                  </View>
                 </View>
               </View>
             )}

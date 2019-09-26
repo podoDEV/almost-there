@@ -43,8 +43,9 @@ export default class Map extends React.Component {
 
   getGroupInfo = () => {
     const { accessToken } = this.context;
+    const options = { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } };
     // @TODO: groupId 받아와서 찍어줘야함.
-    fetch(url.getGroup(1), { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } })
+    fetch(url.getGroup(1), options)
       .then((res) => res.json())
       .then((resJson) => {
         const {
@@ -122,8 +123,7 @@ export default class Map extends React.Component {
 
   updateMyLocation = () => {
     const { id, accessToken } = this.context;
-
-    fetch(url.updateLocation(id), {
+    const options = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
@@ -134,7 +134,9 @@ export default class Map extends React.Component {
         latitude: this.state.region.latitude,
         longitude: this.state.region.longitude
       })
-    })
+    };
+
+    fetch(url.updateLocation(id), options)
       .then(() => {
         this.getGroupInfo();
       })
@@ -175,13 +177,9 @@ export default class Map extends React.Component {
           followUserLocation={true}
         >
           {this.state.members &&
-            this.state.members.map((members) => {
+            this.state.members.map((members, idx) => {
               return (
-                <MemberMarker
-                  key={`marker_${members.name}`}
-                  region={members.region}
-                  name={members.name}
-                />
+                <MemberMarker key={`marker_${idx}`} region={members.region} name={members.name} />
               );
             })}
           {this.state.destination && (
