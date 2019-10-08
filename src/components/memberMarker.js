@@ -31,10 +31,7 @@ export default class MemberMarker extends React.Component {
             <View style={styles.markerTextView}>
               <Text style={styles.markerText}>{this.props.name}</Text>
             </View>
-            <Image
-              style={styles.markerImage}
-              source={{ uri: 'https://avatars2.githubusercontent.com/u/35371660?s=460&v=4' }}
-            />
+            <Image style={styles.markerImage} source={{ uri: this.props.profileImageUrl }} />
           </View>
           <View style={styles.line}></View>
           <View style={styles.point}></View>
