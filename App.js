@@ -13,7 +13,7 @@ const App = createSwitchNavigator(
     GroupMap: { screen: GroupMap },
     EditGroup: { screen: EditGroup }
   },
-  { initialRouteName: 'EditGroup' }
+  { initialRouteName: 'SplashScreen' }
 );
 
 export default createAppContainer(App);
