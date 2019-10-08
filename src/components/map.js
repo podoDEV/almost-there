@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 import MemberMarker from './memberMarker';
 import * as url from '../apiUrl';
@@ -77,12 +77,8 @@ export default class Map extends React.Component {
   getMemberInfos = (memberInfos) => {
     const memberInfoList = [];
     for (let memberInfo of memberInfos) {
-      memberInfoList.push({
-        id: memberInfo.uuid,
-        name: memberInfo.name,
-        region: memberInfo.location,
-        profileImageUrl: memberInfo.profileImageUrl
-      });
+      const { uuid: id, name, location: region, profileImageUrl } = memberInfo;
+      memberInfoList.push({ id, name, region, profileImageUrl });
     }
     return memberInfoList;
   };

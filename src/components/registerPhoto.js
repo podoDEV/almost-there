@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Layout } from '../layout';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -11,6 +11,7 @@ export default function RegisterName(props) {
   const { navigation } = props;
   const [image, setImage] = useState(null);
   const [finish, setFinish] = useState(false);
+  const [imageUpload, setImageUpload] = useState(false);
   const userInfo = useContext(GlobalContext);
 
   async function pickImage() {
@@ -35,6 +36,7 @@ export default function RegisterName(props) {
     const uriParts = image.split('.');
     const fileType = uriParts[uriParts.length - 1];
     const formData = new FormData();
+    setImageUpload(true);
 
     formData.append('file', {
       uri: image,
@@ -87,8 +89,10 @@ export default function RegisterName(props) {
           </TouchableOpacity>
           {image && (
             <TouchableOpacity onPress={finishRegister}>
-              {finish ? (
+              {finish && imageUpload ? (
                 <Text style={styles.finishText}>{userInfo.name}</Text>
+              ) : imageUpload ? (
+                <ActivityIndicator size="small" color="#fff" style={{ marginTop: 10 }} />
               ) : (
                 <Text style={styles.finishText}>완료 ></Text>
               )}
