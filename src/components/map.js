@@ -80,7 +80,8 @@ export default class Map extends React.Component {
       memberInfoList.push({
         id: memberInfo.uuid,
         name: memberInfo.name,
-        region: memberInfo.location
+        region: memberInfo.location,
+        profileImageUrl: memberInfo.profileImageUrl
       });
     }
     return memberInfoList;
@@ -179,7 +180,12 @@ export default class Map extends React.Component {
           {this.state.members &&
             this.state.members.map((members, idx) => {
               return (
-                <MemberMarker key={`marker_${idx}`} region={members.region} name={members.name} />
+                <MemberMarker
+                  key={`marker_${idx}`}
+                  region={members.region}
+                  name={members.name}
+                  profileImageUrl={members.profileImageUrl}
+                />
               );
             })}
           {this.state.destination && (
