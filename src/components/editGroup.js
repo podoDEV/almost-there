@@ -1,22 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from '../layout';
-import {
-  StyleSheet,
-  Text,
-  View,
-  DatePickerAndroid,
-  DatePickerIOS,
-  Platform,
-  TouchableOpacity
-} from 'react-native';
+import DateSelector from './dateSelector';
+import MaxMemberInput from './maxMemberInput';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function EditGroup(props) {
-  const { navigation } = props;
-  const [date, setDate] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState([]);
 
-  useEffect(() => {}, []);
-
-  const days = ['월', '화', '수', '목', '금', '토', '일'];
   return (
     <Layout>
       <View style={styles.container}>
@@ -24,32 +14,18 @@ export default function EditGroup(props) {
           <Text>포도</Text>
         </View>
         <View style={styles.memberInfoContainer}>
-          <Text>멤버</Text>
+          <Text style={styles.subTitle}>멤버</Text>
         </View>
         <View style={styles.datepickerContainer}>
-          <Text>모임시간</Text>
-          <View style={styles.timePickerContainer}>
-            {Platform.OS === 'ios' ? (
-              <DatePickerIOS date={date} onDateChange={setDate} mode="time" />
-            ) : (
-              <View>Android Datepicker</View>
-            )}
-          </View>
-          <View style={styles.daySelectorContainer}>
-            {days.map((day) => (
-              <TouchableOpacity
-                style={styles.daySelectorBtn}
-                onPress={() => {
-                  console.log(day);
-                }}
-              >
-                <Text styles={styles.daySelectorText}>{day}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <Text style={styles.subTitle}>모임 시간</Text>
+          <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
         </View>
         <View style={styles.placeContainer}>
-          <Text>모임장소</Text>
+          <Text style={styles.subTitle}>모임 장소</Text>
+        </View>
+        <View style={styles.maxMemberContainer}>
+          <Text style={styles.subTitle}>최대 멤버수</Text>
+          <MaxMemberInput />
         </View>
       </View>
     </Layout>
@@ -69,34 +45,28 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 29
   },
-  daySelectorContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly'
-  },
-  daySelectorBtn: {
-    height: 38,
-    width: 38,
-    borderWidth: 1,
-    borderColor: '#979797'
-  },
-  daySelectorText: {
-    fontSize: 18,
-    color: '#4a4a4a'
+  subTitle: {
+    fontFamily: 'scdreamBold',
+    fontSize: 14,
+    color: '#0099ED'
   },
   datepickerContainer: {
-    flex: 5
-  },
-  timePickerContainer: {
-    flex: 1
+    flex: 5,
+    paddingHorizontal: 20
   },
   memberInfoContainer: {
-    flex: 1
+    flex: 1,
+    paddingHorizontal: 20
   },
   titleContainer: {
     flex: 1
   },
   placeContainer: {
-    flex: 1
+    flex: 1,
+    paddingHorizontal: 20
+  },
+  maxMemberContainer: {
+    flex: 1,
+    paddingHorizontal: 20
   }
 });

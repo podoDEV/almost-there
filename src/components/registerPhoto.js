@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Layout } from '../layout';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import Constants from 'expo-constants';
