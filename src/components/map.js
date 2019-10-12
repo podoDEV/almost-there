@@ -134,6 +134,7 @@ export default class Map extends React.Component {
     };
 
     fetch(url.updateLocation(id), options)
+      .then((res) => res.json())
       .then(() => {
         this.getGroupInfo();
       })
@@ -151,10 +152,10 @@ export default class Map extends React.Component {
 
     markerLocations.push(this.state.destination);
 
-    this.mapRef.current.fitToCoordinates(markerLocations, {
-      edgePadding: DEFAULT_PADDING,
-      animated: true
-    });
+    // this.mapRef.current.fitToCoordinates(markerLocations, {
+    //   edgePadding: DEFAULT_PADDING,
+    //   animated: true
+    // });
 
     this.state.markerLoaded = true;
   }
@@ -200,6 +201,7 @@ export default class Map extends React.Component {
           buttonColor="#0099ED"
           renderIcon={() => <MaterialIcons name="gps-fixed" size={45} color="#fff" />}
           onPress={this.renderMarkers}
+          size={70}
         />
       </View>
     );
