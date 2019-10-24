@@ -1,9 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import * as url from '../apiUrl';
-import { GlobalContext } from '../context';
-import { Layout } from '../layout';
-import DateSelector from './dateSelector';
-import MaxMemberInput from './maxMemberInput';
 import {
   StyleSheet,
   Text,
@@ -13,15 +8,29 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
-import ActionButton from 'react-native-action-button';
+import spacetime from 'spacetime';
+import { Layout } from '../layout';
+import MaxMemberInput from './maxMemberInput';
+import DateSelector from './dateSelector';
+import ScrollTimePicker from './ScrollTimePicker';
+import { getTime } from '../time';
 
 export default function RegisterGroup(props) {
+  const { meridiem, hour, min } = getTime(spacetime.now());
+
   const [maxMemberCnt, setMaxMemberCnt] = useState('0');
   const [name, setName] = useState('요가파이어');
   const [place, setPlace] = useState('씨맥스');
   const [selectedDay, setSelectedDay] = useState([]);
+  const [time, setTime] = useState({ hour, min, meridiem });
 
   useEffect(() => {}, []);
+
+  function clickCreateGroupBtn() {
+    alert(
+      `${maxMemberCnt} ${name} ${place} ${selectedDay} ${time.hour} ${time.min} ${time.meridiem}`
+    );
+  }
 
   return (
     <Layout>
@@ -42,7 +51,12 @@ export default function RegisterGroup(props) {
           </View>
           <View style={[styles.datepickerContainer, styles.underline]}>
             <Text style={styles.subTitle}>모임 시간</Text>
-            <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+            <View style={styles.dateContainer}>
+              <View style={styles.timePickerContainer}>
+                <ScrollTimePicker time={time} setTime={setTime} />
+              </View>
+              <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+            </View>
           </View>
           <View style={[styles.placeContainer, styles.underline]}>
             <Text style={styles.subTitle}>모임 장소</Text>
@@ -58,7 +72,12 @@ export default function RegisterGroup(props) {
             <Text style={styles.subTitle}>최대 멤버수</Text>
             <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
           </View>
-          <TouchableOpacity onPress={() => {}} style={styles.registerGroup}>
+          <TouchableOpacity
+            onPress={() => {
+              clickCreateGroupBtn();
+            }}
+            style={styles.registerGroup}
+          >
             <Text style={styles.registerGroupText}>모임 생성</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -72,7 +91,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center'
-    // backgroundColor: '#0099ED'
+  },
+  dateContainer: {
+    flex: 1
+  },
+  timePickerContainer: {
+    flex: 1
   },
   title: {
     color: '#fff',

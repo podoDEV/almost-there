@@ -15,7 +15,7 @@ const App = createSwitchNavigator(
     EditGroup: { screen: EditGroup },
     RegisterGroup: { screen: RegisterGroup }
   },
-  { initialRouteName: 'RegisterGroup' }
+  { initialRouteName: 'SplashScreen' }
 );
 
 export default createAppContainer(App);
