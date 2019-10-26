@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1
   },
   navigation: {
-    paddingTop: 55,
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 11,
@@ -198,10 +197,6 @@ const styles = StyleSheet.create({
     fontFamily: 'scdream',
     color: '#0099ED',
     fontSize: 17
-  },
-  foldButton: {
-    flex: 1,
-    marginLeft: 13
   },
   timerIcon: {
     marginRight: 4,

@@ -31,7 +31,7 @@ export default function RegisterName(props) {
         const { accessToken } = resJson;
         userInfo.accessToken = accessToken;
         AsyncStorage.setItem('ACCESS_TOKEN', accessToken, () => {
-          navigation.navigate('GroupMap');
+          navigation.navigate('GroupList');
         });
       })
       .catch((err) => {
@@ -61,7 +61,7 @@ export default function RegisterName(props) {
           userInfo.id = id;
           userInfo.accessToken = accessToken;
           AsyncStorage.setItem('ACCESS_TOKEN', accessToken, () => {
-            navigation.navigate('GroupMap');
+            navigation.navigate('GroupList');
           });
         })
         .catch((err) => {
