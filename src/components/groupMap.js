@@ -7,7 +7,7 @@ import Navigation from './navigation';
 import Map from './map';
 
 export default function GroupMap(props) {
-  const [groupInfo, setGroupInfo] = useState(null);
+  const [ groupInfo, setGroupInfo ] = useState(null);
   const { accessToken } = useContext(GlobalContext);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function GroupMap(props) {
           method: 'GET',
           headers: { Authorization: `Bearer ${accessToken}` }
         };
-        fetch(url.getGroup(1), options)
+        fetch(url.getMembers(1), options)
           .then((res) => {
             if (res.status === 200) {
               return res.json();
@@ -32,7 +32,7 @@ export default function GroupMap(props) {
           });
       });
   }, []);
-
+  
   return (
     <Layout>
       <View style={styles.container}>

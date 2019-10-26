@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 import MemberMarker from './memberMarker';
 import * as url from '../apiUrl';
@@ -77,11 +77,8 @@ export default class Map extends React.Component {
   getMemberInfos = (memberInfos) => {
     const memberInfoList = [];
     for (let memberInfo of memberInfos) {
-      memberInfoList.push({
-        id: memberInfo.uuid,
-        name: memberInfo.name,
-        region: memberInfo.location
-      });
+      const { uuid: id, name, location: region, profileImageUrl } = memberInfo;
+      memberInfoList.push({ id, name, region, profileImageUrl });
     }
     return memberInfoList;
   };
@@ -137,6 +134,7 @@ export default class Map extends React.Component {
     };
 
     fetch(url.updateLocation(id), options)
+      .then((res) => res.json())
       .then(() => {
         this.getGroupInfo();
       })
@@ -154,10 +152,10 @@ export default class Map extends React.Component {
 
     markerLocations.push(this.state.destination);
 
-    this.mapRef.current.fitToCoordinates(markerLocations, {
-      edgePadding: DEFAULT_PADDING,
-      animated: true
-    });
+    // this.mapRef.current.fitToCoordinates(markerLocations, {
+    //   edgePadding: DEFAULT_PADDING,
+    //   animated: true
+    // });
 
     this.state.markerLoaded = true;
   }
@@ -179,7 +177,12 @@ export default class Map extends React.Component {
           {this.state.members &&
             this.state.members.map((members, idx) => {
               return (
-                <MemberMarker key={`marker_${idx}`} region={members.region} name={members.name} />
+                <MemberMarker
+                  key={`marker_${idx}`}
+                  region={members.region}
+                  name={members.name}
+                  profileImageUrl={members.profileImageUrl}
+                />
               );
             })}
           {this.state.destination && (
@@ -198,6 +201,7 @@ export default class Map extends React.Component {
           buttonColor="#0099ED"
           renderIcon={() => <MaterialIcons name="gps-fixed" size={45} color="#fff" />}
           onPress={this.renderMarkers}
+          size={70}
         />
       </View>
     );

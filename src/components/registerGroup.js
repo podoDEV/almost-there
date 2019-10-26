@@ -5,95 +5,58 @@ import {
   View,
   KeyboardAvoidingView,
   ScrollView,
-  Switch,
-  Image,
   TextInput,
-  TouchableOpacity,
-  Clipboard
+  TouchableOpacity
 } from 'react-native';
 import spacetime from 'spacetime';
-import * as url from '../apiUrl';
-import { GlobalContext } from '../context';
 import { Layout } from '../layout';
-import DateSelector from './dateSelector';
 import MaxMemberInput from './maxMemberInput';
+import DateSelector from './dateSelector';
 import ScrollTimePicker from './ScrollTimePicker';
 import { getTime } from '../time';
-import ActionButton from 'react-native-action-button';
 
-export default function EditGroup(props) {
-  const { accessToken } = useContext(GlobalContext);
-
-  // @TODO: 서버에서 가져온 값으로 적여야함
+export default function RegisterGroup(props) {
   const { meridiem, hour, min } = getTime(spacetime.now());
-  const [time, setTime] = useState({ hour, min, meridiem });
-  const [groupInfo, setGroupInfo] = useState(null);
+
   const [maxMemberCnt, setMaxMemberCnt] = useState('0');
+  const [name, setName] = useState('요가파이어');
   const [place, setPlace] = useState('씨맥스');
   const [selectedDay, setSelectedDay] = useState([]);
+  const [time, setTime] = useState({ hour, min, meridiem });
 
-  useEffect(() => {
-    fetch(url.getMembers(), { method: 'GET' })
-      .then((res) => res.json())
-      .then(() => {
-        const options = {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${accessToken}` }
-        };
-        fetch(url.getGroup(1), options)
-          .then((res) => {
-            if (res.status === 200) {
-              return res.json();
-            }
-          })
-          .then((resJson) => {
-            setGroupInfo(resJson);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      });
-  }, []);
+  useEffect(() => {}, []);
 
-  async function copyToClipboard() {
-    await Clipboard.setString('ABCDEF');
-    alert('초대코드 복사 완료!');
+  function clickCreateGroupBtn() {
+    alert(
+      `${maxMemberCnt} ${name} ${place} ${selectedDay} ${time.hour} ${time.min} ${time.meridiem}`
+    );
   }
 
   return (
     <Layout>
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <View style={styles.groupNameContainer}>
-          <Text style={styles.groupName}>포도</Text>
+        <View style={styles.pageTitle}>
+          <Text style={styles.pageTitleText}>모임만들기</Text>
         </View>
         <ScrollView style={{ flex: 1 }}>
-          <View style={[styles.memberInfoContainer, styles.underline]}>
-            <Text style={styles.subTitle}>멤버</Text>
-            {groupInfo &&
-              groupInfo.members.map((member, idx) => (
-                <View key={`info_${idx}`} style={styles.person}>
-                  <View style={styles.personArea}>
-                    <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
-                    <Text style={styles.personName}>{member.name}</Text>
-                  </View>
-                  <Switch style={styles.personAdminSwitch} />
-                </View>
-              ))}
-            <TouchableOpacity
-              onPress={() => {
-                copyToClipboard();
+          <View style={[styles.nameContainer, styles.underline]}>
+            <Text style={styles.subTitle}>모임명</Text>
+            <TextInput
+              style={styles.nameInput}
+              value={name}
+              onChangeText={(text) => {
+                setName(text);
               }}
-            >
-              {/* @TODO: 카카오 공유하기 들어가야함 */}
-              <Text style={styles.invitationCode}>+ 초대 코드(AAAAAA)</Text>
-            </TouchableOpacity>
+            />
           </View>
           <View style={[styles.datepickerContainer, styles.underline]}>
             <Text style={styles.subTitle}>모임 시간</Text>
-            <View style={styles.timePickerContainer}>
-              <ScrollTimePicker time={time} setTime={setTime} />
+            <View style={styles.dateContainer}>
+              <View style={styles.timePickerContainer}>
+                <ScrollTimePicker time={time} setTime={setTime} />
+              </View>
+              <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
             </View>
-            <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
           </View>
           <View style={[styles.placeContainer, styles.underline]}>
             <Text style={styles.subTitle}>모임 장소</Text>
@@ -109,13 +72,15 @@ export default function EditGroup(props) {
             <Text style={styles.subTitle}>최대 멤버수</Text>
             <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
           </View>
+          <TouchableOpacity
+            onPress={() => {
+              clickCreateGroupBtn();
+            }}
+            style={styles.registerGroup}
+          >
+            <Text style={styles.registerGroupText}>모임 생성</Text>
+          </TouchableOpacity>
         </ScrollView>
-        <ActionButton
-          buttonColor="#0099ED"
-          renderIcon={() => <Text style={styles.finishBtn}>완료</Text>}
-          onPress={this.renderMarkers}
-          size={70}
-        />
       </KeyboardAvoidingView>
     </Layout>
   );
@@ -126,7 +91,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center'
-    // backgroundColor: '#0099ED'
+  },
+  dateContainer: {
+    flex: 1
+  },
+  timePickerContainer: {
+    flex: 1
   },
   title: {
     color: '#fff',
@@ -144,12 +114,7 @@ const styles = StyleSheet.create({
     flex: 5,
     paddingHorizontal: 20
   },
-  memberInfoContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    marginTop: 95
-  },
-  groupNameContainer: {
+  pageTitle: {
     position: 'absolute',
     top: 0,
     width: '100%',
@@ -163,10 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 153, 237, 1)',
     zIndex: 100
   },
-  timePickerContainer: {
-    flex: 1
-  },
-  groupName: {
+  pageTitleText: {
     fontFamily: 'scdreamBold',
     fontSize: 22,
     color: '#fff'
@@ -216,6 +178,18 @@ const styles = StyleSheet.create({
     height: 22
   },
   placeSearchInput: { fontSize: 19, fontFamily: 'scdream', borderWidth: 0, height: 40 },
+  nameContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    marginTop: 95
+  },
+  nameInput: {
+    fontSize: 19,
+    fontFamily: 'scdream',
+    borderWidth: 0,
+    height: 40
+  },
   invitationCode: {
     fontFamily: 'scdream',
     color: '#0099ED',
@@ -231,5 +205,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'rgb(213, 213, 213)',
     paddingBottom: 15
+  },
+  registerGroup: {
+    flex: 1,
+    alignItems: 'center',
+    marginVertical: 20
+  },
+  registerGroupText: {
+    fontFamily: 'scdreamBold',
+    color: '#0099ED',
+    fontSize: 21
   }
 });

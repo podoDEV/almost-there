@@ -48,19 +48,9 @@ export default function Navigation(props) {
                       <View key={`info_${idx}`} style={styles.person}>
                         <Image
                           style={styles.personImage}
-                          source={require('../../assets/thumb.jpeg')}
+                          source={{ uri: member.profileImageUrl }}
                         />
                         <Text style={styles.personName}>{member.name}</Text>
-                        {/* {member.admin && (
-                      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <MaterialCommunityIcons
-                          name="crown"
-                          color="#F5A623"
-                          size={15}
-                          style={{ marginLeft: 3 }}
-                        />
-                      </View>
-                    )} */}
                       </View>
                     ))}
                   </View>
@@ -104,7 +94,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1
   },
   navigation: {
-    paddingTop: 55,
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 11,
@@ -208,10 +197,6 @@ const styles = StyleSheet.create({
     fontFamily: 'scdream',
     color: '#0099ED',
     fontSize: 17
-  },
-  foldButton: {
-    flex: 1,
-    marginLeft: 13
   },
   timerIcon: {
     marginRight: 4,
