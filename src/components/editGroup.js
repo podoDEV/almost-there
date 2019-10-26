@@ -1,9 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import * as url from '../apiUrl';
-import { GlobalContext } from '../context';
-import { Layout } from '../layout';
-import DateSelector from './dateSelector';
-import MaxMemberInput from './maxMemberInput';
 import {
   StyleSheet,
   Text,
@@ -16,14 +11,26 @@ import {
   TouchableOpacity,
   Clipboard
 } from 'react-native';
+import spacetime from 'spacetime';
+import * as url from '../apiUrl';
+import { GlobalContext } from '../context';
+import { Layout } from '../layout';
+import DateSelector from './dateSelector';
+import MaxMemberInput from './maxMemberInput';
+import ScrollTimePicker from './ScrollTimePicker';
+import { getTime } from '../time';
 import ActionButton from 'react-native-action-button';
 
 export default function EditGroup(props) {
+  const { accessToken } = useContext(GlobalContext);
+
+  // @TODO: 서버에서 가져온 값으로 적여야함
+  const { meridiem, hour, min } = getTime(spacetime.now());
+  const [time, setTime] = useState({ hour, min, meridiem });
   const [groupInfo, setGroupInfo] = useState(null);
   const [maxMemberCnt, setMaxMemberCnt] = useState('0');
   const [place, setPlace] = useState('씨맥스');
   const [selectedDay, setSelectedDay] = useState([]);
-  const { accessToken } = useContext(GlobalContext);
 
   useEffect(() => {
     fetch(url.getMembers(), { method: 'GET' })
@@ -83,6 +90,9 @@ export default function EditGroup(props) {
           </View>
           <View style={[styles.datepickerContainer, styles.underline]}>
             <Text style={styles.subTitle}>모임 시간</Text>
+            <View style={styles.timePickerContainer}>
+              <ScrollTimePicker time={time} setTime={setTime} />
+            </View>
             <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
           </View>
           <View style={[styles.placeContainer, styles.underline]}>
@@ -152,6 +162,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'rgba(0, 153, 237, 1)',
     zIndex: 100
+  },
+  timePickerContainer: {
+    flex: 1
   },
   groupName: {
     fontFamily: 'scdreamBold',
