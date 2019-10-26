@@ -63,7 +63,7 @@ export default function RegisterName(props) {
       .then(() => {
         setFinish(true);
         setTimeout(() => {
-          navigation.navigate('GroupMap');
+          navigation.navigate('GroupList');
         }, 2000);
       })
       .catch((err) => {

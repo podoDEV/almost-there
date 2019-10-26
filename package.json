@@ -22,6 +22,7 @@
     "react-native-maps": "^0.26.0",
     "react-native-web": "^0.11.7",
     "react-navigation": "^3.13.0",
+    "react-native-swipe-list-view": "^2.0.3",
     "spacetime": "^6.0.1"
   },
   "devDependencies": {
