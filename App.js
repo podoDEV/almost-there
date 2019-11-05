@@ -1,36 +1,32 @@
-import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { SimpleLineIcons, Ionicons, EvilIcons } from "@expo/vector-icons";
-import {
-  createSwitchNavigator,
-  createStackNavigator,
-  createAppContainer
-} from "react-navigation";
-import RegisterName from "./src/components/registerName";
-import RegisterPhoto from "./src/components/registerPhoto";
-import SplashScreen from "./src/components/splashScreen";
-import GroupList from "./src/components/groupList";
-import GroupMap from "./src/components/groupMap";
-import EditGroup from "./src/components/editGroup";
-import RegisterGroup from "./src/components/registerGroup";
-import Settings from "./src/components/settings.js";
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { SimpleLineIcons, Ionicons, EvilIcons } from '@expo/vector-icons';
+import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
+import RegisterName from './src/components/registerName';
+import RegisterPhoto from './src/components/registerPhoto';
+import SplashScreen from './src/components/splashScreen';
+import GroupList from './src/components/groupList';
+import GroupMap from './src/components/groupMap';
+import EditGroup from './src/components/editGroup';
+import RegisterGroup from './src/components/registerGroup';
+import Settings from './src/components/settings.js';
 
-import GroupSearch from "./src/components/groupSearch";
+import GroupSearch from './src/components/groupSearch';
 
 const styles = StyleSheet.create({
   groupListBtn: {
-    color: "#fff",
+    color: '#fff',
     paddingLeft: 15,
     paddingBottom: 15,
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center"
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   groupListBtnText: {
     flex: 1,
     paddingLeft: 4,
-    color: "#fff",
-    alignItems: "center"
+    color: '#fff',
+    alignItems: 'center'
   }
 });
 
@@ -46,9 +42,9 @@ const AppContent = createStackNavigator({
     navigationOptions: {
       headerStyle: {
         height: 0,
-        backgroundColor: "#31ACF1"
+        backgroundColor: '#31ACF1'
       },
-      headerBackTitle: "나의 리스트"
+      headerBackTitle: '나의 리스트'
     }
   },
   GroupMap: {
@@ -59,17 +55,16 @@ const AppContent = createStackNavigator({
     navigationOptions: () => ({
       headerStyle: {
         height: 20,
-        backgroundColor: "#31ACF1"
+        backgroundColor: '#31ACF1'
       },
-      headerTintColor: "#FFFFFF",
+      headerTintColor: '#FFFFFF',
       headerTitleStyle: {
-        fontFamily: "scdream",
-        color: "#FFFFFF"
+        fontFamily: 'scdream',
+        color: '#FFFFFF'
       },
-      tabBarColor: "#FFFFFF",
+      tabBarColor: '#FFFFFF',
       headerBackTitleStyle: {
-        fontSize: 13,
-        size: 4
+        fontSize: 13
       }
     })
   },
