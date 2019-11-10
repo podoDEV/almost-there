@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 import spacetime from 'spacetime';
-import { SimpleLineIcons, Ionicons, EvilIcons } from '@expo/vector-icons';
-import { Layout } from '../layout';
+import { SimpleLineIcons, MaterialIcons, EvilIcons } from '@expo/vector-icons';
 
 export default function Navigation(props) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const { groupInfo } = props;
+  const { groupInfo, navigation } = props;
   const [fold, toggleFold] = useState(true);
 
   useEffect(() => {
@@ -16,71 +15,78 @@ export default function Navigation(props) {
   });
 
   return (
-    <Layout>
-      <View style={styles.naviContainer}>
-        {isLoaded && (
-          <View>
-            <View style={styles.navigation}>
-              <View style={styles.groupInfo}>
-                <Text style={styles.groupName}>{groupInfo.name}</Text>
-                <TouchableOpacity onPress={() => toggleFold(!fold)} style={styles.foldButtonArea}>
-                  <SimpleLineIcons
-                    style={styles.foldButton}
-                    name={fold ? 'arrow-down' : 'arrow-up'}
-                    size={12}
-                    color="#fff"
-                  />
-                </TouchableOpacity>
+    <View style={styles.naviContainer}>
+      {isLoaded && (
+        <View>
+          <View style={styles.navigation}>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                alignItems: 'center'
+              }}
+              onPress={() => navigation.goBack()}
+            >
+              <MaterialIcons name="keyboard-arrow-left" color="#FFF" size={25} />
+              <Text style={{ fontFamily: 'scdream', fontSize: 14, color: '#fff' }}>
+                마이 리스트
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.groupInfo}>
+              <Text style={styles.groupName} numberOfLines={1} ellipsizeMode="tail">
+                {groupInfo.name}
+              </Text>
+              <TouchableOpacity onPress={() => toggleFold(!fold)} style={styles.foldButtonArea}>
+                <SimpleLineIcons
+                  style={styles.foldButton}
+                  name={fold ? 'arrow-down' : 'arrow-up'}
+                  size={12}
+                  color="#fff"
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1 }}></View>
+          </View>
+          {!fold && (
+            <View style={styles.infoContainer}>
+              <View style={styles.memberInfoBox}>
+                <ScrollView style={styles.member}>
+                  <Text style={styles.title}>멤버</Text>
+                  {groupInfo.members.map((member, idx) => (
+                    <View key={`info_${idx}`} style={styles.person}>
+                      <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
+                      <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
+                        {member.name}
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
               </View>
-              <View style={styles.scheduleBrief}>
-                <Ionicons name="ios-timer" size={23} style={styles.timerIcon} />
-                <Text style={styles.scheduleBriefText}>
-                  {spacetime(groupInfo.appointedAt).unixFmt('hh:mm')}
-                </Text>
+              <View style={styles.meetingInfoBox}>
+                <View style={styles.schedule}>
+                  <Text style={styles.title}>모임시간</Text>
+                  <Text style={styles.detail}>
+                    {spacetime(groupInfo.appointedAt).unixFmt('yyyy-MM-dd hh:mm')}
+                  </Text>
+                </View>
+                <View style={styles.place}>
+                  <Text style={styles.title}>모임장소</Text>
+                  <Text style={styles.detail}>{groupInfo.destination.name}</Text>
+                </View>
+                <View style={styles.editIconContainer}>
+                  <EvilIcons
+                    name="gear"
+                    color="#0099ED"
+                    size={25}
+                    onPress={() => props.navigation.navigate('EditGroup')}
+                  />
+                </View>
               </View>
             </View>
-            {!fold && (
-              <View style={styles.infoContainer}>
-                <View style={styles.memberInfoBox}>
-                  <View style={styles.member}>
-                    <Text style={styles.title}>멤버</Text>
-                    {groupInfo.members.map((member, idx) => (
-                      <View key={`info_${idx}`} style={styles.person}>
-                        <Image
-                          style={styles.personImage}
-                          source={{ uri: member.profileImageUrl }}
-                        />
-                        <Text style={styles.personName}>{member.name}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-                <View style={styles.meetingInfoBox}>
-                  <View style={styles.schedule}>
-                    <Text style={styles.title}>모임시간</Text>
-                    <Text style={styles.detail}>
-                      {spacetime(groupInfo.appointedAt).unixFmt('yyyy-MM-dd hh:mm')}
-                    </Text>
-                  </View>
-                  <View style={styles.place}>
-                    <Text style={styles.title}>모임장소</Text>
-                    <Text style={styles.detail}>{groupInfo.destination.name}</Text>
-                  </View>
-                  <View style={styles.editIconContainer}>
-                    <EvilIcons
-                      name="gear"
-                      color="#0099ED"
-                      size={25}
-                      onPress={() => props.navigation.navigate('EditGroup')}
-                    />
-                  </View>
-                </View>
-              </View>
-            )}
-          </View>
-        )}
-      </View>
-    </Layout>
+          )}
+        </View>
+      )}
+    </View>
   );
 }
 
@@ -94,20 +100,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1
   },
   navigation: {
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 11,
+    flex: 1,
+    paddingVertical: 11,
     flexDirection: 'row',
-    alignContent: 'space-between',
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 153, 237, 0.8)'
+    backgroundColor: '#0099ED',
+    width: '100%'
   },
   groupInfo: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: 'row'
   },
   groupName: {
+    flex: 2,
+    textAlign: 'right',
     fontFamily: 'scdreamBold',
     fontSize: 22,
     color: '#fff'
@@ -121,30 +126,21 @@ const styles = StyleSheet.create({
   },
   foldButtonArea: {
     flex: 1,
+    marginLeft: 5,
     paddingTop: 5,
     width: 10
-  },
-  scheduleBrief: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  scheduleBriefText: {
-    fontFamily: 'scdream',
-    fontSize: 22,
-    color: '#fff'
   },
   infoContainer: {
     flex: 5,
     flexDirection: 'row',
     paddingLeft: 19,
     paddingRight: 27,
-    paddingVertical: 17,
-    minHeight: 200
+    paddingVertical: 17
   },
   meetingInfoBox: {
     flex: 3,
-    paddingBottom: 10
+    paddingBottom: 10,
+    justifyContent: 'flex-start'
   },
   memberInfoBox: {
     flex: 4
@@ -182,10 +178,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   place: {
-    flex: 1
+    height: 150
   },
   schedule: {
-    flex: 1
+    height: 150
   },
   title: {
     fontFamily: 'scdreamBold',

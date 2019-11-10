@@ -12,14 +12,13 @@ import {
   Clipboard
 } from 'react-native';
 import spacetime from 'spacetime';
+import ActionButton from 'react-native-action-button';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
-import { Layout } from '../layout';
 import DateSelector from './dateSelector';
 import MaxMemberInput from './maxMemberInput';
 import ScrollTimePicker from './ScrollTimePicker';
 import { getTime } from '../time';
-import ActionButton from 'react-native-action-button';
 
 export default function EditGroup(props) {
   const { accessToken } = useContext(GlobalContext);
@@ -29,7 +28,7 @@ export default function EditGroup(props) {
   const [time, setTime] = useState({ hour, min, meridiem });
   const [groupInfo, setGroupInfo] = useState(null);
   const [maxMemberCnt, setMaxMemberCnt] = useState('0');
-  const [place, setPlace] = useState('씨맥스');
+  const [place, setPlace] = useState('');
   const [selectedDay, setSelectedDay] = useState([]);
 
   useEffect(() => {
@@ -61,63 +60,60 @@ export default function EditGroup(props) {
   }
 
   return (
-    <Layout>
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <View style={styles.groupNameContainer}>
-          <Text style={styles.groupName}>포도</Text>
-        </View>
-        <ScrollView style={{ flex: 1 }}>
-          <View style={[styles.memberInfoContainer, styles.underline]}>
-            <Text style={styles.subTitle}>멤버</Text>
-            {groupInfo &&
-              groupInfo.members.map((member, idx) => (
-                <View key={`info_${idx}`} style={styles.person}>
-                  <View style={styles.personArea}>
-                    <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
-                    <Text style={styles.personName}>{member.name}</Text>
-                  </View>
-                  <Switch style={styles.personAdminSwitch} />
+    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+      <ScrollView style={{ flex: 1 }}>
+        <View style={[styles.memberInfoContainer, styles.underline]}>
+          <Text style={styles.subTitle}>멤버</Text>
+          {groupInfo &&
+            groupInfo.members.map((member, idx) => (
+              <View key={`info_${idx}`} style={styles.person}>
+                <View style={styles.personArea}>
+                  <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
+                  <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
+                    {member.name}
+                  </Text>
                 </View>
-              ))}
-            <TouchableOpacity
-              onPress={() => {
-                copyToClipboard();
-              }}
-            >
-              {/* @TODO: 카카오 공유하기 들어가야함 */}
-              <Text style={styles.invitationCode}>+ 초대 코드(AAAAAA)</Text>
-            </TouchableOpacity>
+                <Switch style={styles.personAdminSwitch} />
+              </View>
+            ))}
+          <TouchableOpacity
+            onPress={() => {
+              copyToClipboard();
+            }}
+          >
+            {/* @TODO: 카카오 공유하기 들어가야함 */}
+            <Text style={styles.invitationCode}>+ 초대 코드(AAAAAA)</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.datepickerContainer, styles.underline]}>
+          <Text style={styles.subTitle}>모임 시간</Text>
+          <View style={styles.timePickerContainer}>
+            <ScrollTimePicker time={time} setTime={setTime} />
           </View>
-          <View style={[styles.datepickerContainer, styles.underline]}>
-            <Text style={styles.subTitle}>모임 시간</Text>
-            <View style={styles.timePickerContainer}>
-              <ScrollTimePicker time={time} setTime={setTime} />
-            </View>
-            <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
-          </View>
-          <View style={[styles.placeContainer, styles.underline]}>
-            <Text style={styles.subTitle}>모임 장소</Text>
-            <TextInput
-              style={styles.placeSearchInput}
-              value={place}
-              onChangeText={(text) => {
-                setPlace(text);
-              }}
-            />
-          </View>
-          <View style={styles.maxMemberContainer}>
-            <Text style={styles.subTitle}>최대 멤버수</Text>
-            <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
-          </View>
-        </ScrollView>
-        <ActionButton
-          buttonColor="#0099ED"
-          renderIcon={() => <Text style={styles.finishBtn}>완료</Text>}
-          onPress={this.renderMarkers}
-          size={70}
-        />
-      </KeyboardAvoidingView>
-    </Layout>
+          <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+        </View>
+        <View style={[styles.placeContainer, styles.underline]}>
+          <Text style={styles.subTitle}>모임 장소</Text>
+          <TextInput
+            style={styles.placeSearchInput}
+            value={place}
+            onChangeText={(text) => {
+              setPlace(text);
+            }}
+          />
+        </View>
+        <View style={styles.maxMemberContainer}>
+          <Text style={styles.subTitle}>최대 멤버수</Text>
+          <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
+        </View>
+      </ScrollView>
+      <ActionButton
+        buttonColor="#0099ED"
+        renderIcon={() => <Text style={styles.finishBtn}>완료</Text>}
+        onPress={this.renderMarkers}
+        size={70}
+      />
+    </KeyboardAvoidingView>
   );
 }
 
@@ -146,30 +142,10 @@ const styles = StyleSheet.create({
   },
   memberInfoContainer: {
     flex: 1,
-    paddingHorizontal: 20,
-    marginTop: 95
-  },
-  groupNameContainer: {
-    position: 'absolute',
-    top: 0,
-    width: '100%',
-    paddingTop: 55,
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 11,
-    flexDirection: 'row',
-    alignContent: 'space-between',
-    justifyContent: 'flex-start',
-    backgroundColor: 'rgba(0, 153, 237, 1)',
-    zIndex: 100
+    paddingHorizontal: 20
   },
   timePickerContainer: {
     flex: 1
-  },
-  groupName: {
-    fontFamily: 'scdreamBold',
-    fontSize: 22,
-    color: '#fff'
   },
   placeContainer: {
     flex: 1,
@@ -193,12 +169,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   personName: {
+    flex: 1,
     fontFamily: 'scdream',
     color: '#0099ED',
     fontSize: 17,
-    paddingVertical: 10
+    paddingVertical: 10,
+    width: '75%'
   },
   personArea: {
+    flex: 1,
     flexDirection: 'row'
   },
   personImage: {
@@ -213,7 +192,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8
   },
   personAdminSwitch: {
-    height: 22
+    // flex: 1
   },
   placeSearchInput: { fontSize: 19, fontFamily: 'scdream', borderWidth: 0, height: 40 },
   invitationCode: {

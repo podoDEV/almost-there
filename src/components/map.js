@@ -11,6 +11,7 @@ const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 const DEFAULT_PADDING = { top: 100, right: 100, bottom: 100, left: 100 };
+const UPDATE_INTERVAL = 5000;
 
 export default class Map extends React.Component {
   timerId = null;
@@ -31,14 +32,14 @@ export default class Map extends React.Component {
 
     this.timerId = setInterval(() => {
       this.updateMyLocationAndReRender();
-    }, 10000);
+    }, UPDATE_INTERVAL);
   }
 
   renderMarkers = () => {
     clearInterval(this.timerId);
     this.timerId = setInterval(() => {
       this.updateMyLocationAndReRender();
-    }, 10000);
+    }, UPDATE_INTERVAL);
   };
 
   getGroupInfo = () => {

@@ -2,7 +2,6 @@ import React, { useEffect, useContext } from 'react';
 import { StyleSheet, View, AsyncStorage } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { GlobalContext } from '../context';
-import { Layout } from '../layout';
 import * as url from '../apiUrl';
 
 export default function RegisterName(props) {
@@ -91,20 +90,18 @@ export default function RegisterName(props) {
   }
 
   return (
-    <Layout>
-      <View style={styles.splash}>
-        <LottieView
-          ref={(animation) => {
-            this.animation = animation;
-          }}
-          style={{
-            flex: 1
-          }}
-          source={require('../../assets/lottie/splash.json')}
-          autoPlay
-        />
-      </View>
-    </Layout>
+    <View style={styles.splash}>
+      <LottieView
+        ref={(animation) => {
+          this.animation = animation;
+        }}
+        style={{
+          flex: 1
+        }}
+        source={require('../../assets/lottie/splash.json')}
+        autoPlay
+      />
+    </View>
   );
 }
 
