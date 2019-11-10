@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import ScrollPicker from './scrollPicker';
-import { getTimePickerSet, getTime } from '../time';
+import { getTimePickerSet } from '../time';
 
 export default function ScrollTimePicker(props) {
   const {

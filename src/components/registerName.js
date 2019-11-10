@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Layout } from '../layout';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, TextInput, AsyncStorage } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
@@ -66,21 +65,19 @@ export default function RegisterName(props) {
   }
 
   return (
-    <Layout>
-      <View style={styles.container}>
-        <Text style={styles.title}>그냥 이름만</Text>
-        <View style={styles.inputContainer}>
-          <TextInput style={styles.nameInput} onChangeText={(text) => setName(text)} value={name} />
-          <MaterialCommunityIcons
-            style={styles.icon}
-            name="arrow-right"
-            size={20}
-            color="#fff"
-            onPress={handlePressIcon}
-          />
-        </View>
+    <View style={styles.container}>
+      <Text style={styles.title}>그냥 이름만</Text>
+      <View style={styles.inputContainer}>
+        <TextInput style={styles.nameInput} onChangeText={(text) => setName(text)} value={name} />
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name="arrow-right"
+          size={20}
+          color="#fff"
+          onPress={handlePressIcon}
+        />
       </View>
-    </Layout>
+    </View>
   );
 }
 
