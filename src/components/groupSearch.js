@@ -9,26 +9,31 @@ import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 
 export default function GroupSearch(props) {
   const { navigation } = props;
+  const [inputValue, setInputValue] = useState(null);
+  const [groupCode, setGroupCode] = useState(null);
+  const [groupInfoByGroupCode, setgroupInfoByGroupCode] = useState(null);
   const { accessToken } = useContext(GlobalContext);
 
-  const CreateGroup = () => {
-    const options = {
+  useEffect(() => {
+    const Options = {
       method: 'GET',
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
     };
-    fetch(url.getGroups(), options)
+    fetch(url.getGroup(groupCode), Options)
       .then((res) => {
         if (res.status === 200) {
           return res.json();
         }
       })
       .then((resJson) => {
-        setGroupList(resJson);
+        setgroupInfoByGroupCode(resJson);
       })
       .catch((error) => {
         console.error(error);
       });
-  };
+  }, [groupCode]);
 
   return (
     <Layout>
@@ -45,53 +50,63 @@ export default function GroupSearch(props) {
               autoFocus={true}
               autoCapitalize={'none'}
               allowFontScaling={false}
+              onChangeText={(value) => {
+                setInputValue(value);
+              }}
             />
             <AntDesign
               name={'arrowright'}
               size={15}
               color="#31ACF1"
               style={styles.groupCodeInputIcon}
+              onPress={() => setGroupCode(inputValue)}
             />
           </View>
         </View>
-        <View style={styles.groupInfo}>
-          <View style={styles.groupName}>
-            <Text style={styles.groupNameTile}>포도</Text>
-            <Text style={styles.groupMemberNumber}>6</Text>
-          </View>
-          <View style={styles.groupMember}>
-            <Text style={styles.groupMemberText}>멤버</Text>
-            <View style={styles.groupMemberItem}>
-              <Text style={styles.groupMemberItemName}>김자영</Text>
-              <Text style={styles.groupMemberItemName}>김자영</Text>
-              <Text style={styles.groupMemberItemName}>김자영</Text>
-              <Text style={styles.groupMemberItemName}>김자영</Text>
-              <Text style={styles.groupMemberItemName}>김자영</Text>
-              <Text style={styles.groupMemberItemName}>김자영</Text>
+        {groupInfoByGroupCode && (
+          <View style={styles.groupInfo}>
+            <View style={styles.groupName}>
+              <Text style={styles.groupNameTile}>{groupInfoByGroupCode.name}</Text>
+              <Text style={styles.groupMemberNumber}>{groupInfoByGroupCode.memberCount}</Text>
+            </View>
+            <View style={styles.groupMember}>
+              <Text style={styles.groupMemberText}>멤버</Text>
+              <View style={styles.groupMemberItem}>
+                {groupInfoByGroupCode.members.map((member, index) => {
+                  return (
+                    <Text key={index} style={styles.groupMemberItemName}>
+                      {member.name}
+                    </Text>
+                  );
+                })}
+              </View>
+            </View>
+            <View style={styles.groupDetail}>
+              <View style={styles.groupLocation}>
+                <Text style={styles.groupLocationTitle}>모임장소</Text>
+                <Text style={styles.groupLocationName}>
+                  {groupInfoByGroupCode.destination.name}
+                </Text>
+              </View>
+              <View style={styles.groupTime}>
+                <Text style={styles.groupTimeTtile}>모임시간</Text>
+                <Text style={styles.groupTimeText}>{groupInfoByGroupCode.appointedAt}</Text>
+              </View>
             </View>
           </View>
-          <View style={styles.groupDetail}>
-            <View style={styles.groupLocation}>
-              <Text style={styles.groupLocationTitle}>모임장소</Text>
-              <Text style={styles.groupLocationName}>할리스 강남역점 B1층</Text>
-            </View>
-            <View style={styles.groupTime}>
-              <Text style={styles.groupTimeTtile}>모임시간</Text>
-              <Text style={styles.groupTimeText}>매주 토요일 11:00 오전</Text>
-            </View>
-          </View>
-        </View>
-        <ActionButton
-          buttonColor="#0099ED"
-          buttonText={'참가'}
-          buttonTextStyle={{
-            marginTop: 4,
-            fontSize: 17,
-            fontFamily: 'scdreamBold',
-            textAlign: 'center',
-            verticalAlign: 'center'
-          }}
-        />
+        )}
+        {groupInfoByGroupCode && (
+          <ActionButton
+            buttonColor="#0099ED"
+            buttonText={'참가'}
+            buttonTextStyle={{
+              marginTop: 4,
+              fontSize: 17,
+              fontFamily: 'scdreamBold',
+              textAlign: 'center'
+            }}
+          />
+        )}
       </View>
     </Layout>
   );
