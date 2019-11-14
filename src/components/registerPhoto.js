@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import { Layout } from '../layout';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
@@ -72,35 +71,33 @@ export default function RegisterName(props) {
   }
 
   return (
-    <Layout>
-      <View style={styles.container}>
-        {finish ? (
-          <Text style={styles.title}>환영합니다</Text>
-        ) : (
-          <Text style={styles.title}>앗, 사진도..</Text>
-        )}
-        <View style={styles.photoButtonContainer}>
-          <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
-            {image ? (
-              <Image source={{ uri: image }} style={styles.image} />
+    <View style={styles.container}>
+      {finish ? (
+        <Text style={styles.title}>환영합니다</Text>
+      ) : (
+        <Text style={styles.title}>앗, 사진도..</Text>
+      )}
+      <View style={styles.photoButtonContainer}>
+        <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
+          {image ? (
+            <Image source={{ uri: image }} style={styles.image} />
+          ) : (
+            <Text style={styles.imageUploadButtonText}>고르기</Text>
+          )}
+        </TouchableOpacity>
+        {image && (
+          <TouchableOpacity onPress={finishRegister}>
+            {finish && imageUpload ? (
+              <Text style={styles.finishText}>{userInfo.name}</Text>
+            ) : imageUpload ? (
+              <ActivityIndicator size="small" color="#fff" style={{ marginTop: 10 }} />
             ) : (
-              <Text style={styles.imageUploadButtonText}>고르기</Text>
+              <Text style={styles.finishText}>완료 ></Text>
             )}
           </TouchableOpacity>
-          {image && (
-            <TouchableOpacity onPress={finishRegister}>
-              {finish && imageUpload ? (
-                <Text style={styles.finishText}>{userInfo.name}</Text>
-              ) : imageUpload ? (
-                <ActivityIndicator size="small" color="#fff" style={{ marginTop: 10 }} />
-              ) : (
-                <Text style={styles.finishText}>완료 ></Text>
-              )}
-            </TouchableOpacity>
-          )}
-        </View>
+        )}
       </View>
-    </Layout>
+    </View>
   );
 }
 

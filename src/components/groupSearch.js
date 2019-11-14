@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Text, TextInput, Button, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TextInput } from 'react-native';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
-import Navigation from './navigation';
 import ActionButton from 'react-native-action-button';
 import { Layout } from '../layout';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';

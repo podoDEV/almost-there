@@ -9,7 +9,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import spacetime from 'spacetime';
-import { Layout } from '../layout';
 import MaxMemberInput from './maxMemberInput';
 import DateSelector from './dateSelector';
 import ScrollTimePicker from './ScrollTimePicker';
@@ -17,10 +16,9 @@ import { getTime } from '../time';
 
 export default function RegisterGroup(props) {
   const { meridiem, hour, min } = getTime(spacetime.now());
-
   const [maxMemberCnt, setMaxMemberCnt] = useState('0');
-  const [name, setName] = useState('요가파이어');
-  const [place, setPlace] = useState('씨맥스');
+  const [name, setName] = useState('');
+  const [place, setPlace] = useState('');
   const [selectedDay, setSelectedDay] = useState([]);
   const [time, setTime] = useState({ hour, min, meridiem });
 
@@ -33,56 +31,51 @@ export default function RegisterGroup(props) {
   }
 
   return (
-    <Layout>
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <View style={styles.pageTitle}>
-          <Text style={styles.pageTitleText}>모임만들기</Text>
-        </View>
-        <ScrollView style={{ flex: 1 }}>
-          <View style={[styles.nameContainer, styles.underline]}>
-            <Text style={styles.subTitle}>모임명</Text>
-            <TextInput
-              style={styles.nameInput}
-              value={name}
-              onChangeText={(text) => {
-                setName(text);
-              }}
-            />
-          </View>
-          <View style={[styles.datepickerContainer, styles.underline]}>
-            <Text style={styles.subTitle}>모임 시간</Text>
-            <View style={styles.dateContainer}>
-              <View style={styles.timePickerContainer}>
-                <ScrollTimePicker time={time} setTime={setTime} />
-              </View>
-              <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
-            </View>
-          </View>
-          <View style={[styles.placeContainer, styles.underline]}>
-            <Text style={styles.subTitle}>모임 장소</Text>
-            <TextInput
-              style={styles.placeSearchInput}
-              value={place}
-              onChangeText={(text) => {
-                setPlace(text);
-              }}
-            />
-          </View>
-          <View style={styles.maxMemberContainer}>
-            <Text style={styles.subTitle}>최대 멤버수</Text>
-            <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              clickCreateGroupBtn();
+    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+      <ScrollView style={{ flex: 1 }}>
+        <View style={[styles.nameContainer, styles.underline]}>
+          <Text style={styles.subTitle}>모임명</Text>
+          <TextInput
+            style={styles.nameInput}
+            value={name}
+            onChangeText={(text) => {
+              setName(text);
             }}
-            style={styles.registerGroup}
-          >
-            <Text style={styles.registerGroupText}>모임 생성</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </Layout>
+          />
+        </View>
+        <View style={[styles.datepickerContainer, styles.underline]}>
+          <Text style={styles.subTitle}>모임 시간</Text>
+          <View style={styles.dateContainer}>
+            <View style={styles.timePickerContainer}>
+              <ScrollTimePicker time={time} setTime={setTime} />
+            </View>
+            <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+          </View>
+        </View>
+        <View style={[styles.placeContainer, styles.underline]}>
+          <Text style={styles.subTitle}>모임 장소</Text>
+          <TextInput
+            style={styles.placeSearchInput}
+            value={place}
+            onChangeText={(text) => {
+              setPlace(text);
+            }}
+          />
+        </View>
+        <View style={styles.maxMemberContainer}>
+          <Text style={styles.subTitle}>최대 멤버수</Text>
+          <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            clickCreateGroupBtn();
+          }}
+          style={styles.registerGroup}
+        >
+          <Text style={styles.registerGroupText}>모임 생성</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -113,25 +106,6 @@ const styles = StyleSheet.create({
   datepickerContainer: {
     flex: 5,
     paddingHorizontal: 20
-  },
-  pageTitle: {
-    position: 'absolute',
-    top: 0,
-    width: '100%',
-    paddingTop: 55,
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 11,
-    flexDirection: 'row',
-    alignContent: 'space-between',
-    justifyContent: 'flex-start',
-    backgroundColor: 'rgba(0, 153, 237, 1)',
-    zIndex: 100
-  },
-  pageTitleText: {
-    fontFamily: 'scdreamBold',
-    fontSize: 22,
-    color: '#fff'
   },
   placeContainer: {
     flex: 1,
@@ -181,8 +155,7 @@ const styles = StyleSheet.create({
   nameContainer: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingBottom: 20,
-    marginTop: 95
+    paddingBottom: 20
   },
   nameInput: {
     fontSize: 19,

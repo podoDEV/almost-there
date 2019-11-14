@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
-import { GlobalContext } from '../context';
-import { SimpleLineIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { Layout } from '../layout';
-import * as url from '../apiUrl';
-import Navigation from './navigation';
+import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import { SwipeListView } from 'react-native-swipe-list-view';
+import { GlobalContext } from '../context';
+import { SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
+import * as url from '../apiUrl';
 
 export default function GroupList(props) {
   const { navigation } = props;
@@ -34,36 +33,36 @@ export default function GroupList(props) {
 
   return (
     <Layout>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>나의 리스트</Text>
-          <SimpleLineIcons name={'settings'} size={20} color="#fff" />
+    <View style={styles.container}>
+      <View style={styles.latestMeeting}>
+        <View style={styles.latestMeetingSection}>
+          <Text style={styles.soon}>곧...</Text>
         </View>
-        <View style={styles.latestMeeting}>
-          <View style={styles.latestMeetingSection}>
-            <Text style={styles.soon}>곧...</Text>
+        <View style={styles.latestMeetingSection}>
+          <Text style={styles.meetingName}>포도</Text>
+          <Text style={styles.meetingRestTime}>모임 20분 전</Text>
+        </View>
+        <View style={styles.meetingInfo}>
+          <View style={styles.meetingDetail}>
+            <MaterialIcons name={'timer'} size={25} color="#fff" />
+            <Text style={styles.meetingTime}>11:00 오전 토요일</Text>
           </View>
-          <View style={styles.latestMeetingSection}>
-            <Text style={styles.meetingName}>포도</Text>
-            <Text style={styles.meetingRestTime}>모임 20분 전</Text>
-          </View>
-          <View style={styles.meetingInfo}>
-            <View style={styles.meetingDetail}>
-              <MaterialIcons name={'timer'} size={25} color="#fff" />
-              <Text style={styles.meetingTime}>11:00 오전 토요일</Text>
-            </View>
-            <View style={styles.meetingDetail}>
-              <SimpleLineIcons name={'location-pin'} size={25} color="#fff" />
-              <Text style={styles.meetingLocation}>할리스 강남역점 B1층</Text>
-            </View>
+          <View style={styles.meetingDetail}>
+            <SimpleLineIcons name={'location-pin'} size={25} color="#fff" />
+            <Text style={styles.meetingLocation}>할리스 강남역점 B1층</Text>
           </View>
         </View>
-        <SwipeListView
-          data={groupList}
-          renderItem={(data, rowMap) => {
-            console.log(data);
-            return (
-              <View style={styles.groupList}>
+      </View>
+      <SwipeListView
+        data={groupList}
+        renderItem={(data, rowMap) => {
+          return (
+            <View style={styles.groupList}>
+              <TouchableHighlight
+                onPress={() => {
+                  navigation.navigate('GroupMap');
+                }}
+              >
                 <View style={styles.groupItem} key={data.index}>
                   <View style={styles.groupLeft}>
                     <View style={styles.groupLeftUp}>
@@ -79,32 +78,38 @@ export default function GroupList(props) {
                     <Text style={styles.groupItemTime}>2:00 오후</Text>
                   </View>
                 </View>
-              </View>
-            );
-          }}
-          renderHiddenItem={(data, rowMap) => (
-            <View style={styles.rowBack}>
-              <Text style={styles.rowText}> </Text>
-              <Text style={styles.rowText}>나가기</Text>
+              </TouchableHighlight>
             </View>
-          )}
-          disableRightSwipe={true}
-          rightOpenValue={-80}
-        />
-        <ActionButton buttonColor="#0099ED">
-          <ActionButton.Item buttonColor="#0099ED" onPress={() => {}}>
-            <Text style={styles.actionBtnText}>모임{'\n'}만들기</Text>
-          </ActionButton.Item>
-          <ActionButton.Item
-            buttonColor="#0099ED"
-            onPress={() => {
-              navigation.navigate('GroupSearch');
-            }}
-          >
-            <Text style={styles.actionBtnText}>모임{'\n'}찾기</Text>
-          </ActionButton.Item>
-        </ActionButton>
-      </View>
+          );
+        }}
+        renderHiddenItem={(data, rowMap) => (
+          <View style={styles.rowBack}>
+            <Text style={styles.rowText}> </Text>
+            <Text style={styles.rowText}>나가기</Text>
+          </View>
+        )}
+        disableRightSwipe={true}
+        rightOpenValue={-80}
+      />
+      <ActionButton buttonColor="#0099ED">
+        <ActionButton.Item
+          buttonColor="#0099ED"
+          onPress={() => {
+            navigation.navigate('RegisterGroup');
+          }}
+        >
+          <Text style={styles.actionBtnText}>모임{'\n'}만들기</Text>
+        </ActionButton.Item>
+        <ActionButton.Item
+          buttonColor="#0099ED"
+          onPress={() => {
+            navigation.navigate('GroupSearch');
+          }}
+        >
+          <Text style={styles.actionBtnText}>모임{'\n'}찾기</Text>
+        </ActionButton.Item>
+      </ActionButton>
+    </View>
     </Layout>
   );
 }
@@ -131,7 +136,7 @@ const styles = StyleSheet.create({
   },
   latestMeeting: {
     height: 230,
-    backgroundColor: '#31ACF1',
+    backgroundColor: '#0099ED',
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 25,
