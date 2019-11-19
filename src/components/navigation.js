@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { Image } from 'react-native-expo-image-cache';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import spacetime from 'spacetime';
 import { SimpleLineIcons, MaterialIcons, EvilIcons } from '@expo/vector-icons';
+import { preview } from '../common';
 
 export default function Navigation(props) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -54,7 +56,13 @@ export default function Navigation(props) {
                   <Text style={styles.title}>멤버</Text>
                   {groupInfo.members.map((member, idx) => (
                     <View key={`info_${idx}`} style={styles.person}>
-                      <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
+                      <Image
+                        style={styles.personImage}
+                        uri={member.profileImageUrl}
+                        preview={preview}
+                        tint="light"
+                        transitionDuration={200}
+                      />
                       <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
                         {member.name}
                       </Text>
