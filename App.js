@@ -7,7 +7,8 @@ import GroupList from './src/components/groupList';
 import GroupMap from './src/components/groupMap';
 import EditGroup from './src/components/editGroup';
 import RegisterGroup from './src/components/registerGroup';
-import Settings from './src/components/settings.js';
+import Settings from './src/components/settings';
+import Policy from './src/components/policy';
 import { Layout } from './src/layout';
 import { myListHeader, groupMapHeader } from './src/components/navigationHeader';
 
@@ -105,7 +106,17 @@ const GroupStack = createStackNavigator(
       navigationOptions: {
         title: '설정',
         headerStyle,
-        headerTintColor: '#FFFF',
+        headerTintColor: '#FFF',
+        headerTitleStyle,
+        headerBackTitleStyle
+      }
+    },
+    Policy: {
+      screen: Policy,
+      navigationOptions: {
+        title: '위치기반서비스 이용약관',
+        headerStyle,
+        headerTintColor: '#FFF',
         headerTitleStyle,
         headerBackTitleStyle
       }

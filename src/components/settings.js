@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity } from '
 import { MaterialIcons } from '@expo/vector-icons';
 
 export default function Setting(props) {
+  const { navigation } = props;
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.itemContainer}>
@@ -35,24 +37,22 @@ export default function Setting(props) {
       </View>
       <View style={styles.underline}></View>
       <View style={styles.itemContainer}>
-        <TouchableOpacity style={styles.itemInnerContainer}>
-          <Text style={styles.itemTitle}>이용약관 및 서비스 해지</Text>
-          <View style={styles.itemUserInfoContainer}>
-            <MaterialIcons name="keyboard-arrow-right" size={30} color="rgb(155,155,155)" />
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.itemContainer}>
-        <TouchableOpacity style={styles.itemInnerContainer}>
-          <Text style={styles.itemTitle}>개인 정보 처리 방침</Text>
-          <View style={styles.itemUserInfoContainer}>
-            <MaterialIcons name="keyboard-arrow-right" size={30} color="rgb(155,155,155)" />
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.itemContainer}>
-        <TouchableOpacity style={styles.itemInnerContainer}>
+        <TouchableOpacity
+          style={styles.itemInnerContainer}
+          onPress={() => navigation.navigate('Policy', {type: 'location'})}
+        >
           <Text style={styles.itemTitle}>위치 기반 서비스 이용약관</Text>
+          <View style={styles.itemUserInfoContainer}>
+            <MaterialIcons name="keyboard-arrow-right" size={30} color="rgb(155,155,155)" />
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.itemContainer}>
+        <TouchableOpacity 
+          style={styles.itemInnerContainer}
+          onPress={() => navigation.navigate('Policy', {type: 'privacy'})}
+        >
+          <Text style={styles.itemTitle}>개인 정보 처리 방침</Text>
           <View style={styles.itemUserInfoContainer}>
             <MaterialIcons name="keyboard-arrow-right" size={30} color="rgb(155,155,155)" />
           </View>
