@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Layout } from '../layout';
 import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -32,7 +31,6 @@ export default function GroupList(props) {
   }, []);
 
   return (
-    <Layout>
     <View style={styles.container}>
       <View style={styles.latestMeeting}>
         <View style={styles.latestMeetingSection}>
@@ -110,7 +108,6 @@ export default function GroupList(props) {
         </ActionButton.Item>
       </ActionButton>
     </View>
-    </Layout>
   );
 }
 

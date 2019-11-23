@@ -36,15 +36,15 @@ export default function GroupSearch(props) {
 
   return (
     <Layout>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>모임 찾기</Text>
+      <View style={groupListStyle.container}>
+        <View style={groupListStyle.header}>
+          <Text style={groupListStyle.headerText}>모임 찾기</Text>
         </View>
-        <View style={styles.groupCode}>
-          <Text style={styles.groupCodeTitle}>모임 코드 입력</Text>
-          <View style={styles.groupCodeInputContainer}>
+        <View style={groupListStyle.groupCode}>
+          <Text style={groupListStyle.groupCodeTitle}>모임 코드 입력</Text>
+          <View style={groupListStyle.groupCodeInputContainer}>
             <TextInput
-              style={styles.groupCodeInput}
+              style={groupListStyle.groupCodeInput}
               editable
               autoFocus={true}
               autoCapitalize={'none'}
@@ -57,39 +57,39 @@ export default function GroupSearch(props) {
               name={'arrowright'}
               size={15}
               color="#31ACF1"
-              style={styles.groupCodeInputIcon}
+              style={groupListStyle.groupCodeInputIcon}
               onPress={() => setGroupCode(inputValue)}
             />
           </View>
         </View>
         {groupInfoByGroupCode && (
-          <View style={styles.groupInfo}>
-            <View style={styles.groupName}>
-              <Text style={styles.groupNameTile}>{groupInfoByGroupCode.name}</Text>
-              <Text style={styles.groupMemberNumber}>{groupInfoByGroupCode.memberCount}</Text>
+          <View style={groupListStyle.groupInfo}>
+            <View style={groupListStyle.groupName}>
+              <Text style={groupListStyle.groupNameTile}>{groupInfoByGroupCode.name}</Text>
+              <Text style={groupListStyle.groupMemberNumber}>{groupInfoByGroupCode.memberCount}</Text>
             </View>
-            <View style={styles.groupMember}>
-              <Text style={styles.groupMemberText}>멤버</Text>
-              <View style={styles.groupMemberItem}>
+            <View style={groupListStyle.groupMember}>
+              <Text style={groupListStyle.groupMemberText}>멤버</Text>
+              <View style={groupListStyle.groupMemberItem}>
                 {groupInfoByGroupCode.members.map((member, index) => {
                   return (
-                    <Text key={index} style={styles.groupMemberItemName}>
+                    <Text key={index} style={groupListStyle.groupMemberItemName}>
                       {member.name}
                     </Text>
                   );
                 })}
               </View>
             </View>
-            <View style={styles.groupDetail}>
-              <View style={styles.groupLocation}>
-                <Text style={styles.groupLocationTitle}>모임장소</Text>
-                <Text style={styles.groupLocationName}>
+            <View style={groupListStyle.groupDetail}>
+              <View style={groupListStyle.groupLocation}>
+                <Text style={groupListStyle.groupLocationTitle}>모임장소</Text>
+                <Text style={groupListStyle.groupLocationName}>
                   {groupInfoByGroupCode.destination.name}
                 </Text>
               </View>
-              <View style={styles.groupTime}>
-                <Text style={styles.groupTimeTtile}>모임시간</Text>
-                <Text style={styles.groupTimeText}>{groupInfoByGroupCode.appointedAt}</Text>
+              <View style={groupListStyle.groupTime}>
+                <Text style={groupListStyle.groupTimeTtile}>모임시간</Text>
+                <Text style={groupListStyle.groupTimeText}>{groupInfoByGroupCode.appointedAt}</Text>
               </View>
             </View>
           </View>
@@ -111,7 +111,7 @@ export default function GroupSearch(props) {
   );
 }
 
-const styles = StyleSheet.create({
+const groupListStyle = StyleSheet.create({
   container: {
     flex: 1
   },
