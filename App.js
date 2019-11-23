@@ -1,4 +1,6 @@
 import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { SimpleLineIcons, Ionicons, EvilIcons } from '@expo/vector-icons';
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import RegisterName from './src/components/registerName';
 import RegisterPhoto from './src/components/registerPhoto';
@@ -11,8 +13,24 @@ import Settings from './src/components/settings';
 import Policy from './src/components/policy';
 import { Layout } from './src/layout';
 import { myListHeader, groupMapHeader } from './src/components/navigationHeader';
-
 import GroupSearch from './src/components/groupSearch';
+
+const styles = StyleSheet.create({
+  groupListBtn: {
+    color: '#fff',
+    paddingLeft: 15,
+    paddingBottom: 15,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  groupListBtnText: {
+    flex: 1,
+    paddingLeft: 4,
+    color: '#fff',
+    alignItems: 'center'
+  }
+});
 
 // @TODO: module화 시키자
 const headerStyle = {
@@ -74,7 +92,8 @@ const GroupStack = createStackNavigator(
       screen: GroupSearch,
       navigationOptions: {
         headerStyle: {
-          height: 20
+          height: 20,
+          backgroundColor: '#31ACF1'
         },
         headerTintColor: '#FFF',
         headerTitleStyle,
