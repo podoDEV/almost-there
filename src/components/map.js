@@ -29,8 +29,10 @@ export default class Map extends React.Component {
 
   componentDidMount() {
     this.updateMyLocationAndReRender();
+    alert('ho!');
 
     this.timerId = setInterval(() => {
+      // alert('ho!2?');
       this.updateMyLocationAndReRender();
     }, UPDATE_INTERVAL);
   }

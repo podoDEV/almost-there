@@ -40,6 +40,7 @@ export default function RegisterName(props) {
 
   async function getUserSession() {
     const accessToken = await AsyncStorage.getItem('ACCESS_TOKEN');
+
     if (accessToken) {
       fetch(url.membersMe(), {
         method: 'GET',
