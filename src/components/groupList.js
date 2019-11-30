@@ -10,6 +10,7 @@ import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 export default function GroupList(props) {
   const { navigate } = useNavigation();
   const [groupList, setGroupList] = useState(null);
+  const [isGroupEmpty, setIsGroupEmpty] = useState(true);
   const { accessToken } = useContext(GlobalContext);
   
   useFocusEffect(
@@ -23,6 +24,7 @@ export default function GroupList(props) {
           if (res.status === 200) {
             return res.json();
           }
+<<<<<<< HEAD
         })
         .then((resJson) => {
           setGroupList(resJson.sort((a, b) => {
@@ -30,92 +32,131 @@ export default function GroupList(props) {
               return -1
             }
           }));
+          setIsGroupEmpty(!isGroupEmpty);
         })
         .catch((error) => {
           console.error(error);
         });
     }, [])
   );
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.latestMeeting}>
-        <View style={styles.latestMeetingSection}>
-          <Text style={styles.soon}>곧...</Text>
-        </View>
-        <View style={styles.latestMeetingSection}>
-          <Text style={styles.meetingName}>포도</Text>
-          <Text style={styles.meetingRestTime}>모임 20분 전</Text>
-        </View>
-        <View style={styles.meetingInfo}>
-          <View style={styles.meetingDetail}>
-            <MaterialIcons name={'timer'} size={25} color="#fff" />
-            <Text style={styles.meetingTime}>11:00 오전 토요일</Text>
-          </View>
-          <View style={styles.meetingDetail}>
-            <SimpleLineIcons name={'location-pin'} size={25} color="#fff" />
-            <Text style={styles.meetingLocation}>할리스 강남역점 B1층</Text>
-          </View>
-        </View>
-      </View>
-      <SwipeListView
-        data={groupList}
-        renderItem={(data, rowMap) => {
-          return (
-            <View style={styles.groupList}>
-              <TouchableHighlight
-                onPress={() => {
-                  navigate('GroupMap');
-                }}
-              >
-                <View style={styles.groupItem} key={data.index}>
-                  <View style={styles.groupLeft}>
-                    <View style={styles.groupLeftUp}>
-                      <Text style={styles.groupItemName}>{data.item.name}</Text>
-                      <Text style={styles.groupItemNumbers}>3</Text>
-                    </View>
-                    <View style={styles.groupLeftDown}>
-                      <Text style={styles.groupItemLocation}>{data.item.destination.name}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.groupRight}>
-                    <Text style={styles.groupItemDay}>격주 토요일</Text>
-                    <Text style={styles.groupItemTime}>2:00 오후</Text>
-                  </View>
-                </View>
-              </TouchableHighlight>
+  
+  if (isGroupEmpty) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.welcomeSection}>
+          <View style={styles.welcomeMessageSection}>
+            <View style={styles.welcomeMessageContainer}>
+              <Text style={styles.welcomeMessage}>반가워요!</Text>
             </View>
-          );
-        }}
-        renderHiddenItem={(data, rowMap) => (
-          <View style={styles.rowBack}>
-            <Text style={styles.rowText}> </Text>
-            <Text style={styles.rowText}>나가기</Text>
+            <View style={styles.welcomeMessageContainer}>
+              <Text style={styles.welcomeMessage}>아래 +버튼을 눌러</Text>
+            </View>
+            <View>
+              <Text style={styles.welcomeMessageBold}>모임을 추가해 보세요!</Text>
+            </View>
           </View>
-        )}
-        disableRightSwipe={true}
-        rightOpenValue={-80}
-      />
-      <ActionButton buttonColor="#0099ED">
-        <ActionButton.Item
-          buttonColor="#0099ED"
-          onPress={() => {
-            navigate('RegisterGroup');
+        </View>
+        <ActionButton buttonColor="#0099ED">
+          <ActionButton.Item
+            buttonColor="#0099ED"
+            onPress={() => {
+              navigation.navigate('RegisterGroup');
+            }}
+          >
+            <Text style={styles.actionBtnText}>모임{'\n'}만들기</Text>
+          </ActionButton.Item>
+          <ActionButton.Item
+            buttonColor="#0099ED"
+            onPress={() => {
+              navigation.navigate('GroupSearch');
+            }}
+          >
+            <Text style={styles.actionBtnText}>모임{'\n'}찾기</Text>
+          </ActionButton.Item>
+        </ActionButton>
+      </View>
+    )
+  } else {
+    return (
+      <View style={styles.container}>
+        <View style={styles.latestMeeting}>
+          <View style={styles.latestMeetingSection}>
+            <Text style={styles.soon}>곧...</Text>
+          </View>
+          <View style={styles.latestMeetingSection}>
+            <Text style={styles.meetingName}>{groupList[0].name}</Text>
+            <Text style={styles.meetingRestTime}>모임 20분 전</Text>
+          </View>
+          <View style={styles.meetingInfo}>
+            <View style={styles.meetingDetail}>
+              <MaterialIcons name={'timer'} size={25} color="#fff"/>
+              <Text style={styles.meetingTime}>{groupList[0].appointedAt}</Text>
+            </View>
+            <View style={styles.meetingDetail}>
+              <SimpleLineIcons name={'location-pin'} size={25} color="#fff"/>
+              <Text style={styles.meetingLocation}>{groupList[0].destination.name}</Text>
+            </View>
+          </View>
+        </View>
+        <SwipeListView
+          data={groupList}
+          renderItem={(data, rowMap) => {
+            return (
+              <View style={styles.groupList}>
+                <TouchableHighlight
+                  onPress={() => {
+                    navigate('GroupMap');
+                  }}
+                >
+                  <View style={styles.groupItem} key={data.index}>
+                    <View style={styles.groupLeft}>
+                      <View style={styles.groupLeftUp}>
+                        <Text style={styles.groupItemName}>{data.item.name}</Text>
+                        <Text style={styles.groupItemNumbers}>3</Text>
+                      </View>
+                      <View style={styles.groupLeftDown}>
+                        <Text style={styles.groupItemLocation}>{data.item.destination.name}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.groupRight}>
+                      <Text style={styles.groupItemDay}>격주 토요일</Text>
+                      <Text style={styles.groupItemTime}>2:00 오후</Text>
+                    </View>
+                  </View>
+                </TouchableHighlight>
+              </View>
+            );
           }}
-        >
-          <Text style={styles.actionBtnText}>모임{'\n'}만들기</Text>
-        </ActionButton.Item>
-        <ActionButton.Item
-          buttonColor="#0099ED"
-          onPress={() => {
-            navigate('GroupSearch');
-          }}
-        >
-          <Text style={styles.actionBtnText}>모임{'\n'}찾기</Text>
-        </ActionButton.Item>
-      </ActionButton>
-    </View>
-  );
+          renderHiddenItem={(data, rowMap) => (
+            <View style={styles.rowBack}>
+              <Text style={styles.rowText}> </Text>
+              <Text style={styles.rowText}>나가기</Text>
+            </View>
+          )}
+          disableRightSwipe={true}
+          rightOpenValue={-80}
+        />
+        <ActionButton buttonColor="#0099ED">
+          <ActionButton.Item
+            buttonColor="#0099ED"
+            onPress={() => {
+              navigate('RegisterGroup');
+            }}
+          >
+            <Text style={styles.actionBtnText}>모임{'\n'}만들기</Text>
+          </ActionButton.Item>
+          <ActionButton.Item
+            buttonColor="#0099ED"
+            onPress={() => {
+              navigate('GroupSearch');
+            }}
+          >
+            <Text style={styles.actionBtnText}>모임{'\n'}찾기</Text>
+          </ActionButton.Item>
+        </ActionButton>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -270,6 +311,34 @@ const styles = StyleSheet.create({
     paddingRight: 18
   },
   rowText: {
+    color: '#FFFFFF',
+    fontFamily: 'scdreamBold'
+  },
+  welcomeSection: {
+    height: 230,
+    backgroundColor: '#0099ED',
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 25,
+    paddingBottom: 41,
+  },
+  welcomeMessageSection: {
+    flex: 1,
+    width: 312,
+    height: 109,
+    justifyContent: 'flex-end'
+  },
+  welcomeMessageContainer: {
+    marginBottom: 10,
+  },
+  welcomeMessage: {
+    color: '#FFFFFF',
+    fontFamily: 'scdream',
+    fontSize: 23
+  },
+  welcomeMessageBold: {
+    fontSize: 32,
+    letterSpacing: 0.51,
     color: '#FFFFFF',
     fontFamily: 'scdreamBold'
   }
