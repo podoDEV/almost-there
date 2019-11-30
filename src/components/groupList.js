@@ -11,7 +11,7 @@ export default function GroupList(props) {
   const { navigate } = useNavigation();
   const [groupList, setGroupList] = useState(null);
   const { accessToken } = useContext(GlobalContext);
-
+  
   useFocusEffect(
     useCallback(() => {
       const options = {
@@ -25,7 +25,11 @@ export default function GroupList(props) {
           }
         })
         .then((resJson) => {
-          setGroupList(resJson);
+          setGroupList(resJson.sort((a, b) => {
+            if (a.appointedAt < b.appointedAt) {
+              return -1
+            }
+          }));
         })
         .catch((error) => {
           console.error(error);
