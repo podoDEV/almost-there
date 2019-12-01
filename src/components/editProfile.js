@@ -7,7 +7,6 @@ import * as Permissions from 'expo-permissions';
 
 export default function editProfile(props) {
   const { userInfo } = props.navigation.state.params;
-  console.log(userInfo.profileImageUrl);
   const [name, setName] = useState(userInfo.name);
   const [profileImageUrl, setProfileImageUrl] = useState(userInfo.profileImageUrl);
 

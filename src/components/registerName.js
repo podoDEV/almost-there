@@ -10,7 +10,6 @@ export default function RegisterName(props) {
   const userInfo = useContext(GlobalContext);
 
   async function handlePressIcon() {
-    console.log('click!');
     try {
       const options = {
         method: 'POST',
