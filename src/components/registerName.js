@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     marginRight: 23
   },
   nameInput: {
+    fontFamily: 'scdream',
     flex: 9,
     color: '#fff',
     fontSize: 25,

@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { SimpleLineIcons, Ionicons, EvilIcons } from '@expo/vector-icons';
+import { StyleSheet, StatusBar } from 'react-native';
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import RegisterName from './src/components/registerName';
 import RegisterPhoto from './src/components/registerPhoto';
@@ -11,8 +10,9 @@ import EditGroup from './src/components/editGroup';
 import RegisterGroup from './src/components/registerGroup';
 import Settings from './src/components/settings';
 import Policy from './src/components/policy';
+import EditProfile from './src/components/editProfile';
 import { Layout } from './src/layout';
-import { myListHeader, groupMapHeader } from './src/components/navigationHeader';
+import { myListHeader } from './src/components/navigationHeader';
 import GroupSearch from './src/components/groupSearch';
 
 const styles = StyleSheet.create({
@@ -130,14 +130,28 @@ const GroupStack = createStackNavigator(
         headerBackTitleStyle
       }
     },
-    Policy: {
-      screen: Policy,
+    EditProfile: {
+      screen: EditProfile,
       navigationOptions: {
-        title: '위치기반서비스 이용약관',
+        title: '프로필 수정',
         headerStyle,
         headerTintColor: '#FFF',
         headerTitleStyle,
         headerBackTitleStyle
+      }
+    },
+    Policy: {
+      screen: Policy,
+      navigationOptions: ({ navigation }) => {
+        const { type } = navigation.state.params;
+
+        return {
+          title: type === 'location' ? '위치 기반 서비스 이용약관' : '개인정보 처리 방침',
+          headerStyle,
+          headerTintColor: '#FFF',
+          headerTitleStyle,
+          headerBackTitleStyle
+        };
       }
     }
   },
@@ -160,6 +174,7 @@ const AppContainer = createAppContainer(AppContent);
 
 const App = () => (
   <Layout>
+    <StatusBar barStyle="light-content" />
     <AppContainer />
   </Layout>
 );

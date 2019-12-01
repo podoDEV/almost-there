@@ -1,17 +1,20 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions, Platform } from 'react-native';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 import MapView from 'react-native-maps';
+import * as Location from 'expo-location';
+import { MaterialIcons } from '@expo/vector-icons';
+import ActionButton from 'react-native-action-button';
 import MemberMarker from './memberMarker';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
-import { MaterialIcons } from '@expo/vector-icons';
-import ActionButton from 'react-native-action-button';
 
 const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 const DEFAULT_PADDING = { top: 100, right: 100, bottom: 100, left: 100 };
-const UPDATE_INTERVAL = 5000;
+const UPDATE_INTERVAL = 2000;
 
 export default class Map extends React.Component {
   timerId = null;
@@ -27,12 +30,15 @@ export default class Map extends React.Component {
     clearInterval(this.timerId);
   }
 
-  componentDidMount() {
-    this.updateMyLocationAndReRender();
-
-    this.timerId = setInterval(() => {
-      this.updateMyLocationAndReRender();
-    }, UPDATE_INTERVAL);
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      alert('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
+    } else {
+      this.getGroupInfo();
+      this.timerId = setInterval(() => {
+        this.updateMyLocationAndReRender();
+      }, UPDATE_INTERVAL);
+    }
   }
 
   renderMarkers = () => {
@@ -84,39 +90,31 @@ export default class Map extends React.Component {
     return memberInfoList;
   };
 
-  updateMyLocationAndReRender = () => {
-    //TODO 약속장소 위치 받아와서 10m?안에 있는지 거리 계산하기
+  updateMyLocationAndReRender = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      alert('Permission to access location was denied');
+    }
     const options = {
-      enableHighAccuracy: true,
-      timeout: 20000,
+      accuracy: Location.Accuracy.Highest,
       maximumAge: 1000
     };
 
-    // @TODO: 이부분이 초기 렌더링 때 안불러짐
-    const getPositions = new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, options);
-    });
-
-    getPositions
-      .then((position) => {
-        const { longitude, latitude } = position.coords;
-        this.setState(
-          {
-            region: {
-              longitude,
-              latitude,
-              latitudeDelta: LATITUDE_DELTA,
-              longitudeDelta: LONGITUDE_DELTA
-            }
-          },
-          () => {
-            this.updateMyLocation();
-          }
-        );
-      })
-      .catch((err) => {
-        console.error(err.message);
-      });
+    const location = await Location.getCurrentPositionAsync(options);
+    const { longitude, latitude } = location.coords;
+    this.setState(
+      {
+        region: {
+          longitude,
+          latitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA
+        }
+      },
+      () => {
+        this.updateMyLocation();
+      }
+    );
   };
 
   updateMyLocation = () => {
@@ -153,48 +151,50 @@ export default class Map extends React.Component {
 
     markerLocations.push(this.state.destination);
 
-    // this.mapRef.current.fitToCoordinates(markerLocations, {
-    //   edgePadding: DEFAULT_PADDING,
-    //   animated: true
-    // });
+    this.mapRef.current.fitToCoordinates(markerLocations, {
+      edgePadding: DEFAULT_PADDING,
+      animated: true
+    });
 
     this.state.markerLoaded = true;
   }
 
   render() {
+    const { members, destination } = this.state;
+
     return (
       <View style={styles.container}>
         <MapView
           style={styles.map}
           ref={this.mapRef}
           initialRegion={{
-            latitude: 37.362674,
-            longitude: 126.921061,
+            latitude: 37.4983638,
+            longitude: 127.0281122,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA
           }}
           followUserLocation={true}
         >
-          {this.state.members &&
-            this.state.members.map((members, idx) => {
+          {members &&
+            members.map((member, idx) => {
               return (
                 <MemberMarker
                   key={`marker_${idx}`}
-                  region={members.region}
-                  name={members.name}
-                  profileImageUrl={members.profileImageUrl}
+                  region={member.region}
+                  name={member.name}
+                  profileImageUrl={member.profileImageUrl}
                 />
               );
             })}
-          {this.state.destination && (
+          {destination && (
             <MemberMarker
-              key={this.state.destination.id}
+              key={destination.id}
               region={{
-                latitude: this.state.destination.latitude,
-                longitude: this.state.destination.longitude
+                latitude: destination.latitude,
+                longitude: destination.longitude
               }}
-              name={this.state.destination.name}
-              markerState={this.state.destination.isDestination}
+              name={destination.name}
+              markerState={destination.isDestination}
             />
           )}
         </MapView>

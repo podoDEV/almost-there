@@ -4,6 +4,8 @@ export const getMembers = (uuid) => `${SERVER_DOMAIN}/members?uuid=${uuid}`;
 
 export const login = () => `${SERVER_DOMAIN}/login`;
 
+export const getMember = (id) => `${SERVER_DOMAIN}/members/${id}`;
+
 export const membersMe = () => `${SERVER_DOMAIN}/members/me`;
 
 export const postMembers = () => `${SERVER_DOMAIN}/members`;

@@ -1,17 +1,35 @@
-import React from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { GlobalContext } from '../context';
+import * as url from '../apiUrl';
 
 export default function Setting(props) {
   const { navigation } = props;
+  const [userInfo, setUserInfo] = useState({ name: '', profileImageUrl: '' });
+  const { id, accessToken } = useContext(GlobalContext);
+
+  useEffect(() => {
+    fetch(url.membersMe(), {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${accessToken}` }
+    })
+      .then((res) => res.json())
+      .then(({ name, profileImageUrl }) => {
+        setUserInfo({ name, profileImageUrl });
+      });
+  }, []);
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.itemContainer}>
-        <TouchableOpacity style={styles.itemInnerContainer}>
+        <TouchableOpacity
+          style={styles.itemInnerContainer}
+          onPress={() => navigation.navigate('EditProfile', { userInfo })}
+        >
           <Text style={styles.itemTitle}>내 계정</Text>
           <View style={styles.itemUserInfoContainer}>
-            <Text style={styles.itemUserInfoText}>김자영</Text>
+            <Text style={styles.itemUserInfoText}>{userInfo.name}</Text>
             <MaterialIcons name="keyboard-arrow-right" size={30} color="rgb(155,155,155)" />
           </View>
         </TouchableOpacity>
@@ -39,7 +57,7 @@ export default function Setting(props) {
       <View style={styles.itemContainer}>
         <TouchableOpacity
           style={styles.itemInnerContainer}
-          onPress={() => navigation.navigate('Policy', {type: 'location'})}
+          onPress={() => navigation.navigate('Policy', { type: 'location' })}
         >
           <Text style={styles.itemTitle}>위치 기반 서비스 이용약관</Text>
           <View style={styles.itemUserInfoContainer}>
@@ -48,9 +66,9 @@ export default function Setting(props) {
         </TouchableOpacity>
       </View>
       <View style={styles.itemContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.itemInnerContainer}
-          onPress={() => navigation.navigate('Policy', {type: 'privacy'})}
+          onPress={() => navigation.navigate('Policy', { type: 'privacy' })}
         >
           <Text style={styles.itemTitle}>개인 정보 처리 방침</Text>
           <View style={styles.itemUserInfoContainer}>
