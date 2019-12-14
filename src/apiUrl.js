@@ -21,3 +21,6 @@ export const updateLocation = (memberId) => `${SERVER_DOMAIN}/members/${memberId
 export const joinGroup = (memberId) => `${SERVER_DOMAIN}/members/${memberId}/groups/join`;
 
 export const uploadImage = () => `${SERVER_DOMAIN}/members/me/profile-images`;
+
+export const getPlaceLocations = (key, placeName, options) =>
+  `https://maps.googleapis.com/maps/api/place/textsearch/json?key=${key}&query=${placeName}&${options}`;

@@ -11,6 +11,7 @@ import RegisterGroup from './src/components/registerGroup';
 import Settings from './src/components/settings';
 import Policy from './src/components/policy';
 import EditProfile from './src/components/editProfile';
+import SearchPlace from './src/components/searchPlace';
 import { Layout } from './src/layout';
 import { myListHeader } from './src/components/navigationHeader';
 import GroupSearch from './src/components/groupSearch';
@@ -152,6 +153,16 @@ const GroupStack = createStackNavigator(
           headerTitleStyle,
           headerBackTitleStyle
         };
+      }
+    },
+    SearchPlace: {
+      screen: SearchPlace,
+      navigationOptions: {
+        title: '장소 검색',
+        headerStyle,
+        headerTintColor: '#FFF',
+        headerTitleStyle,
+        headerBackTitleStyle
       }
     }
   },

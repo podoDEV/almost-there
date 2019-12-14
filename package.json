@@ -17,17 +17,18 @@
     "expo-permissions": "^6.0.0",
     "lottie-react-native": "^2.6.1",
     "react": "16.8.3",
-    "react-dom": "^16.10.2",
+    "react-dom": "^16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
     "react-native-action-button": "^2.8.5",
+    "react-native-elements": "^1.2.7",
     "react-native-expo-image-cache": "^4.0.8",
-    "react-native-gesture-handler": "^1.3.0",
-    "react-native-maps": "~0.24.0",
+    "react-native-gesture-handler": "^1.5.0",
+    "react-native-maps": "~0.25.0",
     "react-native-swipe-list-view": "^2.0.3",
     "react-native-web": "^0.11.7",
     "react-navigation": "^3.13.0",
     "react-navigation-hooks": "^1.1.0",
-    "spacetime": "^6.0.1"
+    "spacetime": "^6.2.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^6.0.0",

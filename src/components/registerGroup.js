@@ -6,7 +6,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Button
 } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
@@ -27,7 +28,9 @@ export default function RegisterGroup(props) {
   const [time, setTime] = useState({ hour, min, meridiem });
   const { accessToken } = useContext(GlobalContext);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log(props.navigation.state.params, 'name, coor');
+  }, [props.navigation.state.params]);
 
   function clickCreateGroupBtn() {
     console.log(time.meridiem, accessToken);
@@ -96,6 +99,13 @@ export default function RegisterGroup(props) {
             onChangeText={(text) => {
               setPlace(text);
             }}
+          />
+          <Button
+            title="+"
+            onPress={() => {
+              navigate('SearchPlace');
+            }}
+            // getPlace={this.getPlace}
           />
         </View>
         <View style={styles.maxMemberContainer}>
