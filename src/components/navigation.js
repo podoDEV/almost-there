@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Image } from 'react-native-expo-image-cache';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
 import { SimpleLineIcons, MaterialIcons, EvilIcons } from '@expo/vector-icons';
 import { preview } from '../common';
 
 export default function Navigation(props) {
+  const { navigate, goBack } = useNavigation();
   const [isLoaded, setIsLoaded] = useState(false);
-  const { groupInfo, navigation } = props;
+  const { groupInfo } = props;
   const [fold, toggleFold] = useState(true);
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function Navigation(props) {
                 flexDirection: 'row',
                 alignItems: 'center'
               }}
-              onPress={() => navigation.goBack()}
+              onPress={() => goBack()}
             >
               <MaterialIcons name="keyboard-arrow-left" color="#FFF" size={25} />
               <Text style={{ fontFamily: 'scdream', fontSize: 14, color: '#fff' }}>
@@ -86,7 +88,7 @@ export default function Navigation(props) {
                     name="gear"
                     color="#0099ED"
                     size={25}
-                    onPress={() => props.navigation.navigate('EditGroup')}
+                    onPress={() => navigate('EditGroup')}
                   />
                 </View>
               </View>

@@ -65,17 +65,17 @@ const GroupStack = createStackNavigator(
   {
     GroupList: {
       screen: GroupList,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         title: '나의 리스트',
         headerStyle,
         headerTintColor: '#FFF',
         headerTitleStyle,
-        headerTitle: () => myListHeader(navigation)
+        headerTitle: () => myListHeader()
       })
     },
     GroupMap: {
       screen: GroupMap,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         headerStyle: {
           ...headerStyle,
           height: 10

@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { useNavigationParam } from 'react-navigation-hooks';
 
-export default function policy(props) {
-  const { type } = props.navigation.state.params;
+export default function policy() {
+  const type = useNavigationParam('type');
 
   return (
     <ScrollView style={styles.container}>

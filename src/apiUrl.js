@@ -12,6 +12,8 @@ export const postMembers = () => `${SERVER_DOMAIN}/members`;
 
 export const getGroups = () => `${SERVER_DOMAIN}/groups`;
 
+export const postGroups = () => `${SERVER_DOMAIN}/groups`;
+
 export const getGroup = (groupIdOrCode) => `${SERVER_DOMAIN}/groups/${groupIdOrCode}`;
 
 export const updateLocation = (memberId) => `${SERVER_DOMAIN}/members/${memberId}/location`;

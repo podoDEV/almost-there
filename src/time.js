@@ -1,8 +1,7 @@
 import spacetime from 'spacetime';
 
 export function getTimePickerSet() {
-  const MERIDIEM = ['오전', '오후'];
-  const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
+  const MERIDIEM = ['AM', 'PM'];
   const HOUR = Array.from(Array(13).keys());
   HOUR.shift();
   const MIN_NUM = Array.from(Array(60).keys());
@@ -12,7 +11,6 @@ export function getTimePickerSet() {
 
   return {
     MERIDIEM,
-    DAYS,
     HOUR,
     MIN
   };

@@ -1,12 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { View, Text } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { headerStyles } from '../styles/header';
 import Navigation from '../components/navigation';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
 
-export const myListHeader = (navigation) => {
+export const myListHeader = () => {
+  const { navigate } = useNavigation();
+
   return (
     <View style={headerStyles.header}>
       <Text style={headerStyles.headerTitle}>나의 리스트</Text>
@@ -14,7 +17,7 @@ export const myListHeader = (navigation) => {
         name="settings"
         size={20}
         color="#fff"
-        onPress={() => navigation.navigate('Settings')}
+        onPress={() => navigate('Settings')}
       />
     </View>
   );

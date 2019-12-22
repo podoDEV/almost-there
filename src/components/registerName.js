@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, TextInput, AsyncStorage } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
 
 export default function RegisterName(props) {
-  const { navigation } = props;
+  const { navigate } = useNavigation();
   const [name, setName] = useState('');
   const userInfo = useContext(GlobalContext);
 
@@ -50,7 +51,7 @@ export default function RegisterName(props) {
           fetch(url.joinGroup(userInfo.id), joinGroupOptions)
             .then((res) => res.json())
             .then(() => {
-              navigation.navigate('RegisterPhoto');
+              navigate('RegisterPhoto');
             })
             .catch((err) => {
               console.error(err);

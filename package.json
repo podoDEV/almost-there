@@ -26,6 +26,7 @@
     "react-native-swipe-list-view": "^2.0.3",
     "react-native-web": "^0.11.7",
     "react-navigation": "^3.13.0",
+    "react-navigation-hooks": "^1.1.0",
     "spacetime": "^6.0.1"
   },
   "devDependencies": {
