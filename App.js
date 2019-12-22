@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet, StatusBar, YellowBox } from 'react-native';
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import RegisterName from './src/components/registerName';
 import RegisterPhoto from './src/components/registerPhoto';
@@ -178,5 +178,8 @@ const App = () => (
     <AppContainer />
   </Layout>
 );
+
+// @TODO: 블랙 리스트로 관리해야 할 것 같음
+YellowBox.ignoreWarnings(['ReactNative.NativeModules.LottieAnimationView.getConstants']);
 
 export default App;
