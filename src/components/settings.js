@@ -1,13 +1,14 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
 import { MaterialIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
 
 export default function Setting(props) {
-  const { navigation } = props;
+  const { navigate } = useNavigation();
   const [userInfo, setUserInfo] = useState({ name: '', profileImageUrl: '' });
-  const { id, accessToken } = useContext(GlobalContext);
+  const { accessToken } = useContext(GlobalContext);
 
   useEffect(() => {
     fetch(url.membersMe(), {
@@ -25,7 +26,7 @@ export default function Setting(props) {
       <View style={styles.itemContainer}>
         <TouchableOpacity
           style={styles.itemInnerContainer}
-          onPress={() => navigation.navigate('EditProfile', { userInfo })}
+          onPress={() => navigate('EditProfile', { userInfo })}
         >
           <Text style={styles.itemTitle}>내 계정</Text>
           <View style={styles.itemUserInfoContainer}>
@@ -57,7 +58,7 @@ export default function Setting(props) {
       <View style={styles.itemContainer}>
         <TouchableOpacity
           style={styles.itemInnerContainer}
-          onPress={() => navigation.navigate('Policy', { type: 'location' })}
+          onPress={() => navigate('Policy', { type: 'location' })}
         >
           <Text style={styles.itemTitle}>위치 기반 서비스 이용약관</Text>
           <View style={styles.itemUserInfoContainer}>
@@ -68,7 +69,7 @@ export default function Setting(props) {
       <View style={styles.itemContainer}>
         <TouchableOpacity
           style={styles.itemInnerContainer}
-          onPress={() => navigation.navigate('Policy', { type: 'privacy' })}
+          onPress={() => navigate('Policy', { type: 'privacy' })}
         >
           <Text style={styles.itemTitle}>개인 정보 처리 방침</Text>
           <View style={styles.itemUserInfoContainer}>

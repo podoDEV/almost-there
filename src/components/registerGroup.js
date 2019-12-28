@@ -8,26 +8,62 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
 import MaxMemberInput from './maxMemberInput';
 import DateSelector from './dateSelector';
 import ScrollTimePicker from './ScrollTimePicker';
+import { GlobalContext } from '../context';
 import { getTime } from '../time';
+import * as url from '../apiUrl';
 
 export default function RegisterGroup(props) {
+  const { navigate } = useNavigation();
   const { meridiem, hour, min } = getTime(spacetime.now());
   const [maxMemberCnt, setMaxMemberCnt] = useState('0');
   const [name, setName] = useState('');
   const [place, setPlace] = useState('');
   const [selectedDay, setSelectedDay] = useState([]);
   const [time, setTime] = useState({ hour, min, meridiem });
+  const { accessToken } = useContext(GlobalContext);
 
   useEffect(() => {}, []);
 
   function clickCreateGroupBtn() {
-    alert(
-      `${maxMemberCnt} ${name} ${place} ${selectedDay} ${time.hour} ${time.min} ${time.meridiem}`
-    );
+    console.log(time.meridiem, accessToken);
+
+    // @TODO: appointedAt 제거 필요. 장소 받아와야함
+    const createGroupOptions = {
+      method: 'POST',
+      body: JSON.stringify({
+        appointedAt: '2019-12-22T03:16:44.899Z',
+        destination: {
+          location: {
+            latitude: 0,
+            longitude: 0
+          },
+          name: place
+        },
+        name,
+        schedule: {
+          dayOfWeeks: [...selectedDay],
+          hour: time.hour + time.meridiem === 'AM' ? 0 : 12,
+          minute: time.min
+        }
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+    fetch(url.postGroups(), createGroupOptions)
+      .then((res) => res.json())
+      .then(() => {
+        navigate('GroupList');
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   return (

@@ -1,13 +1,14 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
 
-export default function RegisterName(props) {
-  const { navigation } = props;
+export default function RegisterName() {
+  const { navigate } = useNavigation();
   const [image, setImage] = useState(null);
   const [finish, setFinish] = useState(false);
   const [imageUpload, setImageUpload] = useState(false);
@@ -62,7 +63,7 @@ export default function RegisterName(props) {
       .then(() => {
         setFinish(true);
         setTimeout(() => {
-          navigation.navigate('GroupList');
+          navigate('GroupList');
         }, 2000);
       })
       .catch((err) => {

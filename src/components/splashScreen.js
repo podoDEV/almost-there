@@ -1,11 +1,12 @@
 import React, { useEffect, useContext } from 'react';
 import { StyleSheet, View, AsyncStorage } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
 import LottieView from 'lottie-react-native';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
 
-export default function RegisterName(props) {
-  const { navigation } = props;
+export default function RegisterName() {
+  const { navigate } = useNavigation();
   const userInfo = useContext(GlobalContext);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function RegisterName(props) {
         const { accessToken } = resJson;
         userInfo.accessToken = accessToken;
         AsyncStorage.setItem('ACCESS_TOKEN', accessToken, () => {
-          navigation.navigate('GroupList');
+          navigate('GroupList');
         });
       })
       .catch((err) => {
@@ -52,7 +53,7 @@ export default function RegisterName(props) {
           if (res.status === 200) {
             return res.json();
           } else {
-            navigation.navigate('RegisterName');
+            navigate('RegisterName');
           }
         })
         .then((resJson) => {
@@ -61,7 +62,7 @@ export default function RegisterName(props) {
           userInfo.id = id;
           userInfo.accessToken = accessToken;
           AsyncStorage.setItem('ACCESS_TOKEN', accessToken, () => {
-            navigation.navigate('GroupList');
+            navigate('GroupList');
           });
         })
         .catch((err) => {
@@ -84,7 +85,7 @@ export default function RegisterName(props) {
             userInfo.id = id;
             login();
           } else {
-            navigation.navigate('RegisterName');
+            navigate('RegisterName');
           }
         });
     }

@@ -3,7 +3,15 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { removeElementFromArray } from '../common';
 
 export default function EditGroup(props) {
-  const days = ['월', '화', '수', '목', '금', '토', '일'];
+  const days = [
+    { title: '월', value: 'MONDAY' },
+    { title: '화', value: 'TUESDAY' },
+    { title: '수', value: 'WEDNESDAY' },
+    { title: '목', value: 'THURSDAY' },
+    { title: '금', value: 'FRIDAY' },
+    { title: '토', value: 'SATURDAY' },
+    { title: '일', value: 'SUNDAY' }
+  ];
 
   function setSelectedDay(day) {
     const index = props.selectedDay.indexOf(day);
@@ -17,24 +25,31 @@ export default function EditGroup(props) {
 
   return (
     <View style={styles.daySelectorContainer}>
-      {days.map((day) => (
-        <TouchableOpacity
-          key={`dayKey_${day}`}
-          style={[styles.daySelectorBtn, props.selectedDay.includes(day) && styles.dayActiveBtn]}
-          onPress={() => {
-            setSelectedDay(day);
-          }}
-        >
-          <Text
+      {days.map((day) => {
+        const { title, value } = day;
+
+        return (
+          <TouchableOpacity
+            key={`dayKey_${value}`}
             style={[
-              styles.daySelectorText,
-              props.selectedDay.includes(day) && styles.dayActiveText
+              styles.daySelectorBtn,
+              props.selectedDay.includes(value) && styles.dayActiveBtn
             ]}
+            onPress={() => {
+              setSelectedDay(value);
+            }}
           >
-            {day}
-          </Text>
-        </TouchableOpacity>
-      ))}
+            <Text
+              style={[
+                styles.daySelectorText,
+                props.selectedDay.includes(value) && styles.dayActiveText
+              ]}
+            >
+              {title}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 }

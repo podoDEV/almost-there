@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet, StatusBar, YellowBox } from 'react-native';
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import RegisterName from './src/components/registerName';
 import RegisterPhoto from './src/components/registerPhoto';
@@ -65,17 +65,17 @@ const GroupStack = createStackNavigator(
   {
     GroupList: {
       screen: GroupList,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         title: '나의 리스트',
         headerStyle,
         headerTintColor: '#FFF',
         headerTitleStyle,
-        headerTitle: () => myListHeader(navigation)
+        headerTitle: () => myListHeader()
       })
     },
     GroupMap: {
       screen: GroupMap,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         headerStyle: {
           ...headerStyle,
           height: 10
@@ -178,5 +178,8 @@ const App = () => (
     <AppContainer />
   </Layout>
 );
+
+// @TODO: 블랙 리스트로 관리해야 할 것 같음
+YellowBox.ignoreWarnings(['ReactNative.NativeModules.LottieAnimationView.getConstants']);
 
 export default App;

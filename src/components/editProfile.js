@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, ImageBackground, TextInput } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigationParam } from 'react-navigation-hooks';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
-export default function editProfile(props) {
-  const { userInfo } = props.navigation.state.params;
+export default function editProfile() {
+  const userInfo = useNavigationParam('userInfo');
   const [name, setName] = useState(userInfo.name);
   const [profileImageUrl, setProfileImageUrl] = useState(userInfo.profileImageUrl);
 

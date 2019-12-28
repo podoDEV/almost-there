@@ -1,34 +1,37 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { GlobalContext } from '../context';
 import { SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
 import * as url from '../apiUrl';
+import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 
 export default function GroupList(props) {
-  const { navigation } = props;
+  const { navigate } = useNavigation();
   const [groupList, setGroupList] = useState(null);
   const { accessToken } = useContext(GlobalContext);
 
-  useEffect(() => {
-    const options = {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${accessToken}` }
-    };
-    fetch(url.getGroups(), options)
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-      })
-      .then((resJson) => {
-        setGroupList(resJson);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const options = {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${accessToken}` }
+      };
+      fetch(url.getGroups(), options)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          }
+        })
+        .then((resJson) => {
+          setGroupList(resJson);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -58,7 +61,7 @@ export default function GroupList(props) {
             <View style={styles.groupList}>
               <TouchableHighlight
                 onPress={() => {
-                  navigation.navigate('GroupMap');
+                  navigate('GroupMap');
                 }}
               >
                 <View style={styles.groupItem} key={data.index}>
@@ -93,7 +96,7 @@ export default function GroupList(props) {
         <ActionButton.Item
           buttonColor="#0099ED"
           onPress={() => {
-            navigation.navigate('RegisterGroup');
+            navigate('RegisterGroup');
           }}
         >
           <Text style={styles.actionBtnText}>모임{'\n'}만들기</Text>
@@ -101,7 +104,7 @@ export default function GroupList(props) {
         <ActionButton.Item
           buttonColor="#0099ED"
           onPress={() => {
-            navigation.navigate('GroupSearch');
+            navigate('GroupSearch');
           }}
         >
           <Text style={styles.actionBtnText}>모임{'\n'}찾기</Text>
