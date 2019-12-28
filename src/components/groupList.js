@@ -24,7 +24,6 @@ export default function GroupList(props) {
           if (res.status === 200) {
             return res.json();
           }
-<<<<<<< HEAD
         })
         .then((resJson) => {
           setGroupList(resJson.sort((a, b) => {
@@ -39,6 +38,20 @@ export default function GroupList(props) {
         });
     }, [])
   );
+  
+  const closeRow = (rowMap, rowKey) => {
+    if (rowMap[rowKey]) {
+      rowMap[rowKey].closeRow();
+    }
+  };
+  
+  const deleteRow = (rowMap, rowKey) => {
+    closeRow(rowMap, rowKey);
+    const newData = [...groupList];
+    const prevIndex = groupList.findIndex(item => item.key === rowKey);
+    newData.splice(prevIndex, 1);
+    setGroupList(newData);
+  };
   
   if (isGroupEmpty) {
     return (
@@ -60,7 +73,7 @@ export default function GroupList(props) {
           <ActionButton.Item
             buttonColor="#0099ED"
             onPress={() => {
-              navigation.navigate('RegisterGroup');
+              navigate('RegisterGroup');
             }}
           >
             <Text style={styles.actionBtnText}>모임{'\n'}만들기</Text>
@@ -68,7 +81,7 @@ export default function GroupList(props) {
           <ActionButton.Item
             buttonColor="#0099ED"
             onPress={() => {
-              navigation.navigate('GroupSearch');
+              navigate('GroupSearch');
             }}
           >
             <Text style={styles.actionBtnText}>모임{'\n'}찾기</Text>
@@ -100,11 +113,13 @@ export default function GroupList(props) {
         </View>
         <SwipeListView
           data={groupList}
+          keyExtractor={item => item.id.toString()}
           renderItem={(data, rowMap) => {
             return (
               <View style={styles.groupList}>
                 <TouchableHighlight
                   onPress={() => {
+                    closeRow(rowMap, data.item.id);
                     navigate('GroupMap');
                   }}
                 >
@@ -130,7 +145,11 @@ export default function GroupList(props) {
           renderHiddenItem={(data, rowMap) => (
             <View style={styles.rowBack}>
               <Text style={styles.rowText}> </Text>
-              <Text style={styles.rowText}>나가기</Text>
+              <TouchableHighlight
+                onPress={() => deleteRow(rowMap, data.item.key)}
+              >
+                <Text style={styles.rowText}>나가기</Text>
+              </TouchableHighlight>
             </View>
           )}
           disableRightSwipe={true}
