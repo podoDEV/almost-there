@@ -3,6 +3,7 @@ import { StyleSheet, StatusBar, YellowBox } from 'react-native';
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import RegisterName from './src/components/registerName';
 import RegisterPhoto from './src/components/registerPhoto';
+import RegisterPolicy from './src/components/registerPolicy';
 import SplashScreen from './src/components/splashScreen';
 import GroupList from './src/components/groupList';
 import GroupMap from './src/components/groupMap';
@@ -40,7 +41,8 @@ const AuthStack = createSwitchNavigator(
   {
     SplashScreen: { screen: SplashScreen },
     RegisterName: { screen: RegisterName },
-    RegisterPhoto: { screen: RegisterPhoto }
+    RegisterPhoto: { screen: RegisterPhoto },
+    RegisterPolicy: { screen: RegisterPolicy }
   },
   { initialRouteName: 'SplashScreen' }
 );

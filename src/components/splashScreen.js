@@ -5,7 +5,7 @@ import LottieView from 'lottie-react-native';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
 
-export default function RegisterName() {
+export default function SplashScreen() {
   const { navigate } = useNavigation();
   const userInfo = useContext(GlobalContext);
 
@@ -53,7 +53,7 @@ export default function RegisterName() {
           if (res.status === 200) {
             return res.json();
           } else {
-            navigate('RegisterName');
+            navigate('RegisterPolicy');
           }
         })
         .then((resJson) => {
@@ -85,7 +85,7 @@ export default function RegisterName() {
             userInfo.id = id;
             login();
           } else {
-            navigate('RegisterName');
+            navigate('RegisterPolicy');
           }
         });
     }

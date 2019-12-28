@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Dimensions, Keyboard, TextInput } from 'react-native';
-// import { SearchBar } from 'react-native-elements';
 import MapView from 'react-native-maps';
 import * as url from '../apiUrl';
 import PlaceMarker from './placeMarker';
