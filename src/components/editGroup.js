@@ -73,7 +73,7 @@ export default function EditGroup(props) {
                     {member.name}
                   </Text>
                 </View>
-                <Switch style={styles.personAdminSwitch} />
+                {/* <Switch style={styles.personAdminSwitch} /> */}
               </View>
             ))}
           <TouchableOpacity
