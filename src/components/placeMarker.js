@@ -3,27 +3,21 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { Marker } from 'react-native-maps';
 
 export default class PlaceMarker extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
-    if (
-      this.props.region == null ||
-      this.props.region.latitude == null ||
-      this.props.region.longitude == null
-    ) {
+    const { region, afterSelectPlace, name } = this.props;
+
+    if (region === null || region.latitude === null || region.longitude === null) {
       return null;
     }
 
     return (
       <Marker
         coordinate={{
-          latitude: this.props.region.latitude,
-          longitude: this.props.region.longitude
+          latitude: region.latitude,
+          longitude: region.longitude
         }}
         centerOffset={{ x: 0, y: -30 }}
-        onPress={(e) => this.props.afterSelectPlace(e.nativeEvent.coordinate, this.props.name)}
+        onPress={(e) => afterSelectPlace(e.nativeEvent.coordinate, name)}
       >
         <View style={styles.markerView}>
           <View style={styles.markerTextView}>
@@ -49,7 +43,6 @@ const styles = StyleSheet.create({
     borderColor: '#0099ED',
     backgroundColor: '#FFFFFF',
     alignSelf: 'center'
-    // position: 'absolute'
   },
   markerText: {
     color: '#000'

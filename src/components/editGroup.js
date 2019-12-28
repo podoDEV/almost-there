@@ -16,7 +16,7 @@ import ActionButton from 'react-native-action-button';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
 import DateSelector from './dateSelector';
-import MaxMemberInput from './maxMemberInput';
+// import MaxMemberInput from './maxMemberInput';
 import ScrollTimePicker from './ScrollTimePicker';
 import { getTime } from '../time';
 
@@ -27,7 +27,7 @@ export default function EditGroup(props) {
   const { meridiem, hour, min } = getTime(spacetime.now());
   const [time, setTime] = useState({ hour, min, meridiem });
   const [groupInfo, setGroupInfo] = useState(null);
-  const [maxMemberCnt, setMaxMemberCnt] = useState('0');
+  // const [maxMemberCnt, setMaxMemberCnt] = useState('0');
   const [place, setPlace] = useState('');
   const [selectedDay, setSelectedDay] = useState([]);
 
@@ -92,7 +92,7 @@ export default function EditGroup(props) {
           </View>
           <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
         </View>
-        <View style={[styles.placeContainer, styles.underline]}>
+        <View style={styles.placeContainer}>
           <Text style={styles.subTitle}>모임 장소</Text>
           <TextInput
             style={styles.placeSearchInput}
@@ -102,10 +102,10 @@ export default function EditGroup(props) {
             }}
           />
         </View>
-        <View style={styles.maxMemberContainer}>
+        {/* <View style={styles.maxMemberContainer}>
           <Text style={styles.subTitle}>최대 멤버수</Text>
           <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
-        </View>
+        </View> */}
       </ScrollView>
       <ActionButton
         buttonColor="#0099ED"

@@ -16,23 +16,6 @@ import { Layout } from './src/layout';
 import { myListHeader } from './src/components/navigationHeader';
 import GroupSearch from './src/components/groupSearch';
 
-const styles = StyleSheet.create({
-  groupListBtn: {
-    color: '#fff',
-    paddingLeft: 15,
-    paddingBottom: 15,
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  groupListBtnText: {
-    flex: 1,
-    paddingLeft: 4,
-    color: '#fff',
-    alignItems: 'center'
-  }
-});
-
 // @TODO: module화 시키자
 const headerStyle = {
   height: 59,

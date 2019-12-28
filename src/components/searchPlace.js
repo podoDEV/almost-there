@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Dimensions, Keyboard } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { StyleSheet, Dimensions, Keyboard, TextInput } from 'react-native';
+// import { SearchBar } from 'react-native-elements';
 import MapView from 'react-native-maps';
 import * as url from '../apiUrl';
 import PlaceMarker from './placeMarker';
@@ -10,10 +10,6 @@ const LATITUDE_DELTA = 0.008;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 
 export default class SearchPlace extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   mapRef = React.createRef();
   state = {
     search: '',
@@ -34,24 +30,24 @@ export default class SearchPlace extends React.Component {
         const placeList = [];
 
         resJson.results.forEach((element) => {
-          name = element.name;
-          location = element.geometry.location;
+          const name = element.name;
+          const { lat, lng } = element.geometry.location;
 
-          region = {
-            latitude: location.lat,
-            longitude: location.lng
+          const region = {
+            latitude: lat,
+            longitude: lng
           };
 
           placeList.push({ name, region });
         });
 
         if (placeList.length > 0) {
-          latitude = placeList[0].region.latitude;
-          longitude = placeList[0].region.longitude;
+          const latitude = placeList[0].region.latitude;
+          const longitude = placeList[0].region.longitude;
 
           const newRegion = {
-            latitude: latitude,
-            longitude: longitude,
+            latitude,
+            longitude,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA
           };
@@ -60,8 +56,7 @@ export default class SearchPlace extends React.Component {
 
           this.setState({ placeList: placeList });
         } else {
-          // alert?
-          console.log('검색결과 없음');
+          alert('검색결과 없음');
         }
       })
       .catch((error) => {
@@ -76,14 +71,14 @@ export default class SearchPlace extends React.Component {
   render() {
     return (
       <MapView style={styles.map} ref={this.mapRef} followUserLocation={true}>
-        <SearchBar
+        <TextInput
+          style={{ width: '100%', backgroundColor: 'white', padding: 10, fontSize: 13 }}
           placeholder="장소 검색"
-          containerStyle={{ justifyContent: 'center', alignContent: 'center' }}
           onChangeText={(text) => {
             this.setState({ search: text });
           }}
-          onSubmitEditing={this.searchPlace}
           value={this.state.search}
+          onSubmitEditing={this.searchPlace}
         />
         {this.state.placeList &&
           this.state.placeList.map((place, idx) => {
