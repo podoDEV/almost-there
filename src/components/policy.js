@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useNavigationParam } from 'react-navigation-hooks';
 
-export default function policy() {
-  const type = useNavigationParam('type');
+export default function policy(props) {
+  const type = useNavigationParam('type') || props.type;
 
   return (
     <ScrollView style={styles.container}>
@@ -114,6 +114,7 @@ export default function policy() {
           <Text style={styles.article}>
             전자적 파일 형태인 경우 복구 및 재생되지 않도록 안전하게 삭제하고, 그 밖에 기록물,
             인쇄물, 서면 등의 경우 분쇄하거나 소각하여 파기합니다.
+            {`\n\n\n\n\n\n\n`}
           </Text>
         </View>
       )}
@@ -124,20 +125,24 @@ export default function policy() {
 const styles = StyleSheet.create({
   container: {
     padding: '5%',
-    fontFamily: 'scdreamBold'
+    fontFamily: 'scdreamBold',
+    color: 'rgb(74, 74, 74)'
   },
   h1: {
     fontSize: 18,
     fontFamily: 'scdreamBold',
-    marginVertical: 10
+    marginVertical: 10,
+    color: 'rgb(74, 74, 74)'
   },
   h2: {
     fontSize: 15,
     fontFamily: 'scdreamBold',
-    marginVertical: 10
+    marginVertical: 10,
+    color: 'rgb(74, 74, 74)'
   },
   article: {
     fontSize: 12,
-    fontFamily: 'scdream'
+    fontFamily: 'scdream',
+    color: 'rgb(74, 74, 74)'
   }
 });
