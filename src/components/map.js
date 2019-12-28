@@ -146,7 +146,9 @@ export default class Map extends React.Component {
     const markerLocations = [];
 
     for (let member of this.state.members) {
-      markerLocations.push(member.region);
+      if (member.region !== null) {
+        markerLocations.push(member.region);
+      }
     }
 
     markerLocations.push(this.state.destination);
