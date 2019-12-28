@@ -11,26 +11,10 @@ import RegisterGroup from './src/components/registerGroup';
 import Settings from './src/components/settings';
 import Policy from './src/components/policy';
 import EditProfile from './src/components/editProfile';
+import SearchPlace from './src/components/searchPlace';
 import { Layout } from './src/layout';
 import { myListHeader } from './src/components/navigationHeader';
 import GroupSearch from './src/components/groupSearch';
-
-const styles = StyleSheet.create({
-  groupListBtn: {
-    color: '#fff',
-    paddingLeft: 15,
-    paddingBottom: 15,
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  groupListBtnText: {
-    flex: 1,
-    paddingLeft: 4,
-    color: '#fff',
-    alignItems: 'center'
-  }
-});
 
 // @TODO: module화 시키자
 const headerStyle = {
@@ -152,6 +136,16 @@ const GroupStack = createStackNavigator(
           headerTitleStyle,
           headerBackTitleStyle
         };
+      }
+    },
+    SearchPlace: {
+      screen: SearchPlace,
+      navigationOptions: {
+        title: '장소 검색',
+        headerStyle,
+        headerTintColor: '#FFF',
+        headerTitleStyle,
+        headerBackTitleStyle
       }
     }
   },

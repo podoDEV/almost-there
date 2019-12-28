@@ -6,11 +6,12 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Button
 } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
-import MaxMemberInput from './maxMemberInput';
+// import MaxMemberInput from './maxMemberInput';
 import DateSelector from './dateSelector';
 import ScrollTimePicker from './ScrollTimePicker';
 import { GlobalContext } from '../context';
@@ -20,14 +21,16 @@ import * as url from '../apiUrl';
 export default function RegisterGroup(props) {
   const { navigate } = useNavigation();
   const { meridiem, hour, min } = getTime(spacetime.now());
-  const [maxMemberCnt, setMaxMemberCnt] = useState('0');
+  // const [maxMemberCnt, setMaxMemberCnt] = useState('0');
   const [name, setName] = useState('');
   const [place, setPlace] = useState('');
   const [selectedDay, setSelectedDay] = useState([]);
   const [time, setTime] = useState({ hour, min, meridiem });
   const { accessToken } = useContext(GlobalContext);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log(props.navigation.state.params, 'name, coor');
+  }, [props.navigation.state.params]);
 
   function clickCreateGroupBtn() {
     console.log(time.meridiem, accessToken);
@@ -88,7 +91,7 @@ export default function RegisterGroup(props) {
             <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
           </View>
         </View>
-        <View style={[styles.placeContainer, styles.underline]}>
+        <View style={styles.placeContainer}>
           <Text style={styles.subTitle}>모임 장소</Text>
           <TextInput
             style={styles.placeSearchInput}
@@ -97,11 +100,17 @@ export default function RegisterGroup(props) {
               setPlace(text);
             }}
           />
+          <Button
+            title="+"
+            onPress={() => {
+              navigate('SearchPlace');
+            }}
+          />
         </View>
-        <View style={styles.maxMemberContainer}>
+        {/* <View style={styles.maxMemberContainer}>
           <Text style={styles.subTitle}>최대 멤버수</Text>
           <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
-        </View>
+        </View> */}
         <TouchableOpacity
           onPress={() => {
             clickCreateGroupBtn();
