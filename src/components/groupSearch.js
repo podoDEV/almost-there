@@ -9,17 +9,29 @@ import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 export default function GroupSearch(props) {
   const { navigation } = props;
   const [inputValue, setInputValue] = useState(null);
+  const [myInfo, setMyInfo] = useState(null);
   const [groupCode, setGroupCode] = useState(null);
-  const [groupInfoByGroupCode, setgroupInfoByGroupCode] = useState(null);
+  const [groupInfoByGroupCode, setGroupInfoByGroupCode] = useState(null);
   const { accessToken } = useContext(GlobalContext);
-
+  const Options = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  };
   useEffect(() => {
-    const Options = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    };
+    fetch(url.membersMe(),Options)
+      .then((res)=>{
+        if(res.status === 200){
+          return res.json();
+        }
+      })
+      .then((resJson)=>{
+        setMyInfo(resJson);
+      })
+      .catch((error)=>{
+        console.error(error);
+      });
     fetch(url.getGroup(groupCode), Options)
       .then((res) => {
         if (res.status === 200) {
@@ -27,13 +39,49 @@ export default function GroupSearch(props) {
         }
       })
       .then((resJson) => {
-        setgroupInfoByGroupCode(resJson);
+        setGroupInfoByGroupCode(resJson);
       })
       .catch((error) => {
         console.error(error);
       });
   }, [groupCode]);
 
+  const addUserToGroup = () => {
+    const joinGroupOptions = {
+      method: 'POST',
+      body: JSON.stringify({
+        code: groupCode
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+    fetch(url.joinGroup(myInfo.id), joinGroupOptions)
+      .then((res)=>{
+        if(res.status === 200){
+          console.log("success to add a new user to group");
+        }
+      })
+      .then(
+        fetch(url.getGroup(groupCode), Options)
+          .then((res) => {
+            if (res.status === 200) {
+              return res.json();
+            }
+          })
+          .then((resJson) => {
+            setGroupInfoByGroupCode(resJson);
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+      )
+      .catch((error)=>{
+        console.error(error);
+      });
+  };
+  
   return (
     <Layout>
       <View style={groupListStyle.container}>
@@ -88,7 +136,7 @@ export default function GroupSearch(props) {
                 </Text>
               </View>
               <View style={groupListStyle.groupTime}>
-                <Text style={groupListStyle.groupTimeTtile}>모임시간</Text>
+                <Text style={groupListStyle.groupTimeTitle}>모임시간</Text>
                 <Text style={groupListStyle.groupTimeText}>{groupInfoByGroupCode.appointedAt}</Text>
               </View>
             </View>
@@ -103,6 +151,9 @@ export default function GroupSearch(props) {
               fontSize: 17,
               fontFamily: 'scdreamBold',
               textAlign: 'center'
+            }}
+            onPress={()=>{
+              addUserToGroup();
             }}
           />
         )}
@@ -212,7 +263,7 @@ const groupListStyle = StyleSheet.create({
     width: '50%',
     flexDirection: 'column'
   },
-  groupTimeTtile: {
+  groupTimeTitle: {
     color: '#31ACF1',
     fontFamily: 'scdreamBold',
     fontSize: 12
