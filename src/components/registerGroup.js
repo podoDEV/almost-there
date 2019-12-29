@@ -29,7 +29,9 @@ export default function RegisterGroup(props) {
   const { accessToken } = useContext(GlobalContext);
 
   useEffect(() => {
-    console.log(props.navigation.state.params, 'name, coor');
+    if (props.navigation.state.params) {
+      setPlace(props.navigation.state.params.name);
+    }
   }, [props.navigation.state.params]);
 
   function clickCreateGroupBtn() {
@@ -80,6 +82,7 @@ export default function RegisterGroup(props) {
             onChangeText={(text) => {
               setName(text);
             }}
+            placeholder="모임명을 입력하세요"
           />
         </View>
         <View style={[styles.datepickerContainer, styles.underline]}>
@@ -93,19 +96,18 @@ export default function RegisterGroup(props) {
         </View>
         <View style={styles.placeContainer}>
           <Text style={styles.subTitle}>모임 장소</Text>
-          <TextInput
-            style={styles.placeSearchInput}
-            value={place}
-            onChangeText={(text) => {
-              setPlace(text);
-            }}
-          />
-          <Button
-            title="+"
+          <TouchableOpacity
             onPress={() => {
               navigate('SearchPlace');
             }}
-          />
+            style={{ marginTop: 10 }}
+          >
+            <Text
+              style={[styles.placeSearchInput, !place.length && styles.placeSearchInputPlaceHolder]}
+            >
+              {place.length ? place : '검색하기'}
+            </Text>
+          </TouchableOpacity>
         </View>
         {/* <View style={styles.maxMemberContainer}>
           <Text style={styles.subTitle}>최대 멤버수</Text>
@@ -197,6 +199,7 @@ const styles = StyleSheet.create({
     height: 22
   },
   placeSearchInput: { fontSize: 19, fontFamily: 'scdream', borderWidth: 0, height: 40 },
+  placeSearchInputPlaceHolder: { color: '#bbb' },
   nameContainer: {
     flex: 1,
     paddingHorizontal: 20,
@@ -233,5 +236,10 @@ const styles = StyleSheet.create({
     fontFamily: 'scdreamBold',
     color: '#0099ED',
     fontSize: 21
+  },
+  searchPlaceText: {
+    color: 'rgb(74, 74, 74)',
+    fontSize: 19,
+    fontFamily: 'scdream'
   }
 });
