@@ -142,13 +142,14 @@ const GroupStack = createStackNavigator(
     },
     SearchPlace: {
       screen: SearchPlace,
-      navigationOptions: {
-        title: '장소 검색',
-        headerStyle,
-        headerTintColor: '#FFF',
-        headerTitleStyle,
-        headerBackTitleStyle
-      }
+      navigationOptions: () => ({
+        headerStyle: {
+          ...headerStyle,
+          height: 10
+        },
+        headerTitle: null,
+        headerLeft: null
+      })
     }
   },
   { initialRouteName: 'GroupList' }
