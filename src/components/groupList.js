@@ -48,7 +48,7 @@ export default function GroupList(props) {
   const deleteRow = (rowMap, rowKey) => {
     closeRow(rowMap, rowKey);
     const newData = [...groupList];
-    const prevIndex = groupList.findIndex(item => item.key === rowKey);
+    const prevIndex = groupList.findIndex(item => item.id === rowKey);
     newData.splice(prevIndex, 1);
     setGroupList(newData);
   };
@@ -146,7 +146,7 @@ export default function GroupList(props) {
             <View style={styles.rowBack}>
               <Text style={styles.rowText}> </Text>
               <TouchableHighlight
-                onPress={() => deleteRow(rowMap, data.item.key)}
+                onPress={() => deleteRow(rowMap, data.item.id)}
               >
                 <Text style={styles.rowText}>나가기</Text>
               </TouchableHighlight>
