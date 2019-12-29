@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Button
 } from 'react-native';
-import { useNavigation } from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam, useFocusEffect } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
 // import MaxMemberInput from './maxMemberInput';
 import DateSelector from './dateSelector';
@@ -23,31 +23,31 @@ export default function RegisterGroup(props) {
   const { meridiem, hour, min } = getTime(spacetime.now());
   // const [maxMemberCnt, setMaxMemberCnt] = useState('0');
   const [name, setName] = useState('');
-  const [place, setPlace] = useState('');
+  const [place, setPlace] = useState(null);
   const [selectedDay, setSelectedDay] = useState([]);
   const [time, setTime] = useState({ hour, min, meridiem });
   const { accessToken } = useContext(GlobalContext);
+  // const placeName = useNavigationParam('name');
+  // const placeCoordinate = useNavigationParam('coordinate');
 
   useEffect(() => {
-    if (props.navigation.state.params) {
-      setPlace(props.navigation.state.params.name);
+    const { params } = props.navigation.state;
+    if (params) {
+      const { name, coordinate } = params;
+      setPlace({ name, coordinate });
     }
   }, [props.navigation.state.params]);
 
   function clickCreateGroupBtn() {
-    console.log(time.meridiem, accessToken);
-
-    // @TODO: appointedAt 제거 필요. 장소 받아와야함
     const createGroupOptions = {
       method: 'POST',
       body: JSON.stringify({
         appointedAt: '2019-12-22T03:16:44.899Z',
         destination: {
           location: {
-            latitude: 0,
-            longitude: 0
+            ...place.coordinate
           },
-          name: place
+          name: place.name
         },
         name,
         schedule: {
@@ -98,14 +98,12 @@ export default function RegisterGroup(props) {
           <Text style={styles.subTitle}>모임 장소</Text>
           <TouchableOpacity
             onPress={() => {
-              navigate('SearchPlace');
+              navigate('SearchPlace', { page: 'RegisterGroup' });
             }}
             style={{ marginTop: 10 }}
           >
-            <Text
-              style={[styles.placeSearchInput, !place.length && styles.placeSearchInputPlaceHolder]}
-            >
-              {place.length ? place : '검색하기'}
+            <Text style={[styles.placeSearchInput, !place && styles.placeSearchInputPlaceHolder]}>
+              {place ? place.name : '검색하기'}
             </Text>
           </TouchableOpacity>
         </View>

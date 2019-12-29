@@ -10,7 +10,7 @@ import {
   Text
 } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import MapView from 'react-native-maps';
 import * as url from '../apiUrl';
 import MemberMarker from './memberMarker';
@@ -19,12 +19,13 @@ const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.008;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 
-export default function SearchPlace() {
+export default function SearchPlace(props) {
   const [search, setSearch] = useState('');
   const [placeList, setPlaceList] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [mapRef, setMapRef] = useState(() => createRef());
   const { navigate, goBack } = useNavigation();
+  const PAGE = useNavigationParam('page');
 
   const searchPlace = () => {
     const placeName = search;
@@ -65,7 +66,7 @@ export default function SearchPlace() {
   };
 
   const afterSelectPlace = (coordinate, name) => {
-    navigate('RegisterGroup', { coordinate, name });
+    navigate(PAGE, { coordinate, name });
   };
 
   const applySelectedPlace = (place) => {
@@ -106,7 +107,7 @@ export default function SearchPlace() {
   };
 
   const renderSelectedPlaceHeader = () => {
-    const { name, coordinate } = selectedPlace;
+    const { name, region } = selectedPlace;
 
     return (
       <View style={{ height: 130, padding: 15, backgroundColor: '#0099ED' }}>
@@ -118,7 +119,7 @@ export default function SearchPlace() {
         </View>
         <TouchableOpacity
           style={styles.selectPlaceBtn}
-          onPress={() => afterSelectPlace(coordinate, name)}
+          onPress={() => afterSelectPlace(region, name)}
         >
           <Text style={styles.selectPlaceBtnText}>모임 장소로 선택</Text>
         </TouchableOpacity>
