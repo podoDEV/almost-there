@@ -19,7 +19,7 @@ const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.008;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 
-export default function SearchPlace(props) {
+export default function PlaceSearch(props) {
   const [search, setSearch] = useState('');
   const [placeList, setPlaceList] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);

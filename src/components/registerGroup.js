@@ -106,7 +106,7 @@ export default function RegisterGroup(props) {
           <Text style={styles.subTitle}>모임 장소</Text>
           <TouchableOpacity
             onPress={() => {
-              navigate('SearchPlace', { page: 'RegisterGroup' });
+              navigate('PlaceSearch', { page: 'RegisterGroup' });
             }}
             style={{ marginTop: 10 }}
           >

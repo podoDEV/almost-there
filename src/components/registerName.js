@@ -37,26 +37,7 @@ export default function RegisterName(props) {
           AsyncStorage.setItem('ACCESS_TOKEN', accessToken);
         })
         .then(() => {
-          //  @TODO: 이거 없애야함
-          const code = '32E550';
-          const joinGroupOptions = {
-            method: 'POST',
-            body: JSON.stringify({
-              code
-            }),
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${userInfo.accessToken}`
-            }
-          };
-          fetch(url.joinGroup(userInfo.id), joinGroupOptions)
-            .then((res) => res.json())
-            .then(() => {
-              navigate('RegisterPhoto');
-            })
-            .catch((err) => {
-              console.error(err);
-            });
+          navigate('RegisterPhoto');
         })
         .catch((err) => {
           console.error(err);

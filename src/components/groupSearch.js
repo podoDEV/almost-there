@@ -1,38 +1,40 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, TextInput } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
 import ActionButton from 'react-native-action-button';
 import { Layout } from '../layout';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { getSchedule } from '../time';
 
 export default function GroupSearch(props) {
-  const { navigation } = props;
+  const { navigate } = useNavigation();
   const [inputValue, setInputValue] = useState(null);
   const [myInfo, setMyInfo] = useState(null);
   const [groupCode, setGroupCode] = useState(null);
   const [groupInfoByGroupCode, setGroupInfoByGroupCode] = useState(null);
   const { accessToken } = useContext(GlobalContext);
-  const Options = {
+  const options = {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${accessToken}`
     }
   };
   useEffect(() => {
-    fetch(url.membersMe(),Options)
-      .then((res)=>{
-        if(res.status === 200){
+    fetch(url.membersMe(), options)
+      .then((res) => {
+        if (res.status === 200) {
           return res.json();
         }
       })
-      .then((resJson)=>{
+      .then((resJson) => {
         setMyInfo(resJson);
       })
-      .catch((error)=>{
+      .catch((error) => {
         console.error(error);
       });
-    fetch(url.getGroup(groupCode), Options)
+    fetch(url.getGroup(groupCode), options)
       .then((res) => {
         if (res.status === 200) {
           return res.json();
@@ -58,36 +60,20 @@ export default function GroupSearch(props) {
       }
     };
     fetch(url.joinGroup(myInfo.id), joinGroupOptions)
-      .then((res)=>{
-        if(res.status === 200){
-          console.log("success to add a new user to group");
+      .then((res) => {
+        if (res.status === 200) {
+          console.log('success to add a new user to group');
+          navigate('GroupList');
         }
       })
-      .then(
-        fetch(url.getGroup(groupCode), Options)
-          .then((res) => {
-            if (res.status === 200) {
-              return res.json();
-            }
-          })
-          .then((resJson) => {
-            setGroupInfoByGroupCode(resJson);
-          })
-          .catch((error) => {
-            console.error(error);
-          })
-      )
-      .catch((error)=>{
+      .catch((error) => {
         console.error(error);
       });
   };
-  
+
   return (
     <Layout>
       <View style={groupListStyle.container}>
-        <View style={groupListStyle.header}>
-          <Text style={groupListStyle.headerText}>모임 찾기</Text>
-        </View>
         <View style={groupListStyle.groupCode}>
           <Text style={groupListStyle.groupCodeTitle}>모임 코드 입력</Text>
           <View style={groupListStyle.groupCodeInputContainer}>
@@ -105,7 +91,6 @@ export default function GroupSearch(props) {
               name={'arrowright'}
               size={15}
               color="#31ACF1"
-              style={groupListStyle.groupCodeInputIcon}
               onPress={() => setGroupCode(inputValue)}
             />
           </View>
@@ -114,47 +99,38 @@ export default function GroupSearch(props) {
           <View style={groupListStyle.groupInfo}>
             <View style={groupListStyle.groupName}>
               <Text style={groupListStyle.groupNameTile}>{groupInfoByGroupCode.name}</Text>
-              <Text style={groupListStyle.groupMemberNumber}>{groupInfoByGroupCode.memberCount}</Text>
+              <Text style={groupListStyle.groupMemberNumber}>
+                {groupInfoByGroupCode.memberCount}
+              </Text>
             </View>
-            <View style={groupListStyle.groupMember}>
-              <Text style={groupListStyle.groupMemberText}>멤버</Text>
-              <View style={groupListStyle.groupMemberItem}>
-                {groupInfoByGroupCode.members.map((member, index) => {
-                  return (
-                    <Text key={index} style={groupListStyle.groupMemberItemName}>
-                      {member.name}
-                    </Text>
-                  );
-                })}
-              </View>
+            <View style={groupListStyle.groupLocation}>
+              <Text style={groupListStyle.groupLocationTitle}>모임장소</Text>
+              <Text style={groupListStyle.groupLocationName}>
+                {groupInfoByGroupCode.destination.name}
+              </Text>
             </View>
-            <View style={groupListStyle.groupDetail}>
-              <View style={groupListStyle.groupLocation}>
-                <Text style={groupListStyle.groupLocationTitle}>모임장소</Text>
-                <Text style={groupListStyle.groupLocationName}>
-                  {groupInfoByGroupCode.destination.name}
-                </Text>
-              </View>
-              <View style={groupListStyle.groupTime}>
-                <Text style={groupListStyle.groupTimeTitle}>모임시간</Text>
-                <Text style={groupListStyle.groupTimeText}>{groupInfoByGroupCode.appointedAt}</Text>
-              </View>
+            <View style={groupListStyle.groupTime}>
+              <Text style={groupListStyle.groupTimeTitle}>모임시간</Text>
+              <Text style={groupListStyle.groupTimeText}>
+                {getSchedule(groupInfoByGroupCode.schedule).dayTitleText}
+              </Text>
             </View>
           </View>
         )}
         {groupInfoByGroupCode && (
           <ActionButton
             buttonColor="#0099ED"
-            buttonText={'참가'}
+            buttonText="참가"
             buttonTextStyle={{
               marginTop: 4,
               fontSize: 17,
               fontFamily: 'scdreamBold',
               textAlign: 'center'
             }}
-            onPress={()=>{
+            onPress={() => {
               addUserToGroup();
             }}
+            size={70}
           />
         )}
       </View>
@@ -165,22 +141,6 @@ export default function GroupSearch(props) {
 const groupListStyle = StyleSheet.create({
   container: {
     flex: 1
-  },
-  header: {
-    height: 50,
-    backgroundColor: '#31ACF1',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 5,
-    paddingBottom: 5
-  },
-  headerText: {
-    color: '#fff',
-    fontSize: 17,
-    fontFamily: 'scdreamBold'
   },
   groupCode: {
     paddingLeft: 15,
@@ -202,7 +162,10 @@ const groupListStyle = StyleSheet.create({
   },
   groupCodeInput: {
     height: 22,
-    width: 200
+    width: 200,
+    fontFamily: 'scdream',
+    fontSize: 19,
+    color: 'rgb(74, 74, 74)'
   },
   groupInfo: {
     paddingLeft: 15,
@@ -237,17 +200,13 @@ const groupListStyle = StyleSheet.create({
     flexWrap: 'wrap'
   },
   groupMemberItemName: {
-    width: '50%',
     fontSize: 16,
     paddingTop: 12,
     fontFamily: 'scdream'
   },
-  groupDetail: {
-    flexDirection: 'row'
-  },
   groupLocation: {
-    width: '50%',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    marginBottom: 30
   },
   groupLocationTitle: {
     color: '#31ACF1',

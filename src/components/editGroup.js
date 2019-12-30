@@ -114,7 +114,7 @@ export default function EditGroup(props) {
             <Text style={styles.subTitle}>모임 장소</Text>
             <TouchableOpacity
               onPress={() => {
-                navigate('SearchPlace', { page: 'EditGroup' });
+                navigate('PlaceSearch', { page: 'EditGroup' });
               }}
               style={{ marginTop: 10 }}
             >
