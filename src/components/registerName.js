@@ -37,6 +37,7 @@ export default function RegisterName(props) {
           AsyncStorage.setItem('ACCESS_TOKEN', accessToken);
         })
         .then(() => {
+          //  @TODO: 이거 없애야함
           const code = '32E550';
           const joinGroupOptions = {
             method: 'POST',

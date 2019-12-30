@@ -18,6 +18,8 @@ import { GlobalContext } from '../context';
 import { getTime } from '../time';
 import * as url from '../apiUrl';
 
+const GROUP_NAME_MAX_LENGTH = 15;
+
 export default function RegisterGroup(props) {
   const { navigate } = useNavigation();
   const { meridiem, hour, min } = getTime(spacetime.now());
@@ -71,6 +73,8 @@ export default function RegisterGroup(props) {
       });
   }
 
+  const renderFinishBtn = !!name.length && !!place && !!selectedDay.length;
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <ScrollView style={{ flex: 1 }}>
@@ -80,7 +84,11 @@ export default function RegisterGroup(props) {
             style={styles.nameInput}
             value={name}
             onChangeText={(text) => {
-              setName(text);
+              if (text.length < GROUP_NAME_MAX_LENGTH) {
+                setName(text);
+              } else {
+                alert('이름 길이를 줄여주세요!');
+              }
             }}
             placeholder="모임명을 입력하세요"
           />
@@ -111,14 +119,16 @@ export default function RegisterGroup(props) {
           <Text style={styles.subTitle}>최대 멤버수</Text>
           <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
         </View> */}
-        <TouchableOpacity
-          onPress={() => {
-            clickCreateGroupBtn();
-          }}
-          style={styles.registerGroup}
-        >
-          <Text style={styles.registerGroupText}>모임 생성</Text>
-        </TouchableOpacity>
+        {renderFinishBtn && (
+          <TouchableOpacity
+            onPress={() => {
+              clickCreateGroupBtn();
+            }}
+            style={styles.registerGroup}
+          >
+            <Text style={styles.registerGroupText}>모임 생성</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );

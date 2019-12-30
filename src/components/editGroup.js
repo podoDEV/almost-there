@@ -20,7 +20,7 @@ import { GlobalContext } from '../context';
 import DateSelector from './dateSelector';
 // import MaxMemberInput from './maxMemberInput';
 import ScrollTimePicker from './ScrollTimePicker';
-import { getTime } from '../time';
+import { getTime, getSchedule } from '../time';
 
 export default function EditGroup(props) {
   const { accessToken } = useContext(GlobalContext);
@@ -48,12 +48,11 @@ export default function EditGroup(props) {
           .then((resJson) => {
             setGroupInfo(resJson);
             const {
-              schedule: { dayOfWeek, hour, minute },
+              schedule,
               destination: { name, location }
             } = resJson;
-            const tempTime = spacetime([2019, 1, 1, hour, minute]);
-            setTime(getTime(tempTime));
-            setSelectedDay(dayOfWeek);
+            setTime(getSchedule(schedule).time);
+            setSelectedDay(schedule.dayOfWeek);
             setPlace({ name, coordinate: location });
           })
           .catch((error) => {
@@ -76,6 +75,8 @@ export default function EditGroup(props) {
       message: `🙋‍♂️ ${name} 모임코드: ${code}.\n-------\n앱스토어에서 진짜 다와가를 만나보세요! 👇\n링크: https://apps.apple.com/us/app/podolist/id1439078928`
     });
   }
+
+  const renderFinishBtn = !!place && !!selectedDay.length;
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -128,12 +129,14 @@ export default function EditGroup(props) {
         </View> */}
         </ScrollView>
       )}
-      <ActionButton
-        buttonColor="#0099ED"
-        renderIcon={() => <Text style={styles.finishBtn}>완료</Text>}
-        onPress={this.renderMarkers}
-        size={70}
-      />
+      {renderFinishBtn && (
+        <ActionButton
+          buttonColor="#0099ED"
+          renderIcon={() => <Text style={styles.finishBtn}>완료</Text>}
+          onPress={this.renderMarkers}
+          size={70}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 }

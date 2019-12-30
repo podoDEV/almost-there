@@ -1,18 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { removeElementFromArray } from '../common';
+import { days } from '../time';
 
 export default function EditGroup(props) {
-  const days = [
-    { title: '월', value: 'MONDAY' },
-    { title: '화', value: 'TUESDAY' },
-    { title: '수', value: 'WEDNESDAY' },
-    { title: '목', value: 'THURSDAY' },
-    { title: '금', value: 'FRIDAY' },
-    { title: '토', value: 'SATURDAY' },
-    { title: '일', value: 'SUNDAY' }
-  ];
-
   function setSelectedDay(day) {
     const index = props.selectedDay.indexOf(day);
 
