@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -12,7 +12,7 @@ export default function GroupList(props) {
   const [groupList, setGroupList] = useState(null);
   const [isGroupEmpty, setIsGroupEmpty] = useState(true);
   const { accessToken } = useContext(GlobalContext);
-  
+
   useFocusEffect(
     useCallback(() => {
       const options = {
@@ -26,11 +26,13 @@ export default function GroupList(props) {
           }
         })
         .then((resJson) => {
-          setGroupList(resJson.sort((a, b) => {
-            if (a.appointedAt < b.appointedAt) {
-              return -1
-            }
-          }));
+          setGroupList(
+            resJson.sort((a, b) => {
+              if (a.appointedAt < b.appointedAt) {
+                return -1;
+              }
+            })
+          );
           setIsGroupEmpty(!isGroupEmpty);
         })
         .catch((error) => {
@@ -38,21 +40,21 @@ export default function GroupList(props) {
         });
     }, [])
   );
-  
+
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
       rowMap[rowKey].closeRow();
     }
   };
-  
+
   const deleteRow = (rowMap, rowKey) => {
     closeRow(rowMap, rowKey);
     const newData = [...groupList];
-    const prevIndex = groupList.findIndex(item => item.id === rowKey);
+    const prevIndex = groupList.findIndex((item) => item.id === rowKey);
     newData.splice(prevIndex, 1);
     setGroupList(newData);
   };
-  
+
   if (isGroupEmpty) {
     return (
       <View style={styles.container}>
@@ -88,8 +90,9 @@ export default function GroupList(props) {
           </ActionButton.Item>
         </ActionButton>
       </View>
-    )
+    );
   } else {
+    // @TODO: 스케줄 없을 때 어떻게 나타낼지 @YOUDUCK
     return (
       <View style={styles.container}>
         <View style={styles.latestMeeting}>
@@ -102,18 +105,18 @@ export default function GroupList(props) {
           </View>
           <View style={styles.meetingInfo}>
             <View style={styles.meetingDetail}>
-              <MaterialIcons name={'timer'} size={25} color="#fff"/>
+              <MaterialIcons name={'timer'} size={25} color="#fff" />
               <Text style={styles.meetingTime}>{groupList[0].appointedAt}</Text>
             </View>
             <View style={styles.meetingDetail}>
-              <SimpleLineIcons name={'location-pin'} size={25} color="#fff"/>
+              <SimpleLineIcons name={'location-pin'} size={25} color="#fff" />
               <Text style={styles.meetingLocation}>{groupList[0].destination.name}</Text>
             </View>
           </View>
         </View>
         <SwipeListView
           data={groupList}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={(data, rowMap) => {
             return (
               <View style={styles.groupList}>
@@ -145,9 +148,7 @@ export default function GroupList(props) {
           renderHiddenItem={(data, rowMap) => (
             <View style={styles.rowBack}>
               <Text style={styles.rowText}> </Text>
-              <TouchableHighlight
-                onPress={() => deleteRow(rowMap, data.item.id)}
-              >
+              <TouchableHighlight onPress={() => deleteRow(rowMap, data.item.id)}>
                 <Text style={styles.rowText}>나가기</Text>
               </TouchableHighlight>
             </View>
@@ -339,7 +340,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 25,
-    paddingBottom: 41,
+    paddingBottom: 41
   },
   welcomeMessageSection: {
     flex: 1,
@@ -348,7 +349,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   welcomeMessageContainer: {
-    marginBottom: 10,
+    marginBottom: 10
   },
   welcomeMessage: {
     color: '#FFFFFF',

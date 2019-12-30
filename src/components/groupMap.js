@@ -10,21 +10,23 @@ export default function GroupMap(props) {
   const { accessToken } = useContext(GlobalContext);
 
   useEffect(() => {
-    fetch(url.getGroup(1), {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
+    if (!groupInfo) {
+      fetch(url.getGroup(1), {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${accessToken}` }
       })
-      .then((resJson) => {
-        setGroupInfo(resJson);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          }
+        })
+        .then((resJson) => {
+          setGroupInfo(resJson);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   }, []);
 
   return (

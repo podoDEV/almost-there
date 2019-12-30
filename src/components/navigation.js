@@ -5,6 +5,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
 import { SimpleLineIcons, MaterialIcons, EvilIcons } from '@expo/vector-icons';
 import { preview } from '../common';
+import { getSchedule } from '../time';
 
 export default function Navigation(props) {
   const { navigate, goBack } = useNavigation();
@@ -75,9 +76,7 @@ export default function Navigation(props) {
               <View style={styles.meetingInfoBox}>
                 <View style={styles.schedule}>
                   <Text style={styles.title}>모임시간</Text>
-                  <Text style={styles.detail}>
-                    {spacetime(groupInfo.appointedAt).unixFmt('yyyy-MM-dd hh:mm')}
-                  </Text>
+                  <Text style={styles.detail}>{getSchedule(groupInfo.schedule).dayTitleText}</Text>
                 </View>
                 <View style={styles.place}>
                   <Text style={styles.title}>모임장소</Text>
