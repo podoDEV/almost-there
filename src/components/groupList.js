@@ -57,7 +57,7 @@ export default function GroupList(props) {
 
   const renderListItem = (data, rowMap) => {
     const {
-      item: { name, destination, id, schedule },
+      item: { name, destination, id, schedule, memberCount },
       index
     } = data;
     const { dayTitleText, timeTitleText } = getSchedule(schedule);
@@ -67,14 +67,14 @@ export default function GroupList(props) {
         <TouchableHighlight
           onPress={() => {
             closeRow(rowMap, id);
-            navigate('GroupMap');
+            navigate('GroupMap', { groupId: id });
           }}
         >
           <View style={styles.groupItem} key={index}>
             <View style={styles.groupLeft}>
               <View style={styles.groupLeftUp}>
                 <Text style={styles.groupItemName}>{name}</Text>
-                <Text style={styles.groupItemNumbers}>3</Text>
+                <Text style={styles.groupItemNumbers}>{memberCount}</Text>
               </View>
               <View style={styles.groupLeftDown}>
                 <Text style={styles.groupItemLocation}>{destination.name}</Text>

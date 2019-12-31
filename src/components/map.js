@@ -52,7 +52,7 @@ export default class Map extends React.Component {
     const { accessToken } = this.context;
     const options = { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } };
     // @TODO: groupId 받아와서 찍어줘야함.
-    fetch(url.getGroup(1), options)
+    fetch(url.getGroup(this.props.groupId), options)
       .then((res) => res.json())
       .then((resJson) => {
         const {

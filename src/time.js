@@ -56,7 +56,7 @@ export function getSchedule(schedule) {
 
   dayOfWeek.map((value) => {
     const { title } = days.filter((obj) => obj.value === value)[0];
-    dayTitleText += `${title}요일,`;
+    dayTitleText += `${title},`;
   });
   dayTitleText = dayTitleText.slice(0, dayTitleText.length - 1);
 
