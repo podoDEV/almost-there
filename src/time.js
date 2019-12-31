@@ -37,19 +37,32 @@ export function getTime(time) {
   };
 }
 
+function getTimeTitleText(time) {
+  const { meridiem, hour, min } = time;
+  const meridiemTitle = meridiem === 'am' ? '오전' : '오후';
+  const hourTitle = hour > 10 ? hour : `0${hour}`;
+  const minTitle = min > 10 ? min : `0${min}`;
+
+  return `${meridiemTitle} ${hourTitle}:${minTitle}`;
+}
+
 export function getSchedule(schedule) {
   const { dayOfWeek, hour, minute } = schedule;
   const tempTime = spacetime([2019, 1, 1, hour, minute]);
 
   const time = getTime(tempTime);
+  const timeTitleText = getTimeTitleText(time);
   let dayTitleText = '매주 ';
+
   dayOfWeek.map((value) => {
     const { title } = days.filter((obj) => obj.value === value)[0];
-    dayTitleText += `${title}요일 `;
+    dayTitleText += `${title}요일,`;
   });
+  dayTitleText = dayTitleText.slice(0, dayTitleText.length - 1);
 
   return {
     time,
-    dayTitleText
+    dayTitleText,
+    timeTitleText
   };
 }
