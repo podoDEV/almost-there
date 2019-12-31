@@ -12,9 +12,8 @@ import {
   Clipboard,
   Share
 } from 'react-native';
-import spacetime from 'spacetime';
 import ActionButton from 'react-native-action-button';
-import { useNavigation } from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
 import DateSelector from './dateSelector';
@@ -25,6 +24,7 @@ import { getTime, getSchedule } from '../time';
 export default function EditGroup(props) {
   const { accessToken } = useContext(GlobalContext);
   const { navigate } = useNavigation();
+  const groupId = useNavigationParam('groupId');
   const [time, setTime] = useState(null);
   const [groupInfo, setGroupInfo] = useState(null);
   // const [maxMemberCnt, setMaxMemberCnt] = useState('0');
@@ -32,32 +32,28 @@ export default function EditGroup(props) {
   const [selectedDay, setSelectedDay] = useState([]);
 
   useEffect(() => {
-    fetch(url.getMembers(), { method: 'GET' })
-      .then((res) => res.json())
-      .then(() => {
-        const options = {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${accessToken}` }
-        };
-        fetch(url.getGroup(1), options)
-          .then((res) => {
-            if (res.status === 200) {
-              return res.json();
-            }
-          })
-          .then((resJson) => {
-            setGroupInfo(resJson);
-            const {
-              schedule,
-              destination: { name, location }
-            } = resJson;
-            setTime(getSchedule(schedule).time);
-            setSelectedDay(schedule.dayOfWeek);
-            setPlace({ name, coordinate: location });
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+    const options = {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${accessToken}` }
+    };
+    fetch(url.getGroup(groupId), options)
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+      })
+      .then((resJson) => {
+        setGroupInfo(resJson);
+        const {
+          schedule,
+          destination: { name, location }
+        } = resJson;
+        setTime(getSchedule(schedule).time);
+        setSelectedDay(schedule.dayOfWeek);
+        setPlace({ name, coordinate: location });
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }, []);
 
