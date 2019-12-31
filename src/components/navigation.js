@@ -87,7 +87,7 @@ export default function Navigation(props) {
                     name="gear"
                     color="#0099ED"
                     size={25}
-                    onPress={() => navigate('EditGroup')}
+                    onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
                   />
                 </View>
               </View>

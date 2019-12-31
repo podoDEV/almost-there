@@ -40,8 +40,8 @@ export function getTime(time) {
 function getTimeTitleText(time) {
   const { meridiem, hour, min } = time;
   const meridiemTitle = meridiem === 'am' ? '오전' : '오후';
-  const hourTitle = hour > 10 ? hour : `0${hour}`;
-  const minTitle = min > 10 ? min : `0${min}`;
+  const hourTitle = hour >= 10 ? hour : `0${hour}`;
+  const minTitle = min >= 10 ? min : `0${min}`;
 
   return `${meridiemTitle} ${hourTitle}:${minTitle}`;
 }
