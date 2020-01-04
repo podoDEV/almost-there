@@ -5,11 +5,13 @@ import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
 import Navigation from './navigation';
 import Map from './map';
+import { isOwner } from '../common.js';
 
 export default function GroupMap(props) {
   const [groupInfo, setGroupInfo] = useState(null);
   const groupId = useNavigationParam('groupId');
-  const { accessToken } = useContext(GlobalContext);
+  const { accessToken, id } = useContext(GlobalContext);
+  const [owner, setOwner] = useState(false);
 
   useEffect(() => {
     if (!groupInfo) {
@@ -24,6 +26,7 @@ export default function GroupMap(props) {
         })
         .then((resJson) => {
           setGroupInfo(resJson);
+          setOwner(isOwner(resJson.members, id));
         })
         .catch((error) => {
           console.error(error);
@@ -36,7 +39,7 @@ export default function GroupMap(props) {
       <View style={styles.mapContainer}>
         <Map groupId={groupId} />
       </View>
-      <Navigation groupInfo={groupInfo} navigation={props.navigation} />
+      <Navigation groupInfo={groupInfo} navigation={props.navigation} owner={owner} />
     </View>
   );
 }

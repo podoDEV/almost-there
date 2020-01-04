@@ -5,11 +5,8 @@ import {
   View,
   KeyboardAvoidingView,
   ScrollView,
-  Switch,
   Image,
-  TextInput,
   TouchableOpacity,
-  Clipboard,
   Share
 } from 'react-native';
 import ActionButton from 'react-native-action-button';

@@ -19,7 +19,7 @@ export default function GroupList(props) {
         method: 'GET',
         headers: { Authorization: `Bearer ${accessToken}` }
       };
-      fetch(url.getGroups(), options)
+      fetch(url.membersMe(), options)
         .then((res) => {
           if (res.status === 200) {
             return res.json();
@@ -27,7 +27,7 @@ export default function GroupList(props) {
         })
         .then((resJson) => {
           setGroupList(
-            resJson.sort((a, b) => {
+            resJson.groups.sort((a, b) => {
               // @TODO: apppointedAt으로 하면 안됨
               if (a.appointedAt < b.appointedAt) {
                 return -1;

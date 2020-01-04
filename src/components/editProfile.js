@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, ImageBackground, TextInput } from 'react-native';
+import React, { useState, useContext } from 'react';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  TextInput,
+  ActivityIndicator
+} from 'react-native';
+import { GlobalContext } from '../context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigationParam } from 'react-navigation-hooks';
+import { useNavigationParam, useNavigation } from 'react-navigation-hooks';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+import * as url from '../apiUrl';
 
 export default function editProfile() {
+  const globalUserInfo = useContext(GlobalContext);
   const userInfo = useNavigationParam('userInfo');
   const [name, setName] = useState(userInfo.name);
+  const { goBack } = useNavigation();
+  const [finish, setFinish] = useState(false);
+  const [imageUpload, setImageUpload] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(userInfo.profileImageUrl);
 
   async function pickImage() {
@@ -27,6 +41,75 @@ export default function editProfile() {
     if (!result.cancelled) {
       setProfileImageUrl(result.uri);
     }
+  }
+
+  function finishEditing() {
+    const options = {
+      method: 'PUT',
+      body: JSON.stringify({
+        name,
+        registrationToken: globalUserInfo.registrationToken
+      }),
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${globalUserInfo.accessToken}`
+      }
+    };
+
+    fetch(url.membersMe(), options)
+      .then((res) => {
+        console.log(res, globalUserInfo);
+        if (res.status === 200) {
+          return res.json();
+        }
+      })
+      .then((resJson) => {
+        setFinish(true);
+        globalUserInfo.name = name;
+        setTimeout(() => {
+          goBack();
+        }, 1000);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    // if (profileImageUrl !== userInfo.profileImageUrl) {
+    //   const uriParts = profileImageUrl.split('.');
+    //   const fileType = uriParts[uriParts.length - 1];
+    //   const formData = new FormData();
+    //   setImageUpload(true);
+    //   formData.append('file', {
+    //     uri: profileImageUrl,
+    //     name: `file.${fileType}`,
+    //     type: `image/${fileType}`
+    //   });
+
+    //   const options = {
+    //     method: 'POST',
+    //     body: formData,
+    //     headers: {
+    //       Accept: 'application/json',
+    //       'Content-Type': 'multipart/form-data',
+    //       Authorization: `Bearer ${globalUserInfo.accessToken}`
+    //     }
+    //   };
+
+    //   fetch(url.uploadImage(), options)
+    //     .then((res) => {
+    //       if (res.status === 200) {
+    //         return res.json();
+    //       }
+    //     })
+    //     .then(() => {
+    //       // setTimeout(() => {
+    //       //   goBack();
+    //       // }, 2000);
+    //     })
+    //     .catch((err) => {
+    //       console.error(err);
+    //     });
+    // }
   }
 
   return (
@@ -57,10 +140,16 @@ export default function editProfile() {
       <TouchableOpacity
         style={styles.finishBtnContainer}
         onPress={() => {
-          alert('수정!');
+          finishEditing();
         }}
       >
-        <Text style={styles.finishBtn}>수정 완료</Text>
+        {finish && imageUpload ? (
+          <Text style={styles.finishBtn}>{name}</Text>
+        ) : imageUpload ? (
+          <ActivityIndicator size="small" color="#fff" style={{ marginTop: 10 }} />
+        ) : (
+          <Text style={styles.finishBtn}>완료 ></Text>
+        )}
       </TouchableOpacity>
     </View>
   );

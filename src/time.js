@@ -15,7 +15,7 @@ export function getTimePickerSet() {
   const HOUR = Array.from(Array(13).keys());
   HOUR.shift();
   const MIN_NUM = Array.from(Array(60).keys());
-  const MIN = MIN_NUM.map((min) => {
+  const MIN = MIN_NUM.filter((min) => !(min % 5)).map((min) => {
     return min < 10 ? '0' + min : min.toString();
   });
 

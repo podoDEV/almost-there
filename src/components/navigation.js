@@ -10,9 +10,8 @@ import { getSchedule } from '../time';
 export default function Navigation(props) {
   const { navigate, goBack } = useNavigation();
   const [isLoaded, setIsLoaded] = useState(false);
-  const { groupInfo } = props;
+  const { groupInfo, owner } = props;
   const [fold, toggleFold] = useState(true);
-
   useEffect(() => {
     if (!isLoaded && props.groupInfo) {
       setIsLoaded(true);
@@ -82,14 +81,16 @@ export default function Navigation(props) {
                   <Text style={styles.title}>모임장소</Text>
                   <Text style={styles.detail}>{groupInfo.destination.name}</Text>
                 </View>
-                <View style={styles.editIconContainer}>
-                  <EvilIcons
-                    name="gear"
-                    color="#0099ED"
-                    size={25}
-                    onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
-                  />
-                </View>
+                {owner && (
+                  <View style={styles.editIconContainer}>
+                    <EvilIcons
+                      name="gear"
+                      color="#0099ED"
+                      size={25}
+                      onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
+                    />
+                  </View>
+                )}
               </View>
             </View>
           )}
