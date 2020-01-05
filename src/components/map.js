@@ -14,7 +14,7 @@ const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 const DEFAULT_PADDING = { top: 100, right: 100, bottom: 100, left: 100 };
-const UPDATE_INTERVAL = 2000;
+const UPDATE_INTERVAL = 1000;
 
 export default class Map extends React.Component {
   timerId = null;

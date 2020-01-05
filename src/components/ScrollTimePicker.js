@@ -45,7 +45,7 @@ export default function ScrollTimePicker(props) {
         }}
         dataSource={MIN}
         wrapperHeight={105}
-        selectedIndex={min}
+        selectedIndex={min / 5}
         onValueChange={updateTime}
       />
     </View>

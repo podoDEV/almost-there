@@ -33,7 +33,7 @@ export function getTime(time) {
   return {
     meridiem: tt.ampm(),
     hour: hourNumber > 12 ? hourNumber - 12 : hourNumber,
-    min: tt.minute()
+    min: parseInt(tt.minute() / 5) * 5
   };
 }
 

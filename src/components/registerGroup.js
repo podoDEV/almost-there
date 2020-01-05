@@ -53,7 +53,7 @@ export default function RegisterGroup(props) {
         schedule: {
           dayOfWeeks: [...selectedDay],
           hour: time.meridiem === 'AM' ? Number(time.hour) : Number(time.hour) + 12,
-          minute: Number(time.min)
+          minute: parseInt(time.min / 5) * 5
         }
       }),
       headers: {
