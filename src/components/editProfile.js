@@ -43,73 +43,92 @@ export default function editProfile() {
     }
   }
 
-  function finishEditing() {
-    const options = {
-      method: 'PUT',
-      body: JSON.stringify({
-        name,
-        registrationToken: globalUserInfo.registrationToken
-      }),
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${globalUserInfo.accessToken}`
-      }
-    };
-
-    fetch(url.membersMe(), options)
-      .then((res) => {
-        console.log(res, globalUserInfo);
-        if (res.status === 200) {
-          return res.json();
+  function changeName() {
+    if (name !== userInfo.name) {
+      const options = {
+        method: 'PUT',
+        body: JSON.stringify({
+          name
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${globalUserInfo.accessToken}`
         }
-      })
-      .then((resJson) => {
-        setFinish(true);
-        globalUserInfo.name = name;
-        setTimeout(() => {
-          goBack();
-        }, 1000);
-      })
-      .catch((err) => {
-        console.error(err);
+      };
+
+      return fetch(url.membersMe(), options)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          }
+        })
+        .then((resJson) => {
+          globalUserInfo.name = name;
+
+          return true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+
+    return true;
+  }
+
+  function changePhoto() {
+    setImageUpload(true);
+
+    if (profileImageUrl !== userInfo.profileImageUrl) {
+      const uriParts = profileImageUrl.split('.');
+      const fileType = uriParts[uriParts.length - 1];
+      const formData = new FormData();
+      formData.append('file', {
+        uri: profileImageUrl,
+        name: `file.${fileType}`,
+        type: `image/${fileType}`
       });
 
-    // if (profileImageUrl !== userInfo.profileImageUrl) {
-    //   const uriParts = profileImageUrl.split('.');
-    //   const fileType = uriParts[uriParts.length - 1];
-    //   const formData = new FormData();
-    //   setImageUpload(true);
-    //   formData.append('file', {
-    //     uri: profileImageUrl,
-    //     name: `file.${fileType}`,
-    //     type: `image/${fileType}`
-    //   });
+      const options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${globalUserInfo.accessToken}`
+        }
+      };
 
-    //   const options = {
-    //     method: 'POST',
-    //     body: formData,
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-Type': 'multipart/form-data',
-    //       Authorization: `Bearer ${globalUserInfo.accessToken}`
-    //     }
-    //   };
+      return fetch(url.uploadImage(), options)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          }
+        })
+        .then(() => {
+          return true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
 
-    //   fetch(url.uploadImage(), options)
-    //     .then((res) => {
-    //       if (res.status === 200) {
-    //         return res.json();
-    //       }
-    //     })
-    //     .then(() => {
-    //       // setTimeout(() => {
-    //       //   goBack();
-    //       // }, 2000);
-    //     })
-    //     .catch((err) => {
-    //       console.error(err);
-    //     });
-    // }
+    return true;
+  }
+
+  async function finishEditing() {
+    const finishChangeName = await changeName();
+    const finishChangePhoto = await changePhoto();
+
+    if (finishChangeName && finishChangePhoto) {
+      setFinish(true);
+      setTimeout(() => {
+        goBack();
+      }, 1000);
+    } else {
+      alert('뭔가 잘못된 것 같다!');
+      return;
+    }
   }
 
   return (
@@ -135,7 +154,12 @@ export default function editProfile() {
             </ImageBackground>
           </TouchableOpacity>
         </View>
-        <TextInput style={styles.nameInput} onChangeText={(text) => setName(text)} value={name} />
+        {!finish && imageUpload && (
+          <ActivityIndicator size="small" color="#ddd" style={{ marginTop: 10 }} />
+        )}
+        {!finish && !imageUpload && (
+          <TextInput style={styles.nameInput} onChangeText={(text) => setName(text)} value={name} />
+        )}
       </View>
       <TouchableOpacity
         style={styles.finishBtnContainer}
@@ -143,13 +167,8 @@ export default function editProfile() {
           finishEditing();
         }}
       >
-        {finish && imageUpload ? (
-          <Text style={styles.finishBtn}>{name}</Text>
-        ) : imageUpload ? (
-          <ActivityIndicator size="small" color="#fff" style={{ marginTop: 10 }} />
-        ) : (
-          <Text style={styles.finishBtn}>완료 ></Text>
-        )}
+        {finish && imageUpload && <Text style={styles.finishBtn}>{name}</Text>}
+        {!finish && !imageUpload && <Text style={styles.finishBtn}>완료 ></Text>}
       </TouchableOpacity>
     </View>
   );
