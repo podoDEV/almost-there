@@ -75,7 +75,11 @@ export default function Navigation(props) {
               <View style={styles.meetingInfoBox}>
                 <View style={styles.schedule}>
                   <Text style={styles.title}>모임시간</Text>
-                  <Text style={styles.detail}>{getSchedule(groupInfo.schedule).dayTitleText}</Text>
+                  <Text style={styles.detail}>
+                    {getSchedule(groupInfo.schedule).dayTitleText}
+                    {'\n'}
+                    {getSchedule(groupInfo.schedule).timeTitleText}
+                  </Text>
                 </View>
                 <View style={styles.place}>
                   <Text style={styles.title}>모임장소</Text>

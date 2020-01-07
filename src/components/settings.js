@@ -37,8 +37,9 @@ export default function Setting(props) {
           </View>
         </TouchableOpacity>
       </View>
-      <View style={styles.underline}></View>
-      <View style={styles.itemContainer}>
+      {/* @TODO: 1.1.0 */}
+      {/* <View style={styles.underline}></View> */}
+      {/* <View style={styles.itemContainer}>
         <TouchableOpacity style={styles.itemInnerContainer}>
           <Text style={styles.itemTitle}>정보</Text>
           <View style={styles.itemUserInfoContainer}>
@@ -55,7 +56,7 @@ export default function Setting(props) {
             <MaterialIcons name="keyboard-arrow-right" size={30} color="rgb(155,155,155)" />
           </View>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View style={styles.underline}></View>
       <View style={styles.itemContainer}>
         <TouchableOpacity

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,17 +10,17 @@ import {
   Share
 } from 'react-native';
 import ActionButton from 'react-native-action-button';
-import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam, useFocusEffect } from 'react-navigation-hooks';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
 import DateSelector from './dateSelector';
 // import MaxMemberInput from './maxMemberInput';
 import ScrollTimePicker from './ScrollTimePicker';
-import { getTime, getSchedule } from '../time';
+import { getSchedule } from '../time';
 
 export default function EditGroup(props) {
   const { accessToken } = useContext(GlobalContext);
-  const { navigate } = useNavigation();
+  const { navigate, goBack } = useNavigation();
   const groupId = useNavigationParam('groupId');
   const [time, setTime] = useState(null);
   const [groupInfo, setGroupInfo] = useState(null);
@@ -28,31 +28,33 @@ export default function EditGroup(props) {
   const [place, setPlace] = useState(null);
   const [selectedDay, setSelectedDay] = useState([]);
 
-  useEffect(() => {
-    const options = {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${accessToken}` }
-    };
-    fetch(url.getGroup(groupId), options)
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-      })
-      .then((resJson) => {
-        setGroupInfo(resJson);
-        const {
-          schedule,
-          destination: { name, location }
-        } = resJson;
-        setTime(getSchedule(schedule).time);
-        setSelectedDay(schedule.dayOfWeek);
-        setPlace({ name, coordinate: location });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const options = {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${accessToken}` }
+      };
+      fetch(url.getGroup(groupId), options)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          }
+        })
+        .then((resJson) => {
+          const {
+            schedule,
+            destination: { name, location }
+          } = resJson;
+          setGroupInfo(resJson);
+          setTime(getSchedule(schedule).time);
+          setSelectedDay(schedule.dayOfWeek);
+          setPlace({ name, coordinate: location });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }, [])
+  );
 
   useEffect(() => {
     const { params } = props.navigation.state;
@@ -65,11 +67,52 @@ export default function EditGroup(props) {
   async function copyToClipboard() {
     const { code, name } = groupInfo;
     Share.share({
-      message: `🙋‍♂️ ${name} 모임코드: ${code}.\n-------\n앱스토어에서 진짜 다와가를 만나보세요! 👇\n링크: https://apps.apple.com/us/app/podolist/id1439078928`
+      message: `🙋‍♂️ ${name} 모임코드:${code}.\n-------\n앱스토어에서 진짜 다와가를 만나보세요! 👇\n링크: https://apps.apple.com/us/app/podolist/id1439078928`
     });
   }
 
   const renderFinishBtn = !!place && !!selectedDay.length;
+
+  const finishEditing = () => {
+    const options = {
+      method: 'PUT',
+      body: JSON.stringify({
+        appointedAt: '2019-12-22T03:16:44.899Z',
+        destination: {
+          location: {
+            ...place.coordinate
+          },
+          name: place.name
+        },
+        maximumCount: 99,
+        name: groupInfo.name,
+        schedule: {
+          dayOfWeeks: [...selectedDay],
+          hour: time.hour,
+          meridiem: time.meridiem,
+          minute: time.min
+        }
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+
+    fetch(url.putGroup(groupId), options)
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+      })
+      .then(() => {
+        goBack();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -126,7 +169,7 @@ export default function EditGroup(props) {
         <ActionButton
           buttonColor="#0099ED"
           renderIcon={() => <Text style={styles.finishBtn}>완료</Text>}
-          onPress={this.renderMarkers}
+          onPress={finishEditing}
           size={70}
         />
       )}

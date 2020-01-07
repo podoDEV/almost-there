@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,8 +6,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   TextInput,
-  TouchableOpacity,
-  Button
+  TouchableOpacity
 } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
@@ -52,8 +51,9 @@ export default function RegisterGroup(props) {
         name,
         schedule: {
           dayOfWeeks: [...selectedDay],
-          hour: time.meridiem === 'AM' ? Number(time.hour) : Number(time.hour) + 12,
-          minute: parseInt(time.min / 5) * 5
+          hour: time.hour,
+          meridiem: time.meridiem,
+          minute: time.min
         }
       }),
       headers: {
@@ -61,6 +61,7 @@ export default function RegisterGroup(props) {
         Authorization: `Bearer ${accessToken}`
       }
     };
+
     fetch(url.postGroups(), createGroupOptions)
       .then((res) => res.json())
       .then(() => {

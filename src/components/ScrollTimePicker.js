@@ -26,7 +26,7 @@ export default function ScrollTimePicker(props) {
         }}
         dataSource={MERIDIEM}
         wrapperHeight={105}
-        selectedIndex={meridiem === 'am' ? 0 : 1}
+        selectedIndex={meridiem === 'AM' ? 0 : 1}
         onValueChange={updateTime}
       />
       <ScrollPicker

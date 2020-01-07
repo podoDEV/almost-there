@@ -47,6 +47,8 @@ export default class Map extends React.Component {
     if (active !== prevState.active && active) {
       this.renderMarkers();
     }
+
+    // @TODO: navigation이 back하면 다시 active 여부 찔러봐야함
   }
 
   renderMarkers = () => {
