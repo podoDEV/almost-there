@@ -15,7 +15,7 @@ export function getTimePickerSet() {
   const HOUR = Array.from(Array(13).keys());
   HOUR.shift();
   const MIN_NUM = Array.from(Array(60).keys());
-  const MIN = MIN_NUM.map((min) => {
+  const MIN = MIN_NUM.filter((min) => !(min % 5)).map((min) => {
     return min < 10 ? '0' + min : min.toString();
   });
 
@@ -31,24 +31,37 @@ export function getTime(time) {
   const hourNumber = tt.hour();
 
   return {
-    meridiem: tt.ampm(),
+    meridiem: tt.ampm().toUpperCase(),
     hour: hourNumber > 12 ? hourNumber - 12 : hourNumber,
-    min: tt.minute()
+    min: parseInt(tt.minute() / 5) * 5
   };
 }
 
 function getTimeTitleText(time) {
   const { meridiem, hour, min } = time;
-  const meridiemTitle = meridiem === 'am' ? '오전' : '오후';
+  const meridiemTitle = meridiem === 'AM' ? '오전' : '오후';
   const hourTitle = hour >= 10 ? hour : `0${hour}`;
   const minTitle = min >= 10 ? min : `0${min}`;
 
   return `${meridiemTitle} ${hourTitle}:${minTitle}`;
 }
 
+function getHourWithMeridiem(meridiem, hour) {
+  if (meridiem === 'AM' && hour === 12) {
+    return 0;
+  }
+
+  if (meridiem === 'PM' && hour !== 12) {
+    return hour + 12;
+  }
+
+  return hour;
+}
+
 export function getSchedule(schedule) {
-  const { dayOfWeek, hour, minute } = schedule;
-  const tempTime = spacetime([2019, 1, 1, hour, minute]);
+  const { dayOfWeek, hour, minute, meridiem } = schedule;
+  const hourWithMeridiem = getHourWithMeridiem(meridiem, hour);
+  const tempTime = spacetime([2019, 1, 1, hourWithMeridiem, minute]);
 
   const time = getTime(tempTime);
   const timeTitleText = getTimeTitleText(time);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,10 +6,9 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   TextInput,
-  TouchableOpacity,
-  Button
+  TouchableOpacity
 } from 'react-native';
-import { useNavigation, useNavigationParam, useFocusEffect } from 'react-navigation-hooks';
+import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
 // import MaxMemberInput from './maxMemberInput';
 import DateSelector from './dateSelector';
@@ -29,8 +28,6 @@ export default function RegisterGroup(props) {
   const [selectedDay, setSelectedDay] = useState([]);
   const [time, setTime] = useState({ hour, min, meridiem });
   const { accessToken } = useContext(GlobalContext);
-  // const placeName = useNavigationParam('name');
-  // const placeCoordinate = useNavigationParam('coordinate');
 
   useEffect(() => {
     const { params } = props.navigation.state;
@@ -54,7 +51,8 @@ export default function RegisterGroup(props) {
         name,
         schedule: {
           dayOfWeeks: [...selectedDay],
-          hour: time.hour + time.meridiem === 'AM' ? 0 : 12,
+          hour: time.hour,
+          meridiem: time.meridiem,
           minute: time.min
         }
       }),
@@ -63,6 +61,7 @@ export default function RegisterGroup(props) {
         Authorization: `Bearer ${accessToken}`
       }
     };
+
     fetch(url.postGroups(), createGroupOptions)
       .then((res) => res.json())
       .then(() => {

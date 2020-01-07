@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Platform } from 'react-native';
+import { StyleSheet, View, Dimensions, Platform, Text } from 'react-native';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import MapView from 'react-native-maps';
@@ -14,7 +14,7 @@ const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 const DEFAULT_PADDING = { top: 100, right: 100, bottom: 100, left: 100 };
-const UPDATE_INTERVAL = 2000;
+const UPDATE_INTERVAL = 1000;
 
 export default class Map extends React.Component {
   timerId = null;
@@ -23,11 +23,14 @@ export default class Map extends React.Component {
   state = {
     region: null,
     destination: null,
-    members: null
+    members: null,
+    active: false
   };
 
   componentWillUnmount() {
-    clearInterval(this.timerId);
+    if (this.timerId) {
+      clearInterval(this.timerId);
+    }
   }
 
   componentWillMount() {
@@ -35,10 +38,17 @@ export default class Map extends React.Component {
       alert('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
     } else {
       this.getGroupInfo();
-      this.timerId = setInterval(() => {
-        this.updateMyLocationAndReRender();
-      }, UPDATE_INTERVAL);
     }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { active } = this.state;
+
+    if (active !== prevState.active && active) {
+      this.renderMarkers();
+    }
+
+    // @TODO: navigation이 back하면 다시 active 여부 찔러봐야함
   }
 
   renderMarkers = () => {
@@ -51,7 +61,6 @@ export default class Map extends React.Component {
   getGroupInfo = () => {
     const { accessToken } = this.context;
     const options = { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } };
-    // @TODO: groupId 받아와서 찍어줘야함.
     fetch(url.getGroup(this.props.groupId), options)
       .then((res) => res.json())
       .then((resJson) => {
@@ -60,21 +69,25 @@ export default class Map extends React.Component {
           destination: {
             name,
             location: { latitude, longitude }
-          }
+          },
+          status
         } = resJson;
 
-        const memberInfoList = this.getMemberInfos(members);
-        this.setState(
-          {
-            destination: { name, latitude, longitude, isDestination: true },
-            members: memberInfoList
-          },
-          () => {
-            if (!this.state.markerLoaded) {
-              this.fitToAllMarkers();
+        if (status === 'ACTIVE') {
+          const memberInfoList = this.getMemberInfos(members);
+          this.setState(
+            {
+              active: true,
+              destination: { name, latitude, longitude, isDestination: true },
+              members: memberInfoList
+            },
+            () => {
+              if (!this.state.markerLoaded) {
+                this.fitToAllMarkers();
+              }
             }
-          }
-        );
+          );
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -161,8 +174,34 @@ export default class Map extends React.Component {
     this.state.markerLoaded = true;
   }
 
+  renderNotActiveLayer() {
+    return (
+      <View
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(255,255,255,0.8)',
+          paddingTop: '60%'
+        }}
+      >
+        <Text
+          style={{
+            flex: 1,
+            textAlign: 'center',
+            fontSize: 55,
+            fontFamily: 'scdreamBold',
+            color: '#0099ED'
+          }}
+        >
+          아직{'\n'}모임시간이{'\n'}아닙니다
+        </Text>
+      </View>
+    );
+  }
+
   render() {
-    const { members, destination } = this.state;
+    const { members, destination, active } = this.state;
 
     return (
       <View style={styles.container}>
@@ -200,12 +239,16 @@ export default class Map extends React.Component {
             />
           )}
         </MapView>
-        <ActionButton
-          buttonColor="#0099ED"
-          renderIcon={() => <MaterialIcons name="gps-fixed" size={45} color="#fff" />}
-          onPress={this.renderMarkers}
-          size={70}
-        />
+        {active ? (
+          <ActionButton
+            buttonColor="#0099ED"
+            renderIcon={() => <MaterialIcons name="gps-fixed" size={45} color="#fff" />}
+            onPress={this.renderMarkers}
+            size={70}
+          />
+        ) : (
+          this.renderNotActiveLayer()
+        )}
       </View>
     );
   }

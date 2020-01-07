@@ -42,7 +42,7 @@ export default function SplashScreen() {
   async function getUserSession() {
     const accessToken = await AsyncStorage.getItem('ACCESS_TOKEN');
 
-    if (accessToken) {
+    if (accessToken || userInfo.registrationToken) {
       fetch(url.membersMe(), {
         method: 'GET',
         headers: {
@@ -57,10 +57,12 @@ export default function SplashScreen() {
           }
         })
         .then((resJson) => {
-          const { name, id } = resJson;
+          const { name, id, registrationToken } = resJson;
           userInfo.name = name;
           userInfo.id = id;
           userInfo.accessToken = accessToken;
+          // @TODO: 이후에 쓰든지 지우든지
+          // userInfo.registrationToken = registrationToken;
           AsyncStorage.setItem('ACCESS_TOKEN', accessToken, () => {
             navigate('GroupList');
           });

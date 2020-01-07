@@ -1,6 +1,6 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
-import { useNavigation } from 'react-navigation-hooks';
+import { useNavigation, useFocusEffect } from 'react-navigation-hooks';
 import { MaterialIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
@@ -10,16 +10,18 @@ export default function Setting(props) {
   const [userInfo, setUserInfo] = useState({ name: '', profileImageUrl: '' });
   const { accessToken } = useContext(GlobalContext);
 
-  useEffect(() => {
-    fetch(url.membersMe(), {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
-      .then((res) => res.json())
-      .then(({ name, profileImageUrl }) => {
-        setUserInfo({ name, profileImageUrl });
-      });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetch(url.membersMe(), {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${accessToken}` }
+      })
+        .then((res) => res.json())
+        .then(({ name, profileImageUrl }) => {
+          setUserInfo({ name, profileImageUrl });
+        });
+    }, [])
+  );
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -35,8 +37,9 @@ export default function Setting(props) {
           </View>
         </TouchableOpacity>
       </View>
-      <View style={styles.underline}></View>
-      <View style={styles.itemContainer}>
+      {/* @TODO: 1.1.0 */}
+      {/* <View style={styles.underline}></View> */}
+      {/* <View style={styles.itemContainer}>
         <TouchableOpacity style={styles.itemInnerContainer}>
           <Text style={styles.itemTitle}>정보</Text>
           <View style={styles.itemUserInfoContainer}>
@@ -53,7 +56,7 @@ export default function Setting(props) {
             <MaterialIcons name="keyboard-arrow-right" size={30} color="rgb(155,155,155)" />
           </View>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View style={styles.underline}></View>
       <View style={styles.itemContainer}>
         <TouchableOpacity
