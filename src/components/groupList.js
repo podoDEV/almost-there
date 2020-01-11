@@ -93,7 +93,7 @@ export default function GroupList(props) {
         renderHiddenItem={(data, rowMap) => (
           <View style={styles.rowBack}>
             <Text style={styles.rowText}> </Text>
-            <TouchableHighlight onPress={() => deleteRow(rowMap, data.item.id)}>
+            <TouchableHighlight onPress={() => deleteRow(rowMap, data.item.id)} style={styles.leaveButton}>
               <Text style={styles.rowText}>나가기</Text>
             </TouchableHighlight>
           </View>
@@ -215,11 +215,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingLeft: 15,
-    paddingRight: 18
   },
   rowText: {
     color: '#FFFFFF',
     fontFamily: 'scdreamBold'
+  },
+  leaveButton: {
+    width: 80,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });
