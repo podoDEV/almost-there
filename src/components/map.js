@@ -37,6 +37,7 @@ export default class Map extends React.Component {
     if (Platform.OS === 'android' && !Constants.isDevice) {
       alert('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
     } else {
+      console.log('1');
       this.getGroupInfo();
     }
   }
@@ -46,6 +47,11 @@ export default class Map extends React.Component {
 
     if (active !== prevState.active && active) {
       this.renderMarkers();
+    }
+
+    if (prevProps !== this.props) {
+      console.log('2');
+      this.getGroupInfo();
     }
 
     // @TODO: navigation이 back하면 다시 active 여부 찔러봐야함
@@ -87,6 +93,9 @@ export default class Map extends React.Component {
               }
             }
           );
+        } else {
+          clearInterval(this.timerId);
+          this.setState({ active: false });
         }
       })
       .catch((error) => {
@@ -176,24 +185,8 @@ export default class Map extends React.Component {
 
   renderNotActiveLayer() {
     return (
-      <View
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(255,255,255,0.8)',
-          paddingTop: '60%'
-        }}
-      >
-        <Text
-          style={{
-            flex: 1,
-            textAlign: 'center',
-            fontSize: 55,
-            fontFamily: 'scdreamBold',
-            color: '#0099ED'
-          }}
-        >
+      <View style={styles.notActiveLayer}>
+        <Text style={styles.notActiveLayerText}>
           아직{'\n'}모임시간이{'\n'}아닙니다
         </Text>
       </View>
@@ -266,5 +259,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center'
+  },
+  notActiveLayer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    paddingTop: '60%'
+  },
+  notActiveLayerText: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 55,
+    fontFamily: 'scdreamBold',
+    color: '#0099ED'
   }
 });

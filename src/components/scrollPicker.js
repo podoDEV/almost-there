@@ -111,10 +111,9 @@ export default class ScrollPicker extends Component {
 
     if (this.props.onValueChange) {
       let selectedValue = this.props.dataSource[selectedIndex];
-      this.setState({
-        selectedIndex: selectedIndex
+      this.setState({ selectedIndex }, () => {
+        this.props.onValueChange(selectedValue, selectedIndex);
       });
-      this.props.onValueChange(selectedValue, selectedIndex);
     }
   }
 
@@ -139,9 +138,9 @@ export default class ScrollPicker extends Component {
     this.timer && clearTimeout(this.timer);
     this.timer = setTimeout(() => {
       if (!this.momentumStarted && !this.dragStarted) {
-        this.scrollFix(_e, 'timeout');
+        this.scrollFix(_e);
       }
-    }, 10);
+    }, 100);
   };
 
   onMomentumScrollBegin = () => {
@@ -160,8 +159,8 @@ export default class ScrollPicker extends Component {
     this.setState({
       selectedIndex: ind
     });
-    let y = this.itemHeight * ind;
-    this.sview.scrollTo({ y: y });
+    const y = this.itemHeight * ind;
+    this.sview.scrollTo({ y });
   }
 
   getSelected() {
