@@ -26,14 +26,14 @@ export function getTimePickerSet() {
   };
 }
 
-export function getTime(time) {
+export function getTime(time, fiveUnit = true) {
   const tt = spacetime(time);
   const hourNumber = tt.hour();
 
   return {
     meridiem: tt.ampm().toUpperCase(),
     hour: hourNumber > 12 ? hourNumber - 12 : hourNumber,
-    min: parseInt(tt.minute() / 5) * 5
+    min: fiveUnit ? parseInt(tt.minute() / 5) * 5 : tt.minute()
   };
 }
 

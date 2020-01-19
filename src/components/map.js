@@ -37,7 +37,6 @@ export default class Map extends React.Component {
     if (Platform.OS === 'android' && !Constants.isDevice) {
       alert('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
     } else {
-      console.log('1');
       this.getGroupInfo();
     }
   }
@@ -50,11 +49,8 @@ export default class Map extends React.Component {
     }
 
     if (prevProps !== this.props) {
-      console.log('2');
       this.getGroupInfo();
     }
-
-    // @TODO: navigation이 back하면 다시 active 여부 찔러봐야함
   }
 
   renderMarkers = () => {
