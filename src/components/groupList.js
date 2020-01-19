@@ -26,14 +26,7 @@ export default function GroupList(props) {
           }
         })
         .then((resJson) => {
-          setGroupList(
-            resJson.groups.sort((a, b) => {
-              // @TODO: apppointedAt으로 하면 안됨
-              if (a.appointedAt < b.appointedAt) {
-                return -1;
-              }
-            })
-          );
+          setGroupList(resJson.groups);
         })
         .catch((error) => {
           console.error(error);

@@ -1,53 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
-import { getSchedule } from '../time';
+import { getSchedule, getTime } from '../time';
+import spacetime from 'spacetime';
 
 export default function closingScheduleHeader(props) {
   const { groupList } = props;
+  const [group, setGroup] = useState(null);
   const getTimeTitle = (schedule) => {
     const { timeTitleText, dayTitleText } = getSchedule(schedule);
 
     return `${dayTitleText} ${timeTitleText}`;
   };
 
+  useEffect(() => {
+    if (groupList) {
+      setGroup(groupList.find((group) => group.status === 'ACTIVE'));
+    }
+  }, [groupList]);
+
+  const getDiffTime = () => {
+    const { schedule } = group;
+    const { hour, min } = getTime(spacetime.now(), false);
+    const diff = schedule.hour * 60 + schedule.minute - hour * 60 - min;
+
+    return {
+      diff,
+      after: diff < 0
+    };
+  };
+
+  const renderActiveHeader = () => {
+    const { diff, after } = getDiffTime();
+
+    return (
+      <View style={styles.latestMeeting}>
+        <View style={styles.latestMeetingSection}>
+          <Text style={styles.soon}>{after ? '지금!' : '곧...'}</Text>
+        </View>
+        <View style={styles.latestMeetingSection}>
+          <Text style={styles.meetingName}>{group.name}</Text>
+          <Text style={styles.meetingRestTime}>
+            모임 {Math.abs(diff)}분 {after ? '지남' : '전'}
+          </Text>
+        </View>
+        <View style={styles.meetingInfo}>
+          <View style={styles.meetingDetail}>
+            <MaterialIcons name={'timer'} size={25} color="#fff" />
+            <Text style={styles.meetingTime}>{getTimeTitle(group.schedule)}</Text>
+          </View>
+          <View style={styles.meetingDetail}>
+            <SimpleLineIcons name={'location-pin'} size={25} color="#fff" />
+            <Text style={styles.meetingLocation}>{group.destination.name}</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const renderEmptyHeader = () => {
+    return (
+      <View style={styles.welcomeSection}>
+        <View style={styles.welcomeMessageSection}>
+          <View style={styles.welcomeMessageContainer}>
+            <Text style={styles.welcomeMessage}>반가워요!</Text>
+          </View>
+          <View style={styles.welcomeMessageContainer}>
+            <Text style={styles.welcomeMessage}>아래 +버튼을 눌러</Text>
+          </View>
+          <View>
+            <Text style={styles.welcomeMessageBold}>모임을 추가해 보세요!</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const renderInactiveHeader = () => {
+    return (
+      <View style={styles.welcomeSection}>
+        <View style={styles.welcomeMessageSection}>
+          <View style={styles.welcomeMessageContainer}>
+            <Text style={styles.welcomeMessage}>반가워요!</Text>
+          </View>
+          <View style={styles.welcomeMessageContainer}>
+            <Text style={styles.welcomeMessageBold}>임박한 모임이{'\n'}없습니다!</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View>
-      {groupList && groupList.length ? (
-        <View style={styles.latestMeeting}>
-          <View style={styles.latestMeetingSection}>
-            <Text style={styles.soon}>곧...</Text>
-          </View>
-          <View style={styles.latestMeetingSection}>
-            <Text style={styles.meetingName}>{groupList[0].name}</Text>
-            <Text style={styles.meetingRestTime}>모임 20분 전</Text>
-          </View>
-          <View style={styles.meetingInfo}>
-            <View style={styles.meetingDetail}>
-              <MaterialIcons name={'timer'} size={25} color="#fff" />
-              <Text style={styles.meetingTime}>{getTimeTitle(groupList[0].schedule)}</Text>
-            </View>
-            <View style={styles.meetingDetail}>
-              <SimpleLineIcons name={'location-pin'} size={25} color="#fff" />
-              <Text style={styles.meetingLocation}>{groupList[0].destination.name}</Text>
-            </View>
-          </View>
-        </View>
-      ) : (
-        <View style={styles.welcomeSection}>
-          <View style={styles.welcomeMessageSection}>
-            <View style={styles.welcomeMessageContainer}>
-              <Text style={styles.welcomeMessage}>반가워요!</Text>
-            </View>
-            <View style={styles.welcomeMessageContainer}>
-              <Text style={styles.welcomeMessage}>아래 +버튼을 눌러</Text>
-            </View>
-            <View>
-              <Text style={styles.welcomeMessageBold}>모임을 추가해 보세요!</Text>
-            </View>
-          </View>
-        </View>
-      )}
+      {group
+        ? renderActiveHeader()
+        : groupList && groupList.length
+        ? renderInactiveHeader()
+        : renderEmptyHeader()}
     </View>
   );
 }
