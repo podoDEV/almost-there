@@ -78,7 +78,10 @@ export default function PlaceSearch(props) {
       longitudeDelta: LONGITUDE_DELTA
     };
 
-    mapRef.current.animateToRegion(newRegion, 500);
+    setTimeout(() => {
+      mapRef.current.animateToRegion(newRegion, 500);
+    });
+
     setSelectedPlace(place);
     setPlaceList(null);
   };
