@@ -63,7 +63,7 @@ export default function editProfile() {
             return res.json();
           }
         })
-        .then((resJson) => {
+        .then(() => {
           globalUserInfo.name = name;
 
           return true;

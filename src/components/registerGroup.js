@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
-// import MaxMemberInput from './maxMemberInput';
 import DateSelector from './dateSelector';
 import ScrollTimePicker from './ScrollTimePicker';
 import { GlobalContext } from '../context';
@@ -22,7 +21,6 @@ const GROUP_NAME_MAX_LENGTH = 15;
 export default function RegisterGroup(props) {
   const { navigate } = useNavigation();
   const { meridiem, hour, min } = getTime(spacetime.now());
-  // const [maxMemberCnt, setMaxMemberCnt] = useState('0');
   const [name, setName] = useState('');
   const [place, setPlace] = useState(null);
   const [selectedDay, setSelectedDay] = useState([]);
@@ -114,10 +112,6 @@ export default function RegisterGroup(props) {
             </Text>
           </TouchableOpacity>
         </View>
-        {/* <View style={styles.maxMemberContainer}>
-          <Text style={styles.subTitle}>최대 멤버수</Text>
-          <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
-        </View> */}
         {renderFinishBtn && (
           <TouchableOpacity
             onPress={() => {
