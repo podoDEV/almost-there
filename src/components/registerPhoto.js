@@ -1,11 +1,22 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  Alert
+} from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import Constants from 'expo-constants';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
+
+const defaultThumb = require('../../assets/thumb.jpeg');
 
 export default function RegisterName() {
   const { navigate } = useNavigation();
@@ -18,12 +29,13 @@ export default function RegisterName() {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== 'granted') {
-        alert('수락 안하면 못 올려!');
+        Alert.alert('흐음!!!', '동의하지 않으면 사진을 올릴 수 없어요😢');
       }
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
       aspect: [1, 1]
     });
 
@@ -33,6 +45,11 @@ export default function RegisterName() {
   }
 
   function finishRegister() {
+    if (!image) {
+      setFinishAndNavigate();
+      return;
+    }
+
     const uriParts = image.split('.');
     const fileType = uriParts[uriParts.length - 1];
     const formData = new FormData();
@@ -61,15 +78,19 @@ export default function RegisterName() {
         }
       })
       .then(() => {
-        setFinish(true);
-        setTimeout(() => {
-          navigate('GroupList');
-        }, 2000);
+        setFinishAndNavigate();
       })
       .catch((err) => {
         console.error(err);
       });
   }
+
+  const setFinishAndNavigate = () => {
+    setFinish(true);
+    setTimeout(() => {
+      navigate('GroupList');
+    }, 2000);
+  };
 
   return (
     <View style={styles.container}>
@@ -79,23 +100,23 @@ export default function RegisterName() {
         <Text style={styles.title}>앗, 사진도..</Text>
       )}
       <View style={styles.photoButtonContainer}>
-        <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
-          {image ? (
-            <Image source={{ uri: image }} style={styles.image} />
-          ) : (
+        {finish ? (
+          <View style={styles.imageUploadButton}>
+            <Image source={image ? { uri: image } : defaultThumb} style={styles.image} />
+          </View>
+        ) : (
+          <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
             <Text style={styles.imageUploadButtonText}>고르기</Text>
-          )}
-        </TouchableOpacity>
-        {image && (
-          <TouchableOpacity onPress={finishRegister}>
-            {finish && imageUpload ? (
-              <Text style={styles.finishText}>{userInfo.name}</Text>
-            ) : imageUpload ? (
-              <ActivityIndicator size="small" color="#fff" style={{ marginTop: 10 }} />
-            ) : (
-              <Text style={styles.finishText}>완료 ></Text>
-            )}
           </TouchableOpacity>
+        )}
+        {!finish && !imageUpload && (
+          <TouchableOpacity onPress={finishRegister} style={styles.arrowContainer}>
+            <MaterialCommunityIcons name="arrow-right" size={32} color="#fff" />
+          </TouchableOpacity>
+        )}
+        {finish && <Text style={styles.finishText}>{userInfo.name}</Text>}
+        {!finish && image && imageUpload && (
+          <ActivityIndicator size="small" color="#fff" style={{ marginTop: 10 }} />
         )}
       </View>
     </View>
@@ -113,9 +134,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: 'scdream',
     textAlign: 'center',
-    fontSize: 29
+    fontSize: 34,
+    marginBottom: 40
   },
   photoButtonContainer: {
+    justifyContent: 'center',
     alignItems: 'center'
   },
   imageUploadButton: {
@@ -126,7 +149,6 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderWidth: 1,
     borderRadius: 100,
-    marginTop: 17,
     overflow: 'hidden'
   },
   imageUploadButtonText: {
@@ -146,5 +168,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#fff'
+  },
+  arrowContainer: {
+    position: 'absolute',
+    right: 20,
+    flex: 1,
+    justifyContent: 'center'
   }
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, StatusBar, YellowBox } from 'react-native';
+import { StatusBar, YellowBox } from 'react-native';
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import RegisterName from './src/components/registerName';
 import RegisterPhoto from './src/components/registerPhoto';

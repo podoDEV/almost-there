@@ -14,7 +14,7 @@ export default function RegisterPolicy() {
 
   const moveRegisterName = () => {
     if (!agree) {
-      Alert.alert('동의하셈!', '그래야 가입할 수 있어요ㅠㅠ😢');
+      Alert.alert('흐음!', '동의해야 가입할 수 있어요ㅠㅠ😢');
       return;
     }
 
@@ -56,7 +56,9 @@ export default function RegisterPolicy() {
             />
           </TouchableOpacity>
           <View>
-            <Text style={styles.agreeAllText}>서비스 이용 약관에 동의합니다.</Text>
+            <TouchableOpacity onPress={() => setAgree(!agree)}>
+              <Text style={styles.agreeAllText}>서비스 이용 약관에 동의합니다.</Text>
+            </TouchableOpacity>
             <View style={styles.policyContainer}>
               <TouchableOpacity onPress={() => setPolicyType('location')}>
                 <Text style={styles.policyText}>위치 기반 서비스 이용약관</Text>
