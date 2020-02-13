@@ -14,7 +14,6 @@ import { useNavigation, useNavigationParam, useFocusEffect } from 'react-navigat
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
 import DateSelector from './dateSelector';
-// import MaxMemberInput from './maxMemberInput';
 import ScrollTimePicker from './ScrollTimePicker';
 import { getSchedule } from '../time';
 
@@ -24,7 +23,6 @@ export default function EditGroup(props) {
   const groupId = useNavigationParam('groupId');
   const [time, setTime] = useState(null);
   const [groupInfo, setGroupInfo] = useState(null);
-  // const [maxMemberCnt, setMaxMemberCnt] = useState('0');
   const [place, setPlace] = useState(null);
   const [selectedDay, setSelectedDay] = useState([]);
 
@@ -128,7 +126,6 @@ export default function EditGroup(props) {
                     {member.name}
                   </Text>
                 </View>
-                {/* <Switch style={styles.personAdminSwitch} /> */}
               </View>
             ))}
             <TouchableOpacity
@@ -159,10 +156,6 @@ export default function EditGroup(props) {
               </Text>
             </TouchableOpacity>
           </View>
-          {/* <View style={styles.maxMemberContainer}>
-          <Text style={styles.subTitle}>최대 멤버수</Text>
-          <MaxMemberInput maxMemberCnt={maxMemberCnt} setMaxMemberCnt={setMaxMemberCnt} />
-        </View> */}
         </ScrollView>
       )}
       {renderFinishBtn && (
@@ -250,9 +243,6 @@ const styles = StyleSheet.create({
     marginRight: 15,
     paddingHorizontal: 7,
     paddingVertical: 8
-  },
-  personAdminSwitch: {
-    // flex: 1
   },
   placeSearchInput: { fontSize: 19, fontFamily: 'scdream', borderWidth: 0, height: 40 },
   placeSearchInputPlaceHolder: { color: '#bbb' },

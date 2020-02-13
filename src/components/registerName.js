@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, TextInput, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TextInput, AsyncStorage, Alert } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function RegisterName(props) {
   const { navigate } = useNavigation();
@@ -11,6 +12,11 @@ export default function RegisterName(props) {
   const userInfo = useContext(GlobalContext);
 
   async function handlePressIcon() {
+    if (!name.length || name.length > 10) {
+      Alert.alert('흐음!!', '이름은 최소 한글자, 최대 열글자에요!🙋‍♂️');
+      return;
+    }
+
     try {
       const options = {
         method: 'POST',
@@ -52,13 +58,9 @@ export default function RegisterName(props) {
       <Text style={styles.title}>그냥 이름만</Text>
       <View style={styles.inputContainer}>
         <TextInput style={styles.nameInput} onChangeText={(text) => setName(text)} value={name} />
-        <MaterialCommunityIcons
-          style={styles.icon}
-          name="arrow-right"
-          size={20}
-          color="#fff"
-          onPress={handlePressIcon}
-        />
+        <TouchableOpacity onPress={handlePressIcon} style={styles.icon}>
+          <MaterialCommunityIcons name="arrow-right" size={32} color="#fff" />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -75,7 +77,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: 'scdream',
     textAlign: 'center',
-    fontSize: 29
+    fontSize: 34
   },
   inputContainer: {
     flexDirection: 'row',
@@ -83,9 +85,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: '#fff',
-    marginTop: 10,
+    marginTop: 95,
     marginLeft: 23,
-    marginRight: 23
+    marginRight: 23,
+    paddingBottom: 10
   },
   nameInput: {
     fontFamily: 'scdream',
@@ -97,6 +100,7 @@ const styles = StyleSheet.create({
     paddingLeft: 25
   },
   icon: {
-    flex: 1
+    flex: 1,
+    textAlign: 'right'
   }
 });
