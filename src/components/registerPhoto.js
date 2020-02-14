@@ -20,9 +20,8 @@ const defaultThumb = require('../../assets/thumb.jpeg');
 
 export default function RegisterName() {
   const { navigate } = useNavigation();
+  const [pageStatus, setPageStatus] = useState('NONE'); // NONE -> UPLOAD -> FINISH
   const [image, setImage] = useState(null);
-  const [finish, setFinish] = useState(false);
-  const [imageUpload, setImageUpload] = useState(false);
   const userInfo = useContext(GlobalContext);
 
   async function pickImage() {
@@ -53,7 +52,7 @@ export default function RegisterName() {
     const uriParts = image.split('.');
     const fileType = uriParts[uriParts.length - 1];
     const formData = new FormData();
-    setImageUpload(true);
+    setPageStatus('UPLOAD');
 
     formData.append('file', {
       uri: image,
@@ -86,7 +85,7 @@ export default function RegisterName() {
   }
 
   const setFinishAndNavigate = () => {
-    setFinish(true);
+    setPageStatus('FINISH');
     setTimeout(() => {
       navigate('GroupList');
     }, 2000);
@@ -94,28 +93,32 @@ export default function RegisterName() {
 
   return (
     <View style={styles.container}>
-      {finish ? (
+      {pageStatus === 'FINISH' ? (
         <Text style={styles.title}>환영합니다</Text>
       ) : (
         <Text style={styles.title}>앗, 사진도..</Text>
       )}
       <View style={styles.photoButtonContainer}>
-        {finish ? (
+        {pageStatus !== 'NONE' ? (
           <View style={styles.imageUploadButton}>
             <Image source={image ? { uri: image } : defaultThumb} style={styles.image} />
           </View>
         ) : (
           <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
-            <Text style={styles.imageUploadButtonText}>고르기</Text>
+            {image ? (
+              <Image source={{ uri: image }} style={styles.image} />
+            ) : (
+              <Text style={styles.imageUploadButtonText}>고르기</Text>
+            )}
           </TouchableOpacity>
         )}
-        {!finish && !imageUpload && (
+        {pageStatus === 'NONE' && (
           <TouchableOpacity onPress={finishRegister} style={styles.arrowContainer}>
             <MaterialCommunityIcons name="arrow-right" size={32} color="#fff" />
           </TouchableOpacity>
         )}
-        {finish && <Text style={styles.finishText}>{userInfo.name}</Text>}
-        {!finish && image && imageUpload && (
+        {pageStatus === 'FINISH' && <Text style={styles.finishText}>{userInfo.name}</Text>}
+        {pageStatus === 'UPLOAD' && (
           <ActivityIndicator size="small" color="#fff" style={{ marginTop: 10 }} />
         )}
       </View>

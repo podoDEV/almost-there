@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   policyArea: {
-    height: '90%',
+    height: '80%',
     width: '100%',
     position: 'absolute',
     overflow: 'scroll',
