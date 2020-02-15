@@ -7,6 +7,7 @@ import * as url from '../apiUrl';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import ClosingScheduleHeader from './closingScheduleHeader';
 import { getSchedule } from '../time';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function GroupList(props) {
   const { navigate } = useNavigation();
@@ -93,7 +94,10 @@ export default function GroupList(props) {
         renderHiddenItem={(data, rowMap) => (
           <View style={styles.rowBack}>
             <Text style={styles.rowText}> </Text>
-            <TouchableHighlight onPress={() => deleteRow(rowMap, data.item.id)} style={styles.leaveButton}>
+            <TouchableHighlight
+              onPress={() => deleteRow(rowMap, data.item.id)}
+              style={styles.leaveButton}
+            >
               <Text style={styles.rowText}>나가기</Text>
             </TouchableHighlight>
           </View>
@@ -101,7 +105,11 @@ export default function GroupList(props) {
         disableRightSwipe={true}
         rightOpenValue={-80}
       />
-      <ActionButton buttonColor="#0099ED">
+      <ActionButton
+        buttonColor="#0099ED"
+        size={78}
+        renderIcon={() => <AntDesign name="plus" size={25} color="#fff" />}
+      >
         <ActionButton.Item
           buttonColor="#0099ED"
           onPress={() => {
@@ -199,7 +207,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: 'scdreamBold',
     textAlign: 'center',
-    fontSize: 13
+    fontSize: 17
   },
   rowFront: {
     alignItems: 'center',
@@ -214,7 +222,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF0A00',
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   rowText: {
     color: '#FFFFFF',
@@ -224,6 +232,6 @@ const styles = StyleSheet.create({
     width: 80,
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   }
 });

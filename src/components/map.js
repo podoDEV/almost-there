@@ -231,9 +231,9 @@ export default class Map extends React.Component {
         {active ? (
           <ActionButton
             buttonColor="#0099ED"
-            renderIcon={() => <MaterialIcons name="gps-fixed" size={45} color="#fff" />}
+            renderIcon={() => <MaterialIcons name="gps-fixed" size={35} color="#fff" />}
             onPress={this.renderMarkers}
-            size={70}
+            size={60}
           />
         ) : (
           this.renderNotActiveLayer()

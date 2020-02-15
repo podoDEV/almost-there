@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Image } from 'react-native-expo-image-cache';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
-import spacetime from 'spacetime';
 import { SimpleLineIcons, MaterialIcons, EvilIcons } from '@expo/vector-icons';
-import { preview } from '../common';
 import { getSchedule } from '../time';
 
 export default function Navigation(props) {
@@ -33,7 +30,7 @@ export default function Navigation(props) {
             >
               <MaterialIcons name="keyboard-arrow-left" color="#FFF" size={25} />
               <Text style={{ fontFamily: 'scdream', fontSize: 14, color: '#fff' }}>
-                마이 리스트
+                나의 리스트
               </Text>
             </TouchableOpacity>
             <View style={styles.groupInfo}>
@@ -58,13 +55,7 @@ export default function Navigation(props) {
                   <Text style={styles.title}>멤버</Text>
                   {groupInfo.members.map((member, idx) => (
                     <View key={`info_${idx}`} style={styles.person}>
-                      <Image
-                        style={styles.personImage}
-                        uri={member.profileImageUrl}
-                        preview={preview}
-                        tint="light"
-                        transitionDuration={200}
-                      />
+                      <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
                       <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
                         {member.name}
                       </Text>
@@ -86,14 +77,12 @@ export default function Navigation(props) {
                   <Text style={styles.detail}>{groupInfo.destination.name}</Text>
                 </View>
                 {owner && (
-                  <View style={styles.editIconContainer}>
-                    <EvilIcons
-                      name="gear"
-                      color="#0099ED"
-                      size={25}
-                      onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
-                    />
-                  </View>
+                  <TouchableOpacity
+                    style={styles.editIconContainer}
+                    onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
+                  >
+                    <EvilIcons name="gear" color="#0099ED" size={25} />
+                  </TouchableOpacity>
                 )}
               </View>
             </View>

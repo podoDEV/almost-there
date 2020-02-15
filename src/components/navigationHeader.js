@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
-import { SimpleLineIcons } from '@expo/vector-icons';
+import { EvilIcons } from '@expo/vector-icons';
 import { headerStyles } from '../styles/header';
 import Navigation from '../components/navigation';
 import * as url from '../apiUrl';
@@ -13,12 +13,9 @@ export const myListHeader = () => {
   return (
     <View style={headerStyles.header}>
       <Text style={headerStyles.headerTitle}>나의 리스트</Text>
-      <SimpleLineIcons
-        name="settings"
-        size={20}
-        color="#fff"
-        onPress={() => navigate('Settings')}
-      />
+      <TouchableOpacity onPress={() => navigate('Settings')} style={headerStyles.gearIcon}>
+        <EvilIcons name="gear" size={25} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 };

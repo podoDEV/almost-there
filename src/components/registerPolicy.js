@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from 'react-navigation-hooks';
 import Policy from './policy';
 
 const allCheckImage = require('../../assets/check_all.png');
 const allUncheckImage = require('../../assets/uncheck_all.png');
+const eyeImage = require('../../assets/eye_icon.png');
 
 export default function RegisterPolicy() {
   const { navigate } = useNavigation();
@@ -22,17 +23,16 @@ export default function RegisterPolicy() {
   };
 
   const renderPolicy = () => {
-    // @TODO: 디자인 반영 필요
     return (
-      <View style={styles.policyArea}>
+      <SafeAreaView style={styles.policyArea}>
         <TouchableOpacity
-          style={{ paddingHorizontal: 10, paddingTop: 5 }}
+          style={{ paddingHorizontal: 20, paddingTop: 5 }}
           onPress={() => setPolicyType(null)}
         >
-          <Ionicons name={'ios-close'} size={25} color="#111" />
+          <Ionicons name={'ios-close'} size={35} color="#111" />
         </TouchableOpacity>
         <Policy type={policyType} />
-      </View>
+      </SafeAreaView>
     );
   };
 
@@ -40,11 +40,7 @@ export default function RegisterPolicy() {
     <View style={styles.container}>
       {policyType && renderPolicy()}
       <View style={styles.pageTitleArea}>
-        {/* @TODO: 눈 이미지 추가해야함 */}
-        {/* <Image style={styles.eyeImage} source={allCheckImage} /> */}
-        <Text style={{ fontFamily: 'scdreamBold', fontSize: 96, color: '#fff', marginBottom: 20 }}>
-          @_@
-        </Text>
+        <Image style={styles.eyeImage} source={eyeImage} />
         <Text style={styles.pageTitleText}>시작 전 확인해주세요</Text>
       </View>
       <View style={styles.finishBtnArea}>
@@ -61,11 +57,15 @@ export default function RegisterPolicy() {
             </TouchableOpacity>
             <View style={styles.policyContainer}>
               <TouchableOpacity onPress={() => setPolicyType('location')}>
-                <Text style={styles.policyText}>위치 기반 서비스 이용약관</Text>
+                <Text style={[styles.policyText, styles.policyTextUnderline]}>
+                  위치 기반 서비스 이용약관
+                </Text>
               </TouchableOpacity>
               <Text style={styles.policyText}>{', '}</Text>
               <TouchableOpacity onPress={() => setPolicyType('privacy')}>
-                <Text style={styles.policyText}>개인정보처리 방침</Text>
+                <Text style={[styles.policyText, styles.policyTextUnderline]}>
+                  개인정보처리 방침
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -86,17 +86,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0099ED',
-    paddingBottom: 25
+    backgroundColor: '#0099ED'
   },
   pageTitleArea: {
-    flex: 3,
+    flex: 10,
     flexDirection: 'column',
     justifyContent: 'center'
   },
   eyeImage: {
-    width: 218,
-    height: 110
+    width: 240,
+    height: 140,
+    marginBottom: 25
   },
   pageTitleText: {
     fontFamily: 'scdream',
@@ -108,7 +108,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-end',
     width: '100%',
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    marginBottom: 30
   },
   finishBtnContainer: {
     justifyContent: 'center',
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderRadius: 50,
     height: 50,
-    marginTop: 15
+    marginTop: 30
   },
   finishText: {
     fontFamily: 'scdreamBold',
@@ -158,12 +159,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#fff'
   },
+  policyTextUnderline: {
+    textDecorationLine: 'underline'
+  },
   policyArea: {
-    height: '80%',
+    marginTop: 10,
+    height: '100%',
     width: '100%',
     position: 'absolute',
     overflow: 'scroll',
     zIndex: 100,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)'
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    paddingTop: 40
   }
 });

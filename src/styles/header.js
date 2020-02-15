@@ -15,5 +15,9 @@ export const headerStyles = StyleSheet.create({
     fontFamily: 'scdreamBold',
     fontSize: 17,
     color: '#fff'
+  },
+  gearIcon: {
+    width: 25,
+    height: 25
   }
 });
