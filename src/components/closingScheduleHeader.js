@@ -21,7 +21,7 @@ export default function closingScheduleHeader(props) {
 
   const getDiffTime = () => {
     const { schedule } = group;
-    const { hour, min } = getTime(spacetime.now(), false);
+    const { hour, min } = getTime(spacetime.now('Asia/Seoul'), false);
     const diff = schedule.hour * 60 + schedule.minute - hour * 60 - min;
 
     return {

@@ -20,7 +20,7 @@ const GROUP_NAME_MAX_LENGTH = 15;
 
 export default function RegisterGroup(props) {
   const { navigate } = useNavigation();
-  const { meridiem, hour, min } = getTime(spacetime.now());
+  const { meridiem, hour, min } = getTime(spacetime.now('Asia/Seoul'));
   const [name, setName] = useState('');
   const [place, setPlace] = useState(null);
   const [selectedDay, setSelectedDay] = useState([]);
