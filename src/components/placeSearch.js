@@ -7,7 +7,8 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Text
+  Text,
+  Alert
 } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
@@ -57,7 +58,7 @@ export default function PlaceSearch(props) {
         if (placeList.length) {
           setPlaceList(placeList);
         } else {
-          alert('검색결과 없음');
+          Alert.alert('띠용👀', '장소가 없습니다');
         }
       })
       .catch((error) => {

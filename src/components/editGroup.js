@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,7 +10,7 @@ import {
   Share
 } from 'react-native';
 import ActionButton from 'react-native-action-button';
-import { useNavigation, useNavigationParam, useFocusEffect } from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
 import DateSelector from './dateSelector';
@@ -26,33 +26,31 @@ export default function EditGroup(props) {
   const [place, setPlace] = useState(null);
   const [selectedDay, setSelectedDay] = useState([]);
 
-  useFocusEffect(
-    useCallback(() => {
-      const options = {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${accessToken}` }
-      };
-      fetch(url.getGroup(groupId), options)
-        .then((res) => {
-          if (res.status === 200) {
-            return res.json();
-          }
-        })
-        .then((resJson) => {
-          const {
-            schedule,
-            destination: { name, location }
-          } = resJson;
-          setGroupInfo(resJson);
-          setTime(getSchedule(schedule).time);
-          setSelectedDay(schedule.dayOfWeek);
-          setPlace({ name, coordinate: location });
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }, [])
-  );
+  useEffect(() => {
+    const options = {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${accessToken}` }
+    };
+    fetch(url.getGroup(groupId), options)
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+      })
+      .then((resJson) => {
+        const {
+          schedule,
+          destination: { name, location }
+        } = resJson;
+        setGroupInfo(resJson);
+        setTime(getSchedule(schedule).time);
+        setSelectedDay(schedule.dayOfWeek);
+        setPlace({ name, coordinate: location });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   useEffect(() => {
     const { params } = props.navigation.state;
