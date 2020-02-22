@@ -25,13 +25,13 @@ export default class MemberMarker extends React.Component {
             longitude: this.props.region.longitude
           }}
           centerOffset={{ x: 0, y: -30 }}
+          style={styles.marker}
         >
           <View style={styles.markerView}>
-            {/* markerTextView가 앞에 있는 이유는 absolute 사용시 RN이 뒤에 있는 컴포넌트를 위로 올리기 때문에 */}
+            <Image style={styles.markerImage} source={{ uri: this.props.profileImageUrl }} />
             <View style={styles.markerTextView}>
               <Text style={styles.markerText}>{this.props.name}</Text>
             </View>
-            <Image style={styles.markerImage} source={{ uri: this.props.profileImageUrl }} />
           </View>
           <View style={styles.line}></View>
           <View style={styles.point}></View>
@@ -45,6 +45,7 @@ export default class MemberMarker extends React.Component {
             longitude: this.props.region.longitude
           }}
           centerOffset={{ x: 0, y: -10 }}
+          style={styles.marker}
         >
           <Ionicons name="md-star" size={45} color="#0099ED" style={styles.destination} />
           <View style={styles.line}></View>
@@ -56,6 +57,10 @@ export default class MemberMarker extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  marker: {
+    flex: 1,
+    overflow: 'hidden'
+  },
   markerView: {
     flexDirection: 'row'
   },
@@ -64,7 +69,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: '#0099ED'
+    borderColor: '#0099ED',
+    zIndex: 100
   },
   markerTextView: {
     height: 25,
@@ -73,11 +79,13 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     borderLeftColor: 'transparent',
     padding: 2,
-    marginLeft: 36,
+    left: -4,
     borderColor: '#0099ED',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
     alignSelf: 'center',
-    position: 'absolute'
+    position: 'relative',
+    flexDirection: 'row',
+    zIndex: 10
   },
   markerText: {
     color: '#000'
@@ -85,9 +93,10 @@ const styles = StyleSheet.create({
   destination: {
     width: 47,
     height: 49,
-    bottom: 0,
+    bottom: -18,
     paddingLeft: 3,
-    position: 'absolute'
+    flexDirection: 'row',
+    position: 'relative'
   },
   line: {
     width: 21,
