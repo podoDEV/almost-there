@@ -27,7 +27,7 @@ export function getTimePickerSet() {
 }
 
 export function getTime(time, fiveUnit = true) {
-  const tt = spacetime(time);
+  const tt = spacetime(time, 'Asia/Seoul');
   const hourNumber = tt.hour();
 
   return {
@@ -61,7 +61,7 @@ function getHourWithMeridiem(meridiem, hour) {
 export function getSchedule(schedule) {
   const { dayOfWeek, hour, minute, meridiem } = schedule;
   const hourWithMeridiem = getHourWithMeridiem(meridiem, hour);
-  const tempTime = spacetime([2019, 1, 1, hourWithMeridiem, minute]);
+  const tempTime = spacetime([2019, 1, 1, hourWithMeridiem, minute], 'Asia/Seoul');
 
   const time = getTime(tempTime);
   const timeTitleText = getTimeTitleText(time);
