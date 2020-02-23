@@ -107,7 +107,7 @@ export default function GroupList(props) {
       />
       <ActionButton
         buttonColor="#0099ED"
-        size={78}
+        size={70}
         renderIcon={() => <AntDesign name="plus" size={25} color="#fff" />}
       >
         <ActionButton.Item
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: 'scdreamBold',
     textAlign: 'center',
-    fontSize: 17
+    fontSize: 15
   },
   rowFront: {
     alignItems: 'center',

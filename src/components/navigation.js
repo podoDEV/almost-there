@@ -32,7 +32,7 @@ export default function Navigation(props) {
         {isLoaded && (
           <View style={styles.groupInfo}>
             <Text style={styles.groupName} numberOfLines={1} ellipsizeMode="tail">
-              {groupInfo.name}ABBBB~~~aasd
+              {groupInfo.name}
             </Text>
             <TouchableOpacity onPress={() => toggleFold(!fold)}>
               <SimpleLineIcons
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     fontFamily: 'scdreamBold',
     fontSize: 20,
     color: '#fff',
-    width: '75%'
+    maxWidth: '75%'
   },
   foldIcon: {
     color: '#fff'
