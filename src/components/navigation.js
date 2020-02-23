@@ -17,76 +17,72 @@ export default function Navigation(props) {
 
   return (
     <View style={styles.naviContainer}>
-      {isLoaded && (
-        <View>
-          <View style={styles.navigation}>
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                alignItems: 'center'
-              }}
-              onPress={() => goBack()}
-            >
-              <MaterialIcons name="keyboard-arrow-left" color="#FFF" size={25} />
-              <Text style={{ fontFamily: 'scdream', fontSize: 14, color: '#fff' }}>
-                나의 리스트
-              </Text>
+      <View style={styles.navigation}>
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}
+          onPress={() => goBack()}
+        >
+          <MaterialIcons name="keyboard-arrow-left" color="#FFF" size={25} />
+          <Text style={{ fontFamily: 'scdream', fontSize: 14, color: '#fff' }}>나의 리스트</Text>
+        </TouchableOpacity>
+        {isLoaded && (
+          <View style={styles.groupInfo}>
+            <Text style={styles.groupName} numberOfLines={1} ellipsizeMode="tail">
+              {groupInfo.name}ABBBB~~~aasd
+            </Text>
+            <TouchableOpacity onPress={() => toggleFold(!fold)}>
+              <SimpleLineIcons
+                style={styles.foldButton}
+                name={fold ? 'arrow-down' : 'arrow-up'}
+                size={12}
+                color="#fff"
+              />
             </TouchableOpacity>
-            <View style={styles.groupInfo}>
-              <Text style={styles.groupName} numberOfLines={1} ellipsizeMode="tail">
-                {groupInfo.name}
-              </Text>
-              <TouchableOpacity onPress={() => toggleFold(!fold)} style={styles.foldButtonArea}>
-                <SimpleLineIcons
-                  style={styles.foldButton}
-                  name={fold ? 'arrow-down' : 'arrow-up'}
-                  size={12}
-                  color="#fff"
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={{ flex: 1 }}></View>
           </View>
-          {!fold && (
-            <View style={styles.infoContainer}>
-              <View style={styles.memberInfoBox}>
-                <ScrollView style={styles.member}>
-                  <Text style={styles.title}>멤버</Text>
-                  {groupInfo.members.map((member, idx) => (
-                    <View key={`info_${idx}`} style={styles.person}>
-                      <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
-                      <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
-                        {member.name}
-                      </Text>
-                    </View>
-                  ))}
-                </ScrollView>
-              </View>
-              <View style={styles.meetingInfoBox}>
-                <View style={styles.schedule}>
-                  <Text style={styles.title}>모임시간</Text>
-                  <Text style={styles.detail}>
-                    {getSchedule(groupInfo.schedule).dayTitleText}
-                    {'\n'}
-                    {getSchedule(groupInfo.schedule).timeTitleText}
+        )}
+        <View style={{ flex: 1 }}></View>
+      </View>
+      {isLoaded && !fold && (
+        <View style={styles.infoContainer}>
+          <View style={styles.memberInfoBox}>
+            <ScrollView style={styles.member}>
+              <Text style={styles.title}>멤버</Text>
+              {groupInfo.members.map((member, idx) => (
+                <View key={`info_${idx}`} style={styles.person}>
+                  <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
+                  <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
+                    {member.name}
                   </Text>
                 </View>
-                <View style={styles.place}>
-                  <Text style={styles.title}>모임장소</Text>
-                  <Text style={styles.detail}>{groupInfo.destination.name}</Text>
-                </View>
-                {owner && (
-                  <TouchableOpacity
-                    style={styles.editIconContainer}
-                    onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
-                  >
-                    <EvilIcons name="gear" color="#0099ED" size={25} />
-                  </TouchableOpacity>
-                )}
-              </View>
+              ))}
+            </ScrollView>
+          </View>
+          <View style={styles.meetingInfoBox}>
+            <View style={styles.schedule}>
+              <Text style={styles.title}>모임시간</Text>
+              <Text style={styles.detail}>
+                {getSchedule(groupInfo.schedule).dayTitleText}
+                {'\n'}
+                {getSchedule(groupInfo.schedule).timeTitleText}
+              </Text>
             </View>
-          )}
+            <View style={styles.place}>
+              <Text style={styles.title}>모임장소</Text>
+              <Text style={styles.detail}>{groupInfo.destination.name}</Text>
+            </View>
+            {owner && (
+              <TouchableOpacity
+                style={styles.editIconContainer}
+                onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
+              >
+                <EvilIcons name="gear" color="#0099ED" size={25} />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       )}
     </View>
@@ -110,28 +106,25 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   groupInfo: {
-    flex: 1,
-    flexDirection: 'row'
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center'
   },
   groupName: {
-    flex: 2,
-    textAlign: 'right',
     fontFamily: 'scdreamBold',
-    fontSize: 22,
-    color: '#fff'
+    fontSize: 20,
+    color: '#fff',
+    width: '75%'
   },
   foldIcon: {
     color: '#fff'
   },
   foldButton: {
-    flex: 1,
-    marginLeft: 13
-  },
-  foldButtonArea: {
-    flex: 1,
     marginLeft: 5,
-    paddingTop: 5,
-    width: 10
+    height: 12,
+    width: 12
   },
   infoContainer: {
     flex: 5,
