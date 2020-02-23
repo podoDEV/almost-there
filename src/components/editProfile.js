@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,7 +6,9 @@ import {
   StyleSheet,
   ImageBackground,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert,
+  Image
 } from 'react-native';
 import { GlobalContext } from '../context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -19,17 +21,37 @@ import * as url from '../apiUrl';
 export default function editProfile() {
   const globalUserInfo = useContext(GlobalContext);
   const userInfo = useNavigationParam('userInfo');
+  const [nameStatus, setNameStatus] = useState('NONE'); // NONE -> CHANGE -> FINISH
+  const [photoStatus, setPhotoStatus] = useState('NONE'); // NONE -> CHANGE -> UPLOAD -> FINISH
   const [name, setName] = useState(userInfo.name);
-  const { goBack } = useNavigation();
-  const [finish, setFinish] = useState(false);
-  const [imageUpload, setImageUpload] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(userInfo.profileImageUrl);
+  const { goBack } = useNavigation();
+
+  useEffect(() => {
+    setNameStatus(name === userInfo.name ? 'NONE' : 'CHANGE');
+  }, [name]);
+
+  useEffect(() => {
+    setPhotoStatus(profileImageUrl === userInfo.profileImageUrl ? 'NONE' : 'CHANGE');
+  }, [profileImageUrl]);
+
+  useEffect(() => {
+    if (nameStatus === 'FINISH' && photoStatus === 'FINISH') {
+      setTimeout(() => {
+        goBack();
+      }, 1000);
+    }
+
+    if (nameStatus === 'ERROR' || photoStatus === 'ERROR') {
+      Alert.alert('또잉👀', '뭔가 잘못된 것 같다! 잠시 후 다시 시도해주세요');
+    }
+  }, [nameStatus, photoStatus]);
 
   async function pickImage() {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== 'granted') {
-        alert('수락 안하면 못 올려!');
+        Alert.alert('띠용👀', '수락 안하면 못 올려!');
       }
     }
 
@@ -66,21 +88,20 @@ export default function editProfile() {
         })
         .then(() => {
           globalUserInfo.name = name;
-
-          return true;
+          setNameStatus('FINISH');
         })
         .catch((err) => {
           console.error(err);
         });
+    } else {
+      setNameStatus('FINISH');
     }
-
-    return true;
   }
 
   function changePhoto() {
-    setImageUpload(true);
-
-    if (profileImageUrl !== userInfo.profileImageUrl) {
+    // setImageUpload(true);
+    if (photoStatus === 'CHANGE') {
+      setPhotoStatus('UPLOAD');
       const uriParts = profileImageUrl.split('.');
       const fileType = uriParts[uriParts.length - 1];
       const formData = new FormData();
@@ -107,70 +128,74 @@ export default function editProfile() {
           }
         })
         .then(() => {
+          setPhotoStatus('FINISH');
           return true;
         })
         .catch((err) => {
           console.error(err);
         });
+    } else {
+      setPhotoStatus('FINISH');
     }
-
-    return true;
   }
 
   async function finishEditing() {
-    const finishChangeName = await changeName();
-    const finishChangePhoto = await changePhoto();
-
-    if (finishChangeName && finishChangePhoto) {
-      setFinish(true);
-      setTimeout(() => {
-        goBack();
-      }, 1000);
-    } else {
-      alert('뭔가 잘못된 것 같다!');
+    if (!name.length || name.length > 10) {
+      Alert.alert('흐음!!', '이름은 최소 한글자, 최대 열글자에요!🙋‍♂️');
       return;
     }
+
+    changeName();
+    changePhoto();
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
         <View style={styles.photoButtonContainer}>
-          <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
-            <ImageBackground source={{ uri: profileImageUrl }} style={styles.image}>
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="square-edit-outline"
-                  size={25}
-                  color="rgb(74,74,74)"
-                />
-              </View>
-            </ImageBackground>
-          </TouchableOpacity>
+          {photoStatus === 'NONE' || photoStatus === 'CHANGE' ? (
+            <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
+              <ImageBackground source={{ uri: profileImageUrl }} style={styles.image}>
+                <View style={styles.editIconContainer}>
+                  <MaterialCommunityIcons
+                    name="square-edit-outline"
+                    size={25}
+                    color="rgb(74,74,74)"
+                  />
+                </View>
+              </ImageBackground>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.imageUploadButton}>
+              <Image source={{ uri: profileImageUrl }} style={styles.image} />
+            </View>
+          )}
         </View>
-        {!finish && imageUpload && (
+        {photoStatus === 'UPLOAD' && (
           <ActivityIndicator size="small" color="#ddd" style={{ marginTop: 10 }} />
         )}
-        {!finish && !imageUpload && (
+        {photoStatus !== 'FINISH' && nameStatus !== 'FINISH' && (
           <TextInput style={styles.nameInput} onChangeText={(text) => setName(text)} value={name} />
         )}
       </View>
-      <TouchableOpacity
-        style={styles.finishBtnContainer}
-        onPress={() => {
-          finishEditing();
-        }}
-      >
-        {finish && imageUpload && <Text style={styles.finishBtn}>{name}</Text>}
-        {!finish && !imageUpload && <Text style={styles.finishBtn}>완료 ></Text>}
-      </TouchableOpacity>
+
+      <View style={styles.finishBtnContainer}>
+        {photoStatus === 'FINISH' && nameStatus === 'FINISH' && (
+          <Text style={styles.finishBtnText}>{name}</Text>
+        )}
+        {(photoStatus === 'CHANGE' || nameStatus === 'CHANGE') &&
+          photoStatus !== 'FINISH' &&
+          nameStatus !== 'FINISH' && (
+            <TouchableOpacity
+              style={styles.finishBtn}
+              onPress={() => {
+                finishEditing();
+              }}
+            >
+              <Text style={styles.finishBtnText}>완료</Text>
+            </TouchableOpacity>
+          )}
+      </View>
     </View>
   );
 }
@@ -188,10 +213,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  finishBtn: {
+  finishBtnText: {
     fontFamily: 'scdreamBold',
     color: '#0099ED',
     fontSize: 21
+  },
+  finishBtn: {
+    borderWidth: 1,
+    borderColor: '#0099ED',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+    height: 50,
+    marginBottom: 30,
+    width: '90%'
   },
   photoButtonContainer: {
     alignItems: 'center'
@@ -223,5 +258,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 35,
     marginHorizontal: 25
+  },
+  editIconContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
