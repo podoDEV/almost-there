@@ -11,6 +11,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 export default function GroupList(props) {
   const { navigate } = useNavigation();
+  const [memberId, setMemberId] = useState(null);
   const [groupList, setGroupList] = useState(null);
   const { accessToken } = useContext(GlobalContext);
 
@@ -27,6 +28,7 @@ export default function GroupList(props) {
           }
         })
         .then((resJson) => {
+          setMemberId(resJson.id);
           setGroupList(resJson.groups);
         })
         .catch((error) => {
@@ -34,6 +36,22 @@ export default function GroupList(props) {
         });
     }, [])
   );
+
+  const leaveGroup = (memberId, groupId) => {
+    const options = {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${accessToken}` }
+    };
+    fetch(url.leaveGroup(memberId, groupId), options)
+      .then(res => {
+        if (res.status === 200) {
+          console.log('Successfully leaved');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -94,10 +112,10 @@ export default function GroupList(props) {
         renderHiddenItem={(data, rowMap) => (
           <View style={styles.rowBack}>
             <Text style={styles.rowText}> </Text>
-            <TouchableHighlight
-              onPress={() => deleteRow(rowMap, data.item.id)}
-              style={styles.leaveButton}
-            >
+            <TouchableHighlight onPress={() => {
+              leaveGroup(memberId, data.item.id);
+              deleteRow(rowMap, data.item.id);
+            }} style={styles.leaveButton}>
               <Text style={styles.rowText}>나가기</Text>
             </TouchableHighlight>
           </View>

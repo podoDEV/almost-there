@@ -22,6 +22,8 @@ export const updateLocation = (memberId) => `${SERVER_DOMAIN}/members/${memberId
 
 export const joinGroup = (memberId) => `${SERVER_DOMAIN}/members/${memberId}/groups/join`;
 
+export const leaveGroup = (memberId, groupId) => `${SERVER_DOMAIN}/members/${memberId}/groups/${groupId}/leave`;
+
 export const uploadImage = () => `${SERVER_DOMAIN}/members/me/profile-images`;
 
 export const getPlaceLocations = (key, placeName, options) =>
