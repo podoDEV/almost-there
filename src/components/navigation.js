@@ -34,7 +34,7 @@ export default function Navigation(props) {
             <Text style={styles.groupName} numberOfLines={1} ellipsizeMode="tail">
               {groupInfo.name}
             </Text>
-            <TouchableOpacity onPress={() => toggleFold(!fold)}>
+            <TouchableOpacity style={styles.foldButtonContainer} onPress={() => toggleFold(!fold)}>
               <SimpleLineIcons
                 style={styles.foldButton}
                 name={fold ? 'arrow-down' : 'arrow-up'}
@@ -49,8 +49,8 @@ export default function Navigation(props) {
       {isLoaded && !fold && (
         <View style={styles.infoContainer}>
           <View style={styles.memberInfoBox}>
-            <ScrollView style={styles.member}>
-              <Text style={styles.title}>멤버</Text>
+            <Text style={styles.title}>멤버</Text>
+            <ScrollView style={styles.memberScroll}>
               {groupInfo.members.map((member, idx) => (
                 <View key={`info_${idx}`} style={styles.person}>
                   <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
@@ -96,11 +96,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.1
+    shadowOpacity: 0.1,
+    padding: 0,
+    margin: 0
   },
   navigation: {
     flex: 1,
-    paddingVertical: 11,
+    paddingTop: 5,
+    paddingBottom: 15,
     flexDirection: 'row',
     backgroundColor: '#0099ED',
     width: '100%'
@@ -121,8 +124,8 @@ const styles = StyleSheet.create({
   foldIcon: {
     color: '#fff'
   },
+  foldButtonContainer: { height: 24, width: 24, justifyContent: 'center', alignItems: 'center' },
   foldButton: {
-    marginLeft: 5,
     height: 12,
     width: 12
   },
@@ -141,6 +144,9 @@ const styles = StyleSheet.create({
   memberInfoBox: {
     flex: 4
   },
+  memberScroll: {
+    height: 335
+  },
   person: {
     flex: 1,
     flexDirection: 'row'
@@ -149,7 +155,8 @@ const styles = StyleSheet.create({
     fontFamily: 'scdream',
     color: '#0099ED',
     fontSize: 17,
-    paddingVertical: 10
+    paddingVertical: 10,
+    width: '60%'
   },
   personAbbr: {
     width: 32,
@@ -169,9 +176,6 @@ const styles = StyleSheet.create({
     marginRight: 15,
     paddingHorizontal: 7,
     paddingVertical: 8
-  },
-  member: {
-    flex: 1
   },
   place: {
     height: 150
