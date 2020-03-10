@@ -3,19 +3,18 @@ import {
   StyleSheet,
   Text,
   View,
-  KeyboardAvoidingView,
-  ScrollView,
   Image,
   TouchableOpacity,
-  Share
+  ScrollView,
+  TextInput
 } from 'react-native';
-import ActionButton from 'react-native-action-button';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
 import DateSelector from './dateSelector';
 import ScrollTimePicker from './ScrollTimePicker';
 import { getSchedule } from '../time';
+import { GROUP_NAME_MAX_LENGTH } from './registerGroup';
 
 export default function EditGroup(props) {
   const { accessToken } = useContext(GlobalContext);
@@ -25,6 +24,7 @@ export default function EditGroup(props) {
   const [groupInfo, setGroupInfo] = useState(null);
   const [place, setPlace] = useState(null);
   const [selectedDay, setSelectedDay] = useState([]);
+  const [groupName, setGroupName] = useState('');
 
   useEffect(() => {
     const options = {
@@ -40,12 +40,14 @@ export default function EditGroup(props) {
       .then((resJson) => {
         const {
           schedule,
-          destination: { name, location }
+          destination: { name, location },
+          name: groupName
         } = resJson;
         setGroupInfo(resJson);
         setTime(getSchedule(schedule).time);
         setSelectedDay(schedule.dayOfWeek);
         setPlace({ name, coordinate: location });
+        setGroupName(groupName);
       })
       .catch((error) => {
         console.error(error);
@@ -60,14 +62,7 @@ export default function EditGroup(props) {
     }
   }, [props.navigation.state.params]);
 
-  async function copyToClipboard() {
-    const { code, name } = groupInfo;
-    Share.share({
-      message: `🙋‍♂️ ${name} 모임코드:${code}.\n-------\n앱스토어에서 진짜 다와가를 만나보세요! 👇\n링크: https://apps.apple.com/us/app/podolist/id1439078928`
-    });
-  }
-
-  const renderFinishBtn = !!place && !!selectedDay.length;
+  const renderFinishBtn = !!place && !!selectedDay.length && !!groupName.length;
 
   const finishEditing = () => {
     const options = {
@@ -81,7 +76,7 @@ export default function EditGroup(props) {
           name: place.name
         },
         maximumCount: 99,
-        name: groupInfo.name,
+        name: groupName,
         schedule: {
           dayOfWeeks: [...selectedDay],
           hour: time.hour,
@@ -111,9 +106,9 @@ export default function EditGroup(props) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+    <ScrollView style={styles.container}>
       {groupInfo && time && (
-        <ScrollView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
           <View style={[styles.memberInfoContainer, styles.underline]}>
             <Text style={styles.subTitle}>멤버</Text>
             {groupInfo.members.map((member, idx) => (
@@ -126,19 +121,25 @@ export default function EditGroup(props) {
                 </View>
               </View>
             ))}
-            <TouchableOpacity
-              onPress={() => {
-                copyToClipboard();
+          </View>
+          <View style={[styles.nameContainer, styles.underline]}>
+            <Text style={styles.subTitle}>모임명</Text>
+            <TextInput
+              style={styles.nameInput}
+              value={groupName}
+              onChangeText={(text) => {
+                if (text.length < GROUP_NAME_MAX_LENGTH) {
+                  setGroupName(text);
+                } else {
+                  alert('이름 길이를 줄여주세요!');
+                }
               }}
-            >
-              <Text style={styles.invitationCode}>+ 초대 코드({groupInfo && groupInfo.code})</Text>
-            </TouchableOpacity>
+              placeholder="모임명을 입력하세요"
+            />
           </View>
           <View style={[styles.datepickerContainer, styles.underline]}>
             <Text style={styles.subTitle}>모임 시간</Text>
-            <View style={styles.timePickerContainer}>
-              <ScrollTimePicker time={time} setTime={setTime} />
-            </View>
+            <ScrollTimePicker time={time} setTime={setTime} />
             <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
           </View>
           <View style={styles.placeContainer}>
@@ -154,25 +155,23 @@ export default function EditGroup(props) {
               </Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
+        </View>
       )}
-      {renderFinishBtn && (
-        <ActionButton
-          buttonColor="#0099ED"
-          renderIcon={() => <Text style={styles.finishBtn}>완료</Text>}
-          onPress={finishEditing}
-          size={70}
-        />
-      )}
-    </KeyboardAvoidingView>
+
+      <View style={styles.finishBtnContainer}>
+        {renderFinishBtn && (
+          <TouchableOpacity onPress={finishEditing} style={styles.registerGroup}>
+            <Text style={styles.registerGroupText}>수정 완료</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center'
+    flex: 1
   },
   title: {
     color: '#fff',
@@ -191,11 +190,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   memberInfoContainer: {
-    flex: 1,
+    flex: 3,
     paddingHorizontal: 20
   },
-  timePickerContainer: {
-    flex: 1
+  nameContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingBottom: 20
+  },
+  nameInput: {
+    fontSize: 19,
+    fontFamily: 'scdream',
+    borderWidth: 0,
+    height: 40
   },
   placeContainer: {
     flex: 1,
@@ -244,12 +251,6 @@ const styles = StyleSheet.create({
   },
   placeSearchInput: { fontSize: 19, fontFamily: 'scdream', borderWidth: 0, height: 40 },
   placeSearchInputPlaceHolder: { color: '#bbb' },
-  invitationCode: {
-    fontFamily: 'scdream',
-    color: '#0099ED',
-    fontSize: 17,
-    paddingVertical: 10
-  },
   finishBtn: {
     fontFamily: 'scdreamBold',
     color: '#FFF',
@@ -259,5 +260,26 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'rgb(213, 213, 213)',
     paddingBottom: 15
+  },
+  finishBtnContainer: {
+    flex: 3,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
+  registerGroup: {
+    alignItems: 'center',
+    marginVertical: 'auto',
+    borderWidth: 1,
+    borderColor: '#0099ED',
+    justifyContent: 'center',
+    borderRadius: 50,
+    height: 50,
+    marginBottom: 30,
+    width: '90%'
+  },
+  registerGroupText: {
+    fontFamily: 'scdreamBold',
+    color: '#0099ED',
+    fontSize: 21
   }
 });

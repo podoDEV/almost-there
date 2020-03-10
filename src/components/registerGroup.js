@@ -4,7 +4,6 @@ import {
   Text,
   View,
   KeyboardAvoidingView,
-  ScrollView,
   TextInput,
   TouchableOpacity
 } from 'react-native';
@@ -16,7 +15,7 @@ import { GlobalContext } from '../context';
 import { getTime } from '../time';
 import * as url from '../apiUrl';
 
-const GROUP_NAME_MAX_LENGTH = 15;
+export const GROUP_NAME_MAX_LENGTH = 15;
 
 export default function RegisterGroup(props) {
   const { navigate } = useNavigation();
@@ -74,7 +73,7 @@ export default function RegisterGroup(props) {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-      <ScrollView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <View style={[styles.nameContainer, styles.underline]}>
           <Text style={styles.subTitle}>모임명</Text>
           <TextInput
@@ -93,9 +92,7 @@ export default function RegisterGroup(props) {
         <View style={[styles.datepickerContainer, styles.underline]}>
           <Text style={styles.subTitle}>모임 시간</Text>
           <View style={styles.dateContainer}>
-            <View style={styles.timePickerContainer}>
-              <ScrollTimePicker time={time} setTime={setTime} />
-            </View>
+            <ScrollTimePicker time={time} setTime={setTime} />
             <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
           </View>
         </View>
@@ -112,17 +109,19 @@ export default function RegisterGroup(props) {
             </Text>
           </TouchableOpacity>
         </View>
-        {renderFinishBtn && (
-          <TouchableOpacity
-            onPress={() => {
-              clickCreateGroupBtn();
-            }}
-            style={styles.registerGroup}
-          >
-            <Text style={styles.registerGroupText}>모임 생성</Text>
-          </TouchableOpacity>
-        )}
-      </ScrollView>
+        <View style={styles.finishBtnContainer}>
+          {renderFinishBtn && (
+            <TouchableOpacity
+              onPress={() => {
+                clickCreateGroupBtn();
+              }}
+              style={styles.registerGroup}
+            >
+              <Text style={styles.registerGroupText}>모임 생성</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -134,9 +133,6 @@ const styles = StyleSheet.create({
     alignContent: 'center'
   },
   dateContainer: {
-    flex: 1
-  },
-  timePickerContainer: {
     flex: 1
   },
   title: {
@@ -152,11 +148,11 @@ const styles = StyleSheet.create({
     marginTop: 15
   },
   datepickerContainer: {
-    flex: 5,
+    height: 250,
     paddingHorizontal: 20
   },
   placeContainer: {
-    flex: 1,
+    height: 80,
     paddingHorizontal: 20
   },
   maxMemberContainer: {
@@ -202,7 +198,8 @@ const styles = StyleSheet.create({
   placeSearchInput: { fontSize: 19, fontFamily: 'scdream', borderWidth: 0, height: 40 },
   placeSearchInputPlaceHolder: { color: '#bbb' },
   nameContainer: {
-    flex: 1,
+    // flex: 1,
+    height: 80,
     paddingHorizontal: 20,
     paddingBottom: 20
   },
@@ -228,10 +225,21 @@ const styles = StyleSheet.create({
     borderColor: 'rgb(213, 213, 213)',
     paddingBottom: 15
   },
+  finishBtnContainer: {
+    flex: 3,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
   registerGroup: {
-    flex: 1,
     alignItems: 'center',
-    marginVertical: 20
+    marginVertical: 'auto',
+    borderWidth: 1,
+    borderColor: '#0099ED',
+    justifyContent: 'center',
+    borderRadius: 50,
+    height: 50,
+    marginBottom: 30,
+    width: '90%'
   },
   registerGroupText: {
     fontFamily: 'scdreamBold',

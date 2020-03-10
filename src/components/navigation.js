@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, Share } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { SimpleLineIcons, MaterialIcons, EvilIcons } from '@expo/vector-icons';
 import { getSchedule } from '../time';
@@ -9,11 +9,19 @@ export default function Navigation(props) {
   const [isLoaded, setIsLoaded] = useState(false);
   const { groupInfo, owner } = props;
   const [fold, toggleFold] = useState(true);
+
   useEffect(() => {
     if (!isLoaded && props.groupInfo) {
       setIsLoaded(true);
     }
   });
+
+  async function copyToClipboard() {
+    const { code, name } = groupInfo;
+    Share.share({
+      message: `🙋‍♂️ ${name} 모임코드:${code}.\n-------\n앱스토어에서 진짜 다와가를 만나보세요! 👇\n링크: https://apps.apple.com/us/app/podolist/id1439078928`
+    });
+  }
 
   return (
     <View style={styles.naviContainer}>
@@ -74,14 +82,20 @@ export default function Navigation(props) {
               <Text style={styles.title}>모임장소</Text>
               <Text style={styles.detail}>{groupInfo.destination.name}</Text>
             </View>
-            {owner && (
-              <TouchableOpacity
-                style={styles.editIconContainer}
-                onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
-              >
-                <EvilIcons name="gear" color="#0099ED" size={25} />
+            <View style={styles.settingContainer}>
+              <TouchableOpacity style={styles.shareIconContainer} onPress={copyToClipboard}>
+                <Text style={styles.invitationCode}>{groupInfo.code}</Text>
+                <EvilIcons name="share-apple" color="#0099ED" size={25} />
               </TouchableOpacity>
-            )}
+              {owner && (
+                <TouchableOpacity
+                  style={styles.editIconContainer}
+                  onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
+                >
+                  <EvilIcons name="gear" color="#0099ED" size={25} />
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
       )}
@@ -137,9 +151,7 @@ const styles = StyleSheet.create({
     paddingVertical: 17
   },
   meetingInfoBox: {
-    flex: 3,
-    paddingBottom: 10,
-    justifyContent: 'flex-start'
+    flex: 3
   },
   memberInfoBox: {
     flex: 4
@@ -194,11 +206,32 @@ const styles = StyleSheet.create({
     color: '#0099ED',
     fontSize: 17
   },
+  settingContainer: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
   timerIcon: {
     marginRight: 4,
     color: '#fff'
   },
   editIconContainer: {
-    alignSelf: 'flex-end'
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 40
+  },
+  shareIconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 40
+  },
+  invitationCode: {
+    fontFamily: 'scdream',
+    color: '#0099ED',
+    fontSize: 17,
+    paddingVertical: 10
   }
 });

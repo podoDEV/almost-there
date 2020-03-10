@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
   daySelectorContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
+    alignItems: 'flex-end'
   },
   daySelectorBtn: {
     height: 38,

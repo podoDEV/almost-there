@@ -55,6 +55,8 @@ export default class Map extends React.Component {
 
   renderMarkers = () => {
     clearInterval(this.timerId);
+    this.updateMyLocationAndReRender();
+
     this.timerId = setInterval(() => {
       this.updateMyLocationAndReRender();
     }, UPDATE_INTERVAL);
