@@ -8,7 +8,9 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
 import { GlobalContext } from '../context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -150,53 +152,59 @@ export default function editProfile() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.infoContainer}>
-        <View style={styles.photoButtonContainer}>
-          {photoStatus === 'NONE' || photoStatus === 'CHANGE' ? (
-            <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
-              <ImageBackground source={{ uri: profileImageUrl }} style={styles.image}>
-                <View style={styles.editIconContainer}>
-                  <MaterialCommunityIcons
-                    name="square-edit-outline"
-                    size={25}
-                    color="rgb(74,74,74)"
-                  />
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
-          ) : (
-            <View style={styles.imageUploadButton}>
-              <Image source={{ uri: profileImageUrl }} style={styles.image} />
-            </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <View style={styles.infoContainer}>
+          <View style={styles.photoButtonContainer}>
+            {photoStatus === 'NONE' || photoStatus === 'CHANGE' ? (
+              <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
+                <ImageBackground source={{ uri: profileImageUrl }} style={styles.image}>
+                  <View style={styles.editIconContainer}>
+                    <MaterialCommunityIcons
+                      name="square-edit-outline"
+                      size={25}
+                      color="rgb(74,74,74)"
+                    />
+                  </View>
+                </ImageBackground>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.imageUploadButton}>
+                <Image source={{ uri: profileImageUrl }} style={styles.image} />
+              </View>
+            )}
+          </View>
+          {photoStatus === 'UPLOAD' && (
+            <ActivityIndicator size="small" color="#ddd" style={{ marginTop: 10 }} />
+          )}
+          {photoStatus !== 'FINISH' && nameStatus !== 'FINISH' && (
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={(text) => setName(text)}
+              value={name}
+            />
           )}
         </View>
-        {photoStatus === 'UPLOAD' && (
-          <ActivityIndicator size="small" color="#ddd" style={{ marginTop: 10 }} />
-        )}
-        {photoStatus !== 'FINISH' && nameStatus !== 'FINISH' && (
-          <TextInput style={styles.nameInput} onChangeText={(text) => setName(text)} value={name} />
-        )}
-      </View>
 
-      <View style={styles.finishBtnContainer}>
-        {photoStatus === 'FINISH' && nameStatus === 'FINISH' && (
-          <Text style={styles.finishBtnText}>{name}</Text>
-        )}
-        {(photoStatus === 'CHANGE' || nameStatus === 'CHANGE') &&
-          photoStatus !== 'FINISH' &&
-          nameStatus !== 'FINISH' && (
-            <TouchableOpacity
-              style={styles.finishBtn}
-              onPress={() => {
-                finishEditing();
-              }}
-            >
-              <Text style={styles.finishBtnText}>완료</Text>
-            </TouchableOpacity>
+        <View style={styles.finishBtnContainer}>
+          {photoStatus === 'FINISH' && nameStatus === 'FINISH' && (
+            <Text style={styles.finishBtnText}>{name}</Text>
           )}
+          {(photoStatus === 'CHANGE' || nameStatus === 'CHANGE') &&
+            photoStatus !== 'FINISH' &&
+            nameStatus !== 'FINISH' && (
+              <TouchableOpacity
+                style={styles.finishBtn}
+                onPress={() => {
+                  finishEditing();
+                }}
+              >
+                <Text style={styles.finishBtnText}>완료</Text>
+              </TouchableOpacity>
+            )}
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 

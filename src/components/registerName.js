@@ -1,5 +1,14 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, TextInput, AsyncStorage, Alert } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  AsyncStorage,
+  Alert,
+  Keyboard,
+  TouchableWithoutFeedback
+} from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
@@ -54,15 +63,17 @@ export default function RegisterName(props) {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>그냥 이름만</Text>
-      <View style={styles.inputContainer}>
-        <TextInput style={styles.nameInput} onChangeText={(text) => setName(text)} value={name} />
-        <TouchableOpacity onPress={handlePressIcon} style={styles.icon}>
-          <MaterialCommunityIcons name="arrow-right" size={32} color="#fff" />
-        </TouchableOpacity>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Text style={styles.title}>그냥 이름만</Text>
+        <View style={styles.inputContainer}>
+          <TextInput style={styles.nameInput} onChangeText={(text) => setName(text)} value={name} />
+          <TouchableOpacity onPress={handlePressIcon} style={styles.icon}>
+            <MaterialCommunityIcons name="arrow-right" size={32} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
