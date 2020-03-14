@@ -1,10 +1,18 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Text, TextInput } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Alert,
+  TouchableOpacity
+} from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
 import ActionButton from 'react-native-action-button';
-import { Layout } from '../layout';
 import { AntDesign } from '@expo/vector-icons';
 import { getSchedule } from '../time';
 
@@ -64,6 +72,10 @@ export default function GroupSearch(props) {
         if (res.status === 200) {
           console.log('success to add a new user to group');
           navigate('GroupList');
+        } else if (res.status === 400) {
+          Alert.alert('띠용👀', '정원이 초과되었습니다!');
+        } else {
+          Alert.alert('띠용👀', '해성이형! 문제가 발생했습니다!');
         }
       })
       .catch((error) => {
@@ -72,7 +84,7 @@ export default function GroupSearch(props) {
   };
 
   return (
-    <Layout>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={groupListStyle.container}>
         <View style={groupListStyle.groupCode}>
           <Text style={groupListStyle.groupCodeTitle}>모임 코드 입력</Text>
@@ -117,24 +129,20 @@ export default function GroupSearch(props) {
             </View>
           </View>
         )}
-        {groupInfoByGroupCode && (
-          <ActionButton
-            buttonColor="#0099ED"
-            buttonText="참가"
-            buttonTextStyle={{
-              marginTop: 4,
-              fontSize: 17,
-              fontFamily: 'scdreamBold',
-              textAlign: 'center'
-            }}
-            onPress={() => {
-              addUserToGroup();
-            }}
-            size={70}
-          />
-        )}
+        <View style={groupListStyle.finishBtnContainer}>
+          {groupInfoByGroupCode && (
+            <TouchableOpacity
+              style={groupListStyle.finishBtn}
+              onPress={() => {
+                addUserToGroup();
+              }}
+            >
+              <Text style={groupListStyle.finishBtnText}>모임 참가하기</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
-    </Layout>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -235,5 +243,28 @@ const groupListStyle = StyleSheet.create({
   createButton: {
     backgroundColor: '#31ACF1',
     width: 50
+  },
+  finishBtnContainer: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 10,
+    width: '100%'
+  },
+  finishBtnText: {
+    fontFamily: 'scdreamBold',
+    color: '#0099ED',
+    fontSize: 21
+  },
+  finishBtn: {
+    borderWidth: 1,
+    borderColor: '#0099ED',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+    height: 50,
+    marginBottom: 30,
+    width: '90%'
   }
 });

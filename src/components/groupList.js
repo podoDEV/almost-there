@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback } from 'react';
-import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, TouchableHighlight, Alert } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { GlobalContext } from '../context';
@@ -43,7 +43,7 @@ export default function GroupList(props) {
       headers: { Authorization: `Bearer ${accessToken}` }
     };
     fetch(url.leaveGroup(memberId, groupId), options)
-      .then(res => {
+      .then((res) => {
         if (res.status === 200) {
           console.log('Successfully leaved');
         }
@@ -65,6 +65,24 @@ export default function GroupList(props) {
     const prevIndex = groupList.findIndex((item) => item.id === rowKey);
     newData.splice(prevIndex, 1);
     setGroupList(newData);
+  };
+
+  const confirmDelete = (rowMap, id) => {
+    Alert.alert(
+      '🔥주의🔥',
+      '삭제하시겠습니까?',
+      [
+        {
+          text: '예',
+          onPress: () => {
+            leaveGroup(memberId, id);
+            deleteRow(rowMap, id);
+          }
+        },
+        { text: '아니오', style: 'cancel' }
+      ],
+      { cancelable: false }
+    );
   };
 
   const renderListItem = (data, rowMap) => {
@@ -112,10 +130,10 @@ export default function GroupList(props) {
         renderHiddenItem={(data, rowMap) => (
           <View style={styles.rowBack}>
             <Text style={styles.rowText}> </Text>
-            <TouchableHighlight onPress={() => {
-              leaveGroup(memberId, data.item.id);
-              deleteRow(rowMap, data.item.id);
-            }} style={styles.leaveButton}>
+            <TouchableHighlight
+              onPress={() => confirmDelete(rowMap, data.item.id)}
+              style={styles.leaveButton}
+            >
               <Text style={styles.rowText}>나가기</Text>
             </TouchableHighlight>
           </View>

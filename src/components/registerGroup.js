@@ -3,9 +3,10 @@ import {
   StyleSheet,
   Text,
   View,
-  KeyboardAvoidingView,
+  Keyboard,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
@@ -17,7 +18,7 @@ import * as url from '../apiUrl';
 
 export const GROUP_NAME_MAX_LENGTH = 15;
 
-export default function RegisterGroup(props) {
+export default function RegisterGroup(props) { 
   const { navigate } = useNavigation();
   const { meridiem, hour, min } = getTime(spacetime.now('Asia/Seoul'));
   const [name, setName] = useState('');
@@ -72,65 +73,67 @@ export default function RegisterGroup(props) {
   const renderFinishBtn = !!name.length && !!place && !!selectedDay.length;
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-      <View style={{ flex: 1 }}>
-        <View style={[styles.nameContainer, styles.underline]}>
-          <Text style={styles.subTitle}>모임명</Text>
-          <TextInput
-            style={styles.nameInput}
-            value={name}
-            onChangeText={(text) => {
-              if (text.length < GROUP_NAME_MAX_LENGTH) {
-                setName(text);
-              } else {
-                alert('이름 길이를 줄여주세요!');
-              }
-            }}
-            placeholder="모임명을 입력하세요"
-          />
-        </View>
-        <View style={[styles.datepickerContainer, styles.underline]}>
-          <Text style={styles.subTitle}>모임 시간</Text>
-          <View style={styles.dateContainer}>
-            <ScrollTimePicker time={time} setTime={setTime} />
-            <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <View style={{ flex: 1 }}>
+          <View style={[styles.nameContainer, styles.underline]}>
+            <Text style={styles.subTitle}>모임명</Text>
+            <TextInput
+              style={styles.nameInput}
+              value={name}
+              onChangeText={(text) => {
+                if (text.length < GROUP_NAME_MAX_LENGTH) {
+                  setName(text);
+                } else {
+                  alert('이름 길이를 줄여주세요!');
+                }
+              }}
+              placeholder="모임명을 입력하세요"
+            />
           </View>
-        </View>
-        <View style={styles.placeContainer}>
-          <Text style={styles.subTitle}>모임 장소</Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigate('PlaceSearch', { page: 'RegisterGroup' });
-            }}
-            style={{ marginTop: 10 }}
-          >
-            <Text style={[styles.placeSearchInput, !place && styles.placeSearchInputPlaceHolder]}>
-              {place ? place.name : '검색하기'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.finishBtnContainer}>
-          {renderFinishBtn && (
+          <View style={[styles.datepickerContainer, styles.underline]}>
+            <Text style={styles.subTitle}>모임 시간</Text>
+            <View style={styles.dateContainer}>
+              <ScrollTimePicker time={time} setTime={setTime} />
+              <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+            </View>
+          </View>
+          <View style={styles.placeContainer}>
+            <Text style={styles.subTitle}>모임 장소</Text>
             <TouchableOpacity
               onPress={() => {
-                clickCreateGroupBtn();
+                navigate('PlaceSearch', { page: 'RegisterGroup' });
               }}
-              style={styles.registerGroup}
+              style={{ marginTop: 10 }}
             >
-              <Text style={styles.registerGroupText}>모임 생성</Text>
+              <Text style={[styles.placeSearchInput, !place && styles.placeSearchInputPlaceHolder]}>
+                {place ? place.name : '검색하기'}
+              </Text>
             </TouchableOpacity>
-          )}
+          </View>
+          <View style={styles.finishBtnContainer}>
+            {renderFinishBtn && (
+              <TouchableOpacity
+                onPress={() => {
+                  clickCreateGroupBtn();
+                }}
+                style={styles.registerGroup}
+              >
+                <Text style={styles.registerGroupText}>모임 생성</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center'
+    flex: 1
+    // justifyContent: 'center',
+    // alignContent: 'center'
   },
   dateContainer: {
     flex: 1
