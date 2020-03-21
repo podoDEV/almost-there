@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.podo.almostthere",
-      "buildNumber": "28"
+      "buildNumber": "29"
     },
     "android": {
       "package": "com.podo.almostthere",

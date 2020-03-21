@@ -6,7 +6,8 @@ import {
   Keyboard,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ScrollView
 } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import spacetime from 'spacetime';
@@ -18,7 +19,7 @@ import * as url from '../apiUrl';
 
 export const GROUP_NAME_MAX_LENGTH = 15;
 
-export default function RegisterGroup(props) { 
+export default function RegisterGroup(props) {
   const { navigate } = useNavigation();
   const { meridiem, hour, min } = getTime(spacetime.now('Asia/Seoul'));
   const [name, setName] = useState('');
@@ -73,8 +74,8 @@ export default function RegisterGroup(props) {
   const renderFinishBtn = !!name.length && !!place && !!selectedDay.length;
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         <View style={{ flex: 1 }}>
           <View style={[styles.nameContainer, styles.underline]}>
             <Text style={styles.subTitle}>모임명</Text>
@@ -111,29 +112,27 @@ export default function RegisterGroup(props) {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.finishBtnContainer}>
-            {renderFinishBtn && (
-              <TouchableOpacity
-                onPress={() => {
-                  clickCreateGroupBtn();
-                }}
-                style={styles.registerGroup}
-              >
-                <Text style={styles.registerGroupText}>모임 생성</Text>
-              </TouchableOpacity>
-            )}
-          </View>
         </View>
+      </ScrollView>
+      <View style={styles.finishBtnContainer}>
+        {renderFinishBtn && (
+          <TouchableOpacity
+            onPress={() => {
+              clickCreateGroupBtn();
+            }}
+            style={styles.registerGroup}
+          >
+            <Text style={styles.registerGroupText}>모임 생성</Text>
+          </TouchableOpacity>
+        )}
       </View>
-    </TouchableWithoutFeedback>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1
-    // justifyContent: 'center',
-    // alignContent: 'center'
   },
   dateContainer: {
     flex: 1
@@ -229,7 +228,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15
   },
   finishBtnContainer: {
-    flex: 3,
+    // flex: 3,
     justifyContent: 'flex-end',
     alignItems: 'center'
   },
