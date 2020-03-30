@@ -18,9 +18,9 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.podo.almostthere",
-      "buildNumber": "29"
+      "buildNumber": "30"
     },
     "android": {
       "package": "com.podo.almostthere",
