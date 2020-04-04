@@ -1,10 +1,10 @@
 import { createContext } from 'react';
-import Constants from 'expo-constants';
+import { AsyncStorage } from 'react-native';
 
 export const userInfo = {
   id: null,
   name: null,
-  uuid: Constants.installationId,
+  uuid: null,
   accessToken: null,
   registrationToken: null
 };

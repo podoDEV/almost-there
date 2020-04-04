@@ -41,6 +41,7 @@ export default function SplashScreen() {
 
   async function getUserSession() {
     const accessToken = await AsyncStorage.getItem('ACCESS_TOKEN');
+    const uuid = await AsyncStorage.getItem('UUID');
 
     if (accessToken || userInfo.registrationToken) {
       fetch(url.membersMe(), {
@@ -71,7 +72,6 @@ export default function SplashScreen() {
           console.log('need to register name', err);
         });
     } else {
-      const { uuid } = userInfo;
       const options = {
         method: 'GET',
         headers: {
@@ -85,6 +85,7 @@ export default function SplashScreen() {
             const { name, id } = resJson[0];
             userInfo.name = name;
             userInfo.id = id;
+            userInfo.uuid = uuid;
             login();
           } else {
             navigate('RegisterPolicy');

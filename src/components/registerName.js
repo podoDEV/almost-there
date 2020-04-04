@@ -14,6 +14,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { uuidv4 } from '../common';
 
 export default function RegisterName(props) {
   const { navigate } = useNavigation();
@@ -27,12 +28,11 @@ export default function RegisterName(props) {
     }
 
     try {
+      const uuid = uuidv4();
+
       const options = {
         method: 'POST',
-        body: JSON.stringify({
-          name,
-          uuid: userInfo.uuid
-        }),
+        body: JSON.stringify({ name, uuid }),
         headers: {
           'Content-Type': 'application/json'
         }
@@ -45,11 +45,13 @@ export default function RegisterName(props) {
             accessToken
           } = resJson;
 
+          userInfo.uuid = uuid;
           userInfo.accessToken = accessToken;
           userInfo.id = id;
           userInfo.name = name;
 
           AsyncStorage.setItem('ACCESS_TOKEN', accessToken);
+          AsyncStorage.setItem('UUID', uuid);
         })
         .then(() => {
           navigate('RegisterPhoto');

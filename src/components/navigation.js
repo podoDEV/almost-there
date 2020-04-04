@@ -18,8 +18,9 @@ export default function Navigation(props) {
 
   async function copyToClipboard() {
     const { code, name } = groupInfo;
+    // @TODO: 앱스토어 
     Share.share({
-      message: `🙋‍♂️ ${name} 모임코드:${code}.\n-------\n앱스토어에서 진짜 다와가를 만나보세요! 👇\n링크: https://apps.apple.com/us/app/podolist/id1439078928`
+      message: `🙋‍♂️ ${name} 모임코드:${code}.\n-------\n앱스토어에서 진짜 다와가를 만나보세요!`
     });
   }
 
