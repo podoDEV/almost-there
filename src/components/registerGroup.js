@@ -109,7 +109,7 @@ export default function RegisterGroup(props) {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.finishBtnContainer}>
+        <KeyboardAvoidingView style={styles.finishBtnContainer} behavior="height" enabled>
           {renderFinishBtn && (
             <TouchableOpacity
               onPress={() => {
@@ -120,7 +120,7 @@ export default function RegisterGroup(props) {
               <Text style={styles.registerGroupText}>모임 생성</Text>
             </TouchableOpacity>
           )}
-        </View>
+        </KeyboardAvoidingView>
       </View>
     </KeyboardAvoidingView>
   );
