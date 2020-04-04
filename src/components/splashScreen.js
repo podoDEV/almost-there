@@ -102,6 +102,7 @@ export default function SplashScreen() {
         style={{
           flex: 1
         }}
+        resizeMode="cover"
         source={require('../../assets/lottie/splash.json')}
         autoPlay
       />
