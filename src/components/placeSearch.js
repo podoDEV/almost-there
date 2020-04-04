@@ -215,17 +215,17 @@ const styles = StyleSheet.create({
     textAlign: 'left'
   },
   selectPlaceBtn: {
+    flex: 1,
     width: '100%',
     height: 40,
     backgroundColor: '#fff',
-    borderRadius: 20
+    borderRadius: 20,
+    justifyContent: 'center'
   },
   selectPlaceBtnText: {
-    flex: 1,
     fontFamily: 'scdreamBold',
     fontSize: 16,
     color: '#0099ED',
-    textAlign: 'center',
-    paddingVertical: 12
+    textAlign: 'center'
   }
 });
