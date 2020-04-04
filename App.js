@@ -1,6 +1,7 @@
 import React from 'react';
 import { StatusBar, YellowBox } from 'react-native';
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
+import Constants from 'expo-constants';
 import RegisterName from './src/components/registerName';
 import RegisterPhoto from './src/components/registerPhoto';
 import RegisterPolicy from './src/components/registerPolicy';
@@ -23,7 +24,8 @@ const headerStyle = {
   backgroundColor: '#0099ED',
   elevation: 0,
   shadowOpacity: 0,
-  borderBottomWidth: 0
+  borderBottomWidth: 0,
+  marginTop: Constants.platform.ios ? 0 : -Constants.statusBarHeight
 };
 
 const headerTitleStyle = {

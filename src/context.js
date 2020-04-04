@@ -1,5 +1,4 @@
 import { createContext } from 'react';
-import { AsyncStorage } from 'react-native';
 
 export const userInfo = {
   id: null,
