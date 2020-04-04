@@ -46,7 +46,7 @@ export default function Navigation(props) {
               <SimpleLineIcons
                 style={styles.foldButton}
                 name={fold ? 'arrow-down' : 'arrow-up'}
-                size={12}
+                size={16}
                 color="#fff"
               />
             </TouchableOpacity>
@@ -55,47 +55,49 @@ export default function Navigation(props) {
         <View style={{ flex: 1 }}></View>
       </View>
       {isLoaded && !fold && (
-        <View style={styles.infoContainer}>
-          <View style={styles.memberInfoBox}>
-            <Text style={styles.title}>멤버</Text>
-            <ScrollView style={styles.memberScroll}>
-              {groupInfo.members.map((member, idx) => (
-                <View key={`info_${idx}`} style={styles.person}>
-                  <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
-                  <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
-                    {member.name}
-                  </Text>
-                </View>
-              ))}
-            </ScrollView>
+        <View>
+          <View style={styles.infoContainer}>
+            <View style={styles.memberInfoBox}>
+              <Text style={styles.title}>멤버</Text>
+              <ScrollView style={styles.memberScroll}>
+                {groupInfo.members.map((member, idx) => (
+                  <View key={`info_${idx}`} style={styles.person}>
+                    <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
+                    <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
+                      {member.name}
+                    </Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+            <View style={styles.meetingInfoBox}>
+              <View style={styles.schedule}>
+                <Text style={styles.title}>모임시간</Text>
+                <Text style={styles.detail}>
+                  {getSchedule(groupInfo.schedule).dayTitleText}
+                  {'\n'}
+                  {getSchedule(groupInfo.schedule).timeTitleText}
+                </Text>
+              </View>
+              <View style={styles.place}>
+                <Text style={styles.title}>모임장소</Text>
+                <Text style={styles.detail}>{groupInfo.destination.name}</Text>
+              </View>
+            </View>
           </View>
-          <View style={styles.meetingInfoBox}>
-            <View style={styles.schedule}>
-              <Text style={styles.title}>모임시간</Text>
-              <Text style={styles.detail}>
-                {getSchedule(groupInfo.schedule).dayTitleText}
-                {'\n'}
-                {getSchedule(groupInfo.schedule).timeTitleText}
-              </Text>
-            </View>
-            <View style={styles.place}>
-              <Text style={styles.title}>모임장소</Text>
-              <Text style={styles.detail}>{groupInfo.destination.name}</Text>
-            </View>
-            <View style={styles.settingContainer}>
-              <TouchableOpacity style={styles.shareIconContainer} onPress={copyToClipboard}>
-                <Text style={styles.invitationCode}>{groupInfo.code}</Text>
-                <EvilIcons name="share-apple" color="#0099ED" size={25} />
+          <View style={styles.settingContainer}>
+            <TouchableOpacity style={styles.shareIconContainer} onPress={copyToClipboard}>
+              <EvilIcons name="share-apple" color="#0099ED" size={25} />
+              <Text style={styles.invitationCode}>{groupInfo.code}</Text>
+            </TouchableOpacity>
+            {owner && (
+              <TouchableOpacity
+                style={styles.editIconContainer}
+                onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
+              >
+                <EvilIcons name="gear" color="#0099ED" size={25} />
               </TouchableOpacity>
-              {owner && (
-                <TouchableOpacity
-                  style={styles.editIconContainer}
-                  onPress={() => navigate('EditGroup', { groupId: groupInfo.id })}
-                >
-                  <EvilIcons name="gear" color="#0099ED" size={25} />
-                </TouchableOpacity>
-              )}
-            </View>
+            )}
           </View>
         </View>
       )}
@@ -140,15 +142,15 @@ const styles = StyleSheet.create({
   },
   foldButtonContainer: { height: 24, width: 24, justifyContent: 'center', alignItems: 'center' },
   foldButton: {
-    height: 12,
-    width: 12
+    height: 16,
+    width: 16
   },
   infoContainer: {
-    flex: 5,
+    flex: 4,
     flexDirection: 'row',
     paddingLeft: 19,
     paddingRight: 27,
-    paddingVertical: 17
+    paddingTop: 17
   },
   meetingInfoBox: {
     flex: 3
@@ -207,10 +209,12 @@ const styles = StyleSheet.create({
     fontSize: 17
   },
   settingContainer: {
-    marginTop: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end'
+    paddingLeft: 19,
+    paddingRight: 27,
+    justifyContent: 'space-between',
+    paddingBottom: 15
   },
   timerIcon: {
     marginRight: 4,

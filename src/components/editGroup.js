@@ -75,7 +75,7 @@ export default function EditGroup(props) {
           },
           name: place.name
         },
-        maximumCount: 99,
+        maximumCount: 10,
         name: groupName,
         schedule: {
           dayOfWeeks: [...selectedDay],
@@ -106,58 +106,61 @@ export default function EditGroup(props) {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {groupInfo && time && (
-        <View style={{ flex: 1 }}>
-          <View style={[styles.memberInfoContainer, styles.underline]}>
-            <Text style={styles.subTitle}>멤버</Text>
-            {groupInfo.members.map((member, idx) => (
-              <View key={`info_${idx}`} style={styles.person}>
-                <View style={styles.personArea}>
-                  <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
-                  <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
-                    {member.name}
-                  </Text>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+        {groupInfo && time && (
+          <View style={{ flex: 1 }}>
+            <View style={[styles.memberInfoContainer, styles.underline]}>
+              <Text style={styles.subTitle}>멤버</Text>
+              {groupInfo.members.map((member, idx) => (
+                <View key={`info_${idx}`} style={styles.person}>
+                  <View style={styles.personArea}>
+                    <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
+                    <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
+                      {member.name}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            ))}
+              ))}
+            </View>
+            <View style={[styles.nameContainer, styles.underline]}>
+              <Text style={styles.subTitle}>모임명</Text>
+              <TextInput
+                style={styles.nameInput}
+                value={groupName}
+                onChangeText={(text) => {
+                  if (text.length < GROUP_NAME_MAX_LENGTH) {
+                    setGroupName(text);
+                  } else {
+                    alert('이름 길이를 줄여주세요!');
+                  }
+                }}
+                placeholder="모임명을 입력하세요"
+              />
+            </View>
+            <View style={[styles.datepickerContainer, styles.underline]}>
+              <Text style={styles.subTitle}>모임 시간</Text>
+              <ScrollTimePicker time={time} setTime={setTime} />
+              <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+            </View>
+            <View style={styles.placeContainer}>
+              <Text style={styles.subTitle}>모임 장소</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigate('PlaceSearch', { page: 'EditGroup' });
+                }}
+                style={{ marginTop: 10 }}
+              >
+                <Text
+                  style={[styles.placeSearchInput, !place && styles.placeSearchInputPlaceHolder]}
+                >
+                  {place ? place.name : '검색하기'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={[styles.nameContainer, styles.underline]}>
-            <Text style={styles.subTitle}>모임명</Text>
-            <TextInput
-              style={styles.nameInput}
-              value={groupName}
-              onChangeText={(text) => {
-                if (text.length < GROUP_NAME_MAX_LENGTH) {
-                  setGroupName(text);
-                } else {
-                  alert('이름 길이를 줄여주세요!');
-                }
-              }}
-              placeholder="모임명을 입력하세요"
-            />
-          </View>
-          <View style={[styles.datepickerContainer, styles.underline]}>
-            <Text style={styles.subTitle}>모임 시간</Text>
-            <ScrollTimePicker time={time} setTime={setTime} />
-            <DateSelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
-          </View>
-          <View style={styles.placeContainer}>
-            <Text style={styles.subTitle}>모임 장소</Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigate('PlaceSearch', { page: 'EditGroup' });
-              }}
-              style={{ marginTop: 10 }}
-            >
-              <Text style={[styles.placeSearchInput, !place && styles.placeSearchInputPlaceHolder]}>
-                {place ? place.name : '검색하기'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-
+        )}
+      </ScrollView>
       <View style={styles.finishBtnContainer}>
         {renderFinishBtn && (
           <TouchableOpacity onPress={finishEditing} style={styles.registerGroup}>
@@ -165,7 +168,7 @@ export default function EditGroup(props) {
           </TouchableOpacity>
         )}
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -262,7 +265,6 @@ const styles = StyleSheet.create({
     paddingBottom: 15
   },
   finishBtnContainer: {
-    flex: 3,
     justifyContent: 'flex-end',
     alignItems: 'center'
   },
