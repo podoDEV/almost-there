@@ -20,11 +20,20 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.podo.almostthere",
-      "buildNumber": "30"
+      "buildNumber": "30",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDxYFmFvNm31dqnRU30RIOGKzjvqrabRvE"
+      }
     },
     "android": {
       "package": "com.podo.almostthere",
-      "versionCode": 1
+      "versionCode": 3,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAMb97KNNqK0DNOLUpY5_QjlcneAFXP4yQ"
+        }
+      },
+      "permissions": ["ACCESS_COARSE_LOCATIPN", "ACCESS_FINE_LOCATION"]
     }
   }
 }

@@ -9,13 +9,11 @@ import ActionButton from 'react-native-action-button';
 import MemberMarker from './memberMarker';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
-
 const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
-const DEFAULT_PADDING = { top: 100, right: 100, bottom: 100, left: 100 };
+const DEFAULT_PADDING = { top: 200, right: 100, bottom: 100, left: 100 };
 const UPDATE_INTERVAL = 500;
-
 export default class Map extends React.Component {
   timerId = null;
   markerLoaded = false;
@@ -24,7 +22,8 @@ export default class Map extends React.Component {
     region: null,
     destination: null,
     members: null,
-    active: false
+    active: false,
+    markerLocations: null
   };
 
   componentWillUnmount() {
@@ -32,7 +31,6 @@ export default class Map extends React.Component {
       clearInterval(this.timerId);
     }
   }
-
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
       alert('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
@@ -40,28 +38,22 @@ export default class Map extends React.Component {
       this.getGroupInfo();
     }
   }
-
   componentDidUpdate(prevProps, prevState) {
     const { active } = this.state;
-
     if (active !== prevState.active && active) {
       this.renderMarkers();
     }
-
     if (prevProps !== this.props) {
       this.getGroupInfo();
     }
   }
-
   renderMarkers = () => {
     clearInterval(this.timerId);
     this.updateMyLocationAndReRender();
-
     this.timerId = setInterval(() => {
       this.updateMyLocationAndReRender();
     }, UPDATE_INTERVAL);
   };
-
   getGroupInfo = () => {
     const { accessToken } = this.context;
     const options = { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } };
@@ -76,7 +68,6 @@ export default class Map extends React.Component {
           },
           status
         } = resJson;
-
         if (status === 'ACTIVE') {
           const memberInfoList = this.getMemberInfos(members);
           this.setState(
@@ -86,7 +77,7 @@ export default class Map extends React.Component {
               members: memberInfoList
             },
             () => {
-              if (!this.state.markerLoaded) {
+              if (!this.markerLoaded) {
                 this.fitToAllMarkers();
               }
             }
@@ -100,7 +91,6 @@ export default class Map extends React.Component {
         console.error(error);
       });
   };
-
   getMemberInfos = (memberInfos) => {
     const memberInfoList = [];
     for (let memberInfo of memberInfos) {
@@ -109,7 +99,6 @@ export default class Map extends React.Component {
     }
     return memberInfoList;
   };
-
   updateMyLocationAndReRender = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
@@ -119,7 +108,6 @@ export default class Map extends React.Component {
       accuracy: Location.Accuracy.Highest,
       maximumAge: 1000
     };
-
     const location = await Location.getCurrentPositionAsync(options);
     const { longitude, latitude } = location.coords;
     this.setState(
@@ -136,7 +124,6 @@ export default class Map extends React.Component {
       }
     );
   };
-
   updateMyLocation = () => {
     const { id, accessToken } = this.context;
     const options = {
@@ -151,7 +138,6 @@ export default class Map extends React.Component {
         longitude: this.state.region.longitude
       })
     };
-
     fetch(url.updateLocation(id), options)
       .then((res) => res.json())
       .then(() => {
@@ -161,26 +147,25 @@ export default class Map extends React.Component {
         console.error(error);
       });
   };
-
   fitToAllMarkers() {
     const markerLocations = [];
-
     for (let member of this.state.members) {
       if (member.region !== null) {
         markerLocations.push(member.region);
       }
     }
-
     markerLocations.push(this.state.destination);
 
-    this.mapRef.current.fitToCoordinates(markerLocations, {
-      edgePadding: DEFAULT_PADDING,
-      animated: true
-    });
+    this.setState({ markerLocations });
+    this.markerLoaded = true;
 
-    this.state.markerLoaded = true;
+    if (markerLocations.length) {
+      this.mapRef.current.fitToCoordinates(markerLocations, {
+        edgePadding: DEFAULT_PADDING,
+        animated: true
+      });
+    }
   }
-
   renderNotActiveLayer() {
     return (
       <View style={styles.notActiveLayer}>
@@ -190,10 +175,8 @@ export default class Map extends React.Component {
       </View>
     );
   }
-
   render() {
     const { members, destination, active } = this.state;
-
     return (
       <View style={styles.container}>
         <MapView
@@ -206,6 +189,16 @@ export default class Map extends React.Component {
             longitudeDelta: LONGITUDE_DELTA
           }}
           followUserLocation={true}
+          onLayout={() => {
+            setTimeout(() => {
+              if (this.state.markerLocations) {
+                this.mapRef.current.fitToCoordinates(this.state.markerLocations, {
+                  edgePadding: DEFAULT_PADDING,
+                  animated: true
+                });
+              }
+            }, 300);
+          }}
         >
           {members &&
             members.map((member, idx) => {
@@ -244,9 +237,7 @@ export default class Map extends React.Component {
     );
   }
 }
-
 Map.contextType = GlobalContext;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
