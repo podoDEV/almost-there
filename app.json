@@ -5,7 +5,7 @@
     "privacy": "public",
     "sdkVersion": "34.0.0",
     "platforms": ["ios", "android"],
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -20,9 +20,14 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.podo.almostthere",
-      "buildNumber": "30",
+      "buildNumber": "35",
       "config": {
         "googleMapsApiKey": "AIzaSyDxYFmFvNm31dqnRU30RIOGKzjvqrabRvE"
+      },
+      "infoPlist": {
+        "NSPhotoLibraryAddUsageDescription": "프로필 사진 등록을 위해 사진에 접근합니다.",
+        "NSPhotoLibraryUsageDescription": "프로필 사진 등록을 위해 사진에 접근합니다.",
+        "NSLocationWhenInUseUsageDescription": "지도에 자신의 현재 위치를 나타내기 위해 위치 수집 권한을 활성화합니다."
       }
     },
     "android": {

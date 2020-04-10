@@ -24,8 +24,7 @@ const headerStyle = {
   backgroundColor: '#0099ED',
   elevation: 0,
   shadowOpacity: 0,
-  borderBottomWidth: 0,
-  marginTop: Constants.platform.ios ? 0 : -Constants.statusBarHeight
+  borderBottomWidth: 0
 };
 
 const headerTitleStyle = {

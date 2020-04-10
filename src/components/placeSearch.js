@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { useState, createRef, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -26,11 +26,19 @@ export default function PlaceSearch(props) {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [mapRef, setMapRef] = useState(() => createRef());
   const { navigate, goBack } = useNavigation();
+  const inputRef = useRef();
   const PAGE = useNavigationParam('page');
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   const searchPlace = () => {
     const placeName = search;
     if (placeName.length < 2) {
+      Alert.alert('띠용🔥', '두 글자 이상을 입력하세요');
+      inputRef.current.focus();
+
       return;
     }
     Keyboard.dismiss();
@@ -96,12 +104,13 @@ export default function PlaceSearch(props) {
         <TextInput
           style={styles.searchInput}
           placeholder="장소를 검색하세요"
-          placeholderTextColor="#fff"
+          placeholderTextColor="#ddd"
           onChangeText={(text) => {
             setSearch(text);
           }}
           value={search}
           onSubmitEditing={searchPlace}
+          ref={inputRef}
         />
         <TouchableOpacity style={styles.maginifyContainer} onPress={searchPlace}>
           <MaterialCommunityIcons name="magnify" color="#FFF" size={25} />

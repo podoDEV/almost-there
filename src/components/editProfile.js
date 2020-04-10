@@ -53,7 +53,7 @@ export default function editProfile() {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== 'granted') {
-        Alert.alert('띠용👀', '수락 안하면 못 올려!');
+        Alert.alert('띠용👀', '설정 > 진짜다와가 > 카메라 권한을 활성하세요');
       }
     }
 

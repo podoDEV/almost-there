@@ -28,7 +28,7 @@ export default function RegisterName() {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== 'granted') {
-        Alert.alert('흐음!!!', '동의하지 않으면 사진을 올릴 수 없어요😢');
+        Alert.alert('흐음!!!', '설정 > 진짜다와가 > 카메라 권한을 활성하세요😢');
       }
     }
 
