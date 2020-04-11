@@ -32,7 +32,7 @@
     },
     "android": {
       "package": "com.podo.almostthere",
-      "versionCode": 3,
+      "versionCode": 4,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAMb97KNNqK0DNOLUpY5_QjlcneAFXP4yQ"
