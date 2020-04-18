@@ -39,6 +39,9 @@
         }
       },
       "permissions": ["ACCESS_COARSE_LOCATIPN", "ACCESS_FINE_LOCATION"]
+    },
+    "androidStatusBar": {
+      "barStyle": "light-content"
     }
   }
 }
