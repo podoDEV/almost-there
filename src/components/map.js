@@ -5,10 +5,13 @@ import * as Permissions from 'expo-permissions';
 import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
+
 import ActionButton from 'react-native-action-button';
-import MemberMarker from './memberMarker';
+import Marker from './marker';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
+import { getThumbColor } from '../common';
+
 const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
@@ -31,6 +34,7 @@ export default class Map extends React.Component {
       clearInterval(this.timerId);
     }
   }
+
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
       alert('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
@@ -38,6 +42,7 @@ export default class Map extends React.Component {
       this.getGroupInfo();
     }
   }
+
   componentDidUpdate(prevProps, prevState) {
     const { active } = this.state;
     if (active !== prevState.active && active) {
@@ -47,6 +52,7 @@ export default class Map extends React.Component {
       this.getGroupInfo();
     }
   }
+
   renderMarkers = () => {
     clearInterval(this.timerId);
     this.updateMyLocationAndReRender();
@@ -54,6 +60,7 @@ export default class Map extends React.Component {
       this.updateMyLocationAndReRender();
     }, UPDATE_INTERVAL);
   };
+
   getGroupInfo = () => {
     const { accessToken } = this.context;
     const options = { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } };
@@ -91,6 +98,7 @@ export default class Map extends React.Component {
         console.error(error);
       });
   };
+
   getMemberInfos = (memberInfos) => {
     const memberInfoList = [];
     for (let memberInfo of memberInfos) {
@@ -99,6 +107,7 @@ export default class Map extends React.Component {
     }
     return memberInfoList;
   };
+
   updateMyLocationAndReRender = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
@@ -106,7 +115,7 @@ export default class Map extends React.Component {
     }
     const options = {
       accuracy: Location.Accuracy.Highest,
-      maximumAge: 1000
+      maximumAge: UPDATE_INTERVAL
     };
     const location = await Location.getCurrentPositionAsync(options);
     const { longitude, latitude } = location.coords;
@@ -124,6 +133,7 @@ export default class Map extends React.Component {
       }
     );
   };
+
   updateMyLocation = () => {
     const { id, accessToken } = this.context;
     const options = {
@@ -147,6 +157,7 @@ export default class Map extends React.Component {
         console.error(error);
       });
   };
+
   fitToAllMarkers() {
     const markerLocations = [];
     for (let member of this.state.members) {
@@ -166,6 +177,7 @@ export default class Map extends React.Component {
       });
     }
   }
+
   renderNotActiveLayer() {
     return (
       <View style={styles.notActiveLayer}>
@@ -175,6 +187,7 @@ export default class Map extends React.Component {
       </View>
     );
   }
+
   render() {
     const { members, destination, active } = this.state;
     return (
@@ -203,23 +216,24 @@ export default class Map extends React.Component {
           {members &&
             members.map((member, idx) => {
               return (
-                <MemberMarker
+                <Marker
                   key={`marker_${idx}`}
                   region={member.region}
                   name={member.name}
                   profileImageUrl={member.profileImageUrl}
+                  color={getThumbColor(idx)}
                 />
               );
             })}
           {destination && (
-            <MemberMarker
+            <Marker
               key={destination.id}
               region={{
                 latitude: destination.latitude,
                 longitude: destination.longitude
               }}
               name={destination.name}
-              markerState={destination.isDestination}
+              destination={true}
             />
           )}
         </MapView>

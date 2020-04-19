@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, Share } fr
 import { useNavigation } from 'react-navigation-hooks';
 import { SimpleLineIcons, MaterialIcons, EvilIcons } from '@expo/vector-icons';
 import { getSchedule } from '../time';
+import { isExistProfilePhoto, getThumbColor } from '../common';
 
 export default function Navigation(props) {
   const { navigate, goBack } = useNavigation();
@@ -18,7 +19,7 @@ export default function Navigation(props) {
 
   async function copyToClipboard() {
     const { code, name } = groupInfo;
-    // @TODO: 앱스토어 
+    // @TODO: 앱스토어
     Share.share({
       message: `🙋‍♂️ ${name} 모임코드:${code}.\n-------\n앱스토어에서 진짜 다와가를 만나보세요!`
     });
@@ -63,7 +64,21 @@ export default function Navigation(props) {
               <ScrollView style={styles.memberScroll}>
                 {groupInfo.members.map((member, idx) => (
                   <View key={`info_${idx}`} style={styles.person}>
-                    <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
+                    {isExistProfilePhoto(member.profileImageUrl) ? (
+                      <Image
+                        style={[styles.personImage, { borderColor: getThumbColor(idx) }]}
+                        source={{ uri: member.profileImageUrl }}
+                      />
+                    ) : (
+                      <Text
+                        style={[
+                          styles.personImage,
+                          { borderColor: getThumbColor(idx), backgroundColor: getThumbColor(idx) }
+                        ]}
+                      >
+                        {member.name.slice(0, 2)}
+                      </Text>
+                    )}
                     <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
                       {member.name}
                     </Text>
@@ -186,11 +201,14 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#0099ED',
     marginVertical: 5,
     marginRight: 15,
-    paddingHorizontal: 7,
-    paddingVertical: 8
+    color: '#fff',
+    overflow: 'hidden',
+    textAlign: 'center',
+    fontFamily: 'scdreamBold',
+    fontSize: 10,
+    lineHeight: 32
   },
   place: {
     height: 150
