@@ -7,12 +7,12 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { GlobalContext } from '../context';
 import * as url from '../apiUrl';
-import ActionButton from 'react-native-action-button';
 import { AntDesign } from '@expo/vector-icons';
 import { getSchedule } from '../time';
 
@@ -20,7 +20,7 @@ export default function GroupSearch(props) {
   const { navigate } = useNavigation();
   const [inputValue, setInputValue] = useState(null);
   const [myInfo, setMyInfo] = useState(null);
-  const [groupCode, setGroupCode] = useState(null);
+  const [status, setStatus] = useState('NONE');
   const [groupInfoByGroupCode, setGroupInfoByGroupCode] = useState(null);
   const { accessToken } = useContext(GlobalContext);
   const options = {
@@ -29,6 +29,7 @@ export default function GroupSearch(props) {
       Authorization: `Bearer ${accessToken}`
     }
   };
+
   useEffect(() => {
     fetch(url.membersMe(), options)
       .then((res) => {
@@ -42,25 +43,37 @@ export default function GroupSearch(props) {
       .catch((error) => {
         console.error(error);
       });
-    fetch(url.getGroup(groupCode), options)
+  }, []);
+
+  const findGroup = () => {
+    setStatus('SEARCHING');
+
+    fetch(url.getGroup(inputValue), options)
       .then((res) => {
         if (res.status === 200) {
           return res.json();
         }
       })
       .then((resJson) => {
-        setGroupInfoByGroupCode(resJson);
+        if (!resJson) {
+          Alert.alert('또잉👾', '해당 그룹은 없습니다! 코드를 확인해주세요.');
+        } else {
+          setGroupInfoByGroupCode(resJson);
+        }
+
+        setStatus('NONE');
       })
       .catch((error) => {
         console.error(error);
+        setStatus('NONE');
       });
-  }, [groupCode]);
+  };
 
   const addUserToGroup = () => {
     const joinGroupOptions = {
       method: 'POST',
       body: JSON.stringify({
-        code: groupCode
+        code: groupInfoByGroupCode.code
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -99,15 +112,13 @@ export default function GroupSearch(props) {
                 setInputValue(value);
               }}
             />
-            <AntDesign
-              name={'arrowright'}
-              size={15}
-              color="#31ACF1"
-              onPress={() => setGroupCode(inputValue)}
-            />
+            <AntDesign name={'arrowright'} size={15} color="#31ACF1" onPress={() => findGroup()} />
           </View>
         </View>
-        {groupInfoByGroupCode && (
+        {status === 'SEARCHING' && (
+          <ActivityIndicator size="small" color="#0099ED" style={{ marginTop: 200 }} />
+        )}
+        {status === 'NONE' && groupInfoByGroupCode && (
           <View style={groupListStyle.groupInfo}>
             <View style={groupListStyle.groupName}>
               <Text style={groupListStyle.groupNameTile}>{groupInfoByGroupCode.name}</Text>
