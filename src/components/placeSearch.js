@@ -14,7 +14,7 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import MapView from 'react-native-maps';
 import * as url from '../apiUrl';
-import MemberMarker from './memberMarker';
+import Marker from './marker';
 
 const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.008;
@@ -160,13 +160,8 @@ export default function PlaceSearch(props) {
         </ScrollView>
       )}
       <MapView style={styles.map} ref={mapRef} followUserLocation={true}>
-        {/* @TODO: 아니 이게 왜 membermarker야  */}
         {selectedPlace && (
-          <MemberMarker
-            region={selectedPlace.region}
-            name={selectedPlace.name}
-            markerState={true}
-          />
+          <Marker region={selectedPlace.region} name={selectedPlace.name} destination={true} />
         )}
       </MapView>
     </View>

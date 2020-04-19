@@ -13,3 +13,10 @@ export function uuidv4() {
     return v.toString(16);
   });
 }
+
+export function isExistProfilePhoto(url) {
+  const noPhoto =
+    'https://s3.ap-northeast-2.amazonaws.com/com.podo.almostthere/c4981f88-056b-4b7c-b7f3-5db4b28d7a07';
+
+  return url !== noPhoto;
+}
