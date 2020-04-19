@@ -10,6 +10,16 @@ export const days = [
   { title: '일', value: 'SUNDAY' }
 ];
 
+const sortDayValue = {
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
+  SATURDAY: 6,
+  SUNDAY: 7
+};
+
 export function getTimePickerSet() {
   const MERIDIEM = ['AM', 'PM'];
   const HOUR = Array.from(Array(13).keys());
@@ -67,10 +77,13 @@ export function getSchedule(schedule) {
   const timeTitleText = getTimeTitleText(time);
   let dayTitleText = '매주 ';
 
-  dayOfWeek.map((value) => {
-    const { title } = days.filter((obj) => obj.value === value)[0];
-    dayTitleText += `${title},`;
-  });
+  dayOfWeek
+    .sort((d1, d2) => sortDayValue[d1] - sortDayValue[d2])
+    .map((value) => {
+      const { title } = days.filter((obj) => obj.value === value)[0];
+      console.log(value);
+      dayTitleText += `${title},`;
+    });
   dayTitleText = dayTitleText.slice(0, dayTitleText.length - 1);
 
   return {
