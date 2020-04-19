@@ -10,6 +10,7 @@ import ActionButton from 'react-native-action-button';
 import Marker from './marker';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
+import { getThumbColor } from '../common';
 
 const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.28;
@@ -220,6 +221,7 @@ export default class Map extends React.Component {
                   region={member.region}
                   name={member.name}
                   profileImageUrl={member.profileImageUrl}
+                  color={getThumbColor(idx)}
                 />
               );
             })}

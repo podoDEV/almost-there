@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { isExistProfilePhoto } from '../common';
 
 export default function(props) {
-  const { region, destination, name, profileImageUrl } = props;
+  const { region, destination, name, profileImageUrl, color } = props;
 
   if (region === null || region.latitude === null || region.longitude === null) {
     return null;
@@ -26,19 +26,23 @@ export default function(props) {
   }
 
   const existPhoto = isExistProfilePhoto(profileImageUrl);
+  const borderStyle = { borderColor: color, borderRightColor: color };
+  const backgroundStyle = { backgroundColor: color };
 
   return (
     <Marker coordinate={{ ...region }} centerOffset={{ x: 0, y: -25 }} style={styles.marker}>
       <View style={styles.markerView}>
         {existPhoto ? (
-          <Image style={styles.markerImageArea} source={{ uri: profileImageUrl }} />
+          <Image style={[styles.markerImageArea, borderStyle]} source={{ uri: profileImageUrl }} />
         ) : (
-          <Text style={styles.markerImageArea}>{name.slice(0, 2)}</Text>
+          <Text style={[styles.markerImageArea, borderStyle, backgroundStyle]}>
+            {name.slice(0, 2)}
+          </Text>
         )}
       </View>
       <View style={styles.pointer}>
-        <View style={styles.line}></View>
-        <View style={styles.point}></View>
+        <View style={[styles.line, borderStyle]}></View>
+        <View style={[styles.point, borderStyle]}></View>
       </View>
     </Marker>
   );
@@ -57,7 +61,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     borderColor: '#0099ED',
-    backgroundColor: '#007EC2',
     color: '#fff',
     overflow: 'hidden',
     lineHeight: 40,

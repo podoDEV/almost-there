@@ -15,6 +15,7 @@ import DateSelector from './dateSelector';
 import ScrollTimePicker from './ScrollTimePicker';
 import { getSchedule } from '../time';
 import { GROUP_NAME_MAX_LENGTH } from './registerGroup';
+import { isExistProfilePhoto, getThumbColor } from '../common';
 
 export default function EditGroup(props) {
   const { accessToken } = useContext(GlobalContext);
@@ -115,7 +116,21 @@ export default function EditGroup(props) {
               {groupInfo.members.map((member, idx) => (
                 <View key={`info_${idx}`} style={styles.person}>
                   <View style={styles.personArea}>
-                    <Image style={styles.personImage} source={{ uri: member.profileImageUrl }} />
+                    {isExistProfilePhoto(member.profileImageUrl) ? (
+                      <Image
+                        style={[styles.personImage, { borderColor: getThumbColor(idx) }]}
+                        source={{ uri: member.profileImageUrl }}
+                      />
+                    ) : (
+                      <Text
+                        style={[
+                          styles.personImage,
+                          { borderColor: getThumbColor(idx), backgroundColor: getThumbColor(idx) }
+                        ]}
+                      >
+                        {member.name.slice(0, 2)}
+                      </Text>
+                    )}
                     <Text style={styles.personName} numberOfLines={1} ellipsizeMode="tail">
                       {member.name}
                     </Text>
@@ -246,11 +261,14 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#0099ED',
     marginVertical: 5,
     marginRight: 15,
-    paddingHorizontal: 7,
-    paddingVertical: 8
+    color: '#fff',
+    overflow: 'hidden',
+    textAlign: 'center',
+    fontFamily: 'scdreamBold',
+    fontSize: 10,
+    lineHeight: 32
   },
   placeSearchInput: { fontSize: 19, fontFamily: 'scdream', borderWidth: 0, height: 40 },
   placeSearchInputPlaceHolder: { color: '#bbb' },

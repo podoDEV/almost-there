@@ -20,3 +20,30 @@ export function isExistProfilePhoto(url) {
 
   return url !== noPhoto;
 }
+
+export function getThumbColor(index) {
+  const colorSet = [
+    '#292349',
+    '#4528ba',
+    '#bab1d8',
+    '#fed701',
+    '#02c9da',
+    '#962752',
+    '#7b47ba',
+    '#eed887',
+    '#0251d6',
+    '#027a93',
+    '#da756d',
+    '#fbadbd',
+    '#e25822',
+    '#9399ff',
+    '#216353',
+    '#be79df',
+    '#ff1e56',
+    '#6decb9',
+    '#6807f9',
+    '#5b0909'
+  ];
+
+  return colorSet[index % colorSet.length];
+}
