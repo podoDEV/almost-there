@@ -21,6 +21,27 @@ export function isExistProfilePhoto(url) {
   return url !== noPhoto;
 }
 
+export function debounce(fn, wait, immediate = false) {
+  let timeout = null;
+
+  return (...args) => {
+    const later = function() {
+      timeout = -1;
+      if (!immediate) {
+        fn(...args);
+      }
+    };
+    const callNow = immediate && !timeout;
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = window.setTimeout(later, wait);
+    if (callNow) {
+      fn(...args);
+    }
+  };
+}
+
 export function getThumbColor(index) {
   const colorSet = [
     '#292349',
