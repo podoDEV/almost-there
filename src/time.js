@@ -81,7 +81,6 @@ export function getSchedule(schedule) {
     .sort((d1, d2) => sortDayValue[d1] - sortDayValue[d2])
     .map((value) => {
       const { title } = days.filter((obj) => obj.value === value)[0];
-      console.log(value);
       dayTitleText += `${title},`;
     });
   dayTitleText = dayTitleText.slice(0, dayTitleText.length - 1);

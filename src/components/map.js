@@ -1,141 +1,81 @@
-import React from 'react';
-import { StyleSheet, View, Dimensions, Platform, Text } from 'react-native';
-import Constants from 'expo-constants';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { StyleSheet, View, Dimensions, Text, Alert } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
-
 import ActionButton from 'react-native-action-button';
+
 import Marker from './marker';
 import * as url from '../apiUrl';
 import { GlobalContext } from '../context';
-import { getThumbColor } from '../common';
+import { getThumbColor, debounce } from '../common';
 
 const { height, width } = Dimensions.get('window');
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 const DEFAULT_PADDING = { top: 200, right: 100, bottom: 100, left: 100 };
-const UPDATE_INTERVAL = 500;
-export default class Map extends React.Component {
-  timerId = null;
-  markerLoaded = false;
-  mapRef = React.createRef();
-  state = {
-    region: null,
-    destination: null,
-    members: null,
-    active: false,
-    markerLocations: null
-  };
+const UPDATE_INTERVAL = 10000;
+const DEBOUNCE_TIME = 500;
 
-  componentWillUnmount() {
-    if (this.timerId) {
-      clearInterval(this.timerId);
-    }
-  }
+// @TODO:  map load 되고 위치 가져오는 시간 체크
+export default function Map(props) {
+  const { groupId } = props;
+  const [timerId, setTimerId] = useState(null);
+  const [members, setMembers] = useState(null);
+  const [active, setActive] = useState(false);
+  const [destination, setDestination] = useState(null);
+  const [markerLocations, setMarkerLocations] = useState([]);
+  const { accessToken, id } = useContext(GlobalContext);
+  const mapRef = useRef();
 
-  componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      alert('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
-    } else {
-      this.getGroupInfo();
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { active } = this.state;
-    if (active !== prevState.active && active) {
-      this.renderMarkers();
-    }
-    if (prevProps !== this.props) {
-      this.getGroupInfo();
-    }
-  }
-
-  renderMarkers = () => {
-    clearInterval(this.timerId);
-    this.updateMyLocationAndReRender();
-    this.timerId = setInterval(() => {
-      this.updateMyLocationAndReRender();
+  useEffect(() => {
+    const id = setInterval(() => {
+      updateLocation();
     }, UPDATE_INTERVAL);
-  };
 
-  getGroupInfo = () => {
-    const { accessToken } = this.context;
-    const options = { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } };
-    fetch(url.getGroup(this.props.groupId), options)
-      .then((res) => res.json())
-      .then((resJson) => {
-        const {
-          members,
-          destination: {
-            name,
-            location: { latitude, longitude }
-          },
-          status
-        } = resJson;
-        if (status === 'ACTIVE') {
-          const memberInfoList = this.getMemberInfos(members);
-          this.setState(
-            {
-              active: true,
-              destination: { name, latitude, longitude, isDestination: true },
-              members: memberInfoList
-            },
-            () => {
-              if (!this.markerLoaded) {
-                this.fitToAllMarkers();
-              }
-            }
-          );
-        } else {
-          clearInterval(this.timerId);
-          this.setState({ active: false });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
+    setTimerId(id);
+
+    return () => clearTimeout(id);
+  }, []);
+
+  useEffect(() => {
+    fitToCoordinate();
+  }, [markerLocations]);
+
+  const fitToCoordinate = () => {
+    if (mapRef && markerLocations.length) {
+      mapRef.current.fitToCoordinates(markerLocations, {
+        edgePadding: DEFAULT_PADDING,
+        animated: true
       });
-  };
-
-  getMemberInfos = (memberInfos) => {
-    const memberInfoList = [];
-    for (let memberInfo of memberInfos) {
-      const { uuid: id, name, location: region, profileImageUrl } = memberInfo;
-      memberInfoList.push({ id, name, region, profileImageUrl });
     }
-    return memberInfoList;
   };
 
-  updateMyLocationAndReRender = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  const clickRefreshBtn = debounce(() => {
+    updateLocation();
+  }, DEBOUNCE_TIME);
+
+  const updateLocation = async () => {
+    await fetchGroupInfo();
+    await updateMyLocation();
+  };
+
+  const updateMyLocation = async () => {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
+
     if (status !== 'granted') {
-      alert('Permission to access location was denied');
+      Alert.alert('👾띠용', '위치 수집 동의를 켜주세요!');
     }
-    const options = {
+
+    const positionOptions = {
       accuracy: Location.Accuracy.Highest,
       maximumAge: UPDATE_INTERVAL
     };
-    const location = await Location.getCurrentPositionAsync(options);
-    const { longitude, latitude } = location.coords;
-    this.setState(
-      {
-        region: {
-          longitude,
-          latitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA
-        }
-      },
-      () => {
-        this.updateMyLocation();
-      }
-    );
-  };
 
-  updateMyLocation = () => {
-    const { id, accessToken } = this.context;
+    const location = await Location.getCurrentPositionAsync(positionOptions);
+    const { longitude, latitude } = location.coords;
+
     const options = {
       method: 'PUT',
       headers: {
@@ -144,41 +84,66 @@ export default class Map extends React.Component {
         Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
-        latitude: this.state.region.latitude,
-        longitude: this.state.region.longitude
+        latitude,
+        longitude
       })
     };
+
     fetch(url.updateLocation(id), options)
       .then((res) => res.json())
-      .then(() => {
-        this.getGroupInfo();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      .then((res) => Promise.resolve(res))
+      .catch((error) => Promise.reject(error));
   };
 
-  fitToAllMarkers() {
-    const markerLocations = [];
-    for (let member of this.state.members) {
-      if (member.region !== null) {
-        markerLocations.push(member.region);
+  const fetchGroupInfo = async () => {
+    const options = { method: 'GET', headers: { Authorization: `Bearer ${accessToken}` } };
+
+    fetch(url.getGroup(groupId), options)
+      .then((res) => res.json())
+      .then((resJson) => {
+        const { members: mbs, destination: dt } = resJson;
+        const { name, location } = dt;
+        const { latitude, longitude } = location;
+
+        if (resJson.status === 'ACTIVE') {
+          const newMembers = getMemberInfos(mbs);
+          setActive(true);
+          setDestination({ name, latitude, longitude, isDestination: true });
+          setMembers(newMembers);
+          setMarkerLocations(makeMarkerLocations(newMembers, dt));
+        } else {
+          clearInterval(timerId);
+          setActive(false);
+        }
+
+        return Promise.resolve();
+      })
+      .catch((error) => Promise.reject(error));
+  };
+
+  const makeMarkerLocations = (newMembers, dt) => {
+    const locations = [];
+    if (newMembers) {
+      for (let member of newMembers) {
+        if (member.region) {
+          locations.push(member.region);
+        }
       }
+      locations.push(dt.location);
     }
-    markerLocations.push(this.state.destination);
 
-    this.setState({ markerLocations });
-    this.markerLoaded = true;
+    return locations;
+  };
 
-    if (markerLocations.length) {
-      this.mapRef.current.fitToCoordinates(markerLocations, {
-        edgePadding: DEFAULT_PADDING,
-        animated: true
-      });
-    }
-  }
+  const getMemberInfos = (memberInfos) =>
+    memberInfos.reduce((acc, memberInfo) => {
+      const { uuid: id, name, location: region, profileImageUrl } = memberInfo;
+      acc = [...acc, { id, name, region, profileImageUrl }];
 
-  renderNotActiveLayer() {
+      return acc;
+    }, []);
+
+  function renderNotActiveLayer() {
     return (
       <View style={styles.notActiveLayer}>
         <Text style={styles.notActiveLayerText}>
@@ -188,70 +153,64 @@ export default class Map extends React.Component {
     );
   }
 
-  render() {
-    const { members, destination, active } = this.state;
-    return (
-      <View style={styles.container}>
-        <MapView
-          style={styles.map}
-          ref={this.mapRef}
-          initialRegion={{
-            latitude: 37.4983638,
-            longitude: 127.0281122,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA
-          }}
-          followUserLocation={true}
-          onLayout={() => {
-            setTimeout(() => {
-              if (this.state.markerLocations) {
-                this.mapRef.current.fitToCoordinates(this.state.markerLocations, {
-                  edgePadding: DEFAULT_PADDING,
-                  animated: true
-                });
-              }
-            }, 300);
-          }}
-        >
-          {members &&
-            members.map((member, idx) => {
-              return (
-                <Marker
-                  key={`marker_${idx}`}
-                  region={member.region}
-                  name={member.name}
-                  profileImageUrl={member.profileImageUrl}
-                  color={getThumbColor(idx)}
-                />
-              );
-            })}
-          {destination && (
-            <Marker
-              key={destination.id}
-              region={{
-                latitude: destination.latitude,
-                longitude: destination.longitude
-              }}
-              name={destination.name}
-              destination={true}
-            />
-          )}
-        </MapView>
-        {active ? (
-          <ActionButton
-            buttonColor="#0099ED"
-            renderIcon={() => <MaterialIcons name="gps-fixed" size={35} color="#fff" />}
-            onPress={this.renderMarkers}
-            size={60}
+  const initialRegion = {
+    latitude: 37.4983638,
+    longitude: 127.0281122,
+    latitudeDelta: LATITUDE_DELTA,
+    longitudeDelta: LONGITUDE_DELTA
+  };
+
+  return (
+    <View style={styles.container}>
+      <MapView
+        style={styles.map}
+        ref={mapRef}
+        initialRegion={initialRegion}
+        followUserLocation={true}
+        onLayout={() => {
+          setTimeout(() => {
+            updateLocation();
+          }, 300);
+        }}
+      >
+        {members &&
+          members.map((member, idx) => {
+            return (
+              <Marker
+                key={`marker_${idx}`}
+                region={member.region}
+                name={member.name}
+                profileImageUrl={member.profileImageUrl}
+                color={getThumbColor(idx)}
+              />
+            );
+          })}
+        {destination && (
+          <Marker
+            key={destination.id}
+            region={{
+              latitude: destination.latitude,
+              longitude: destination.longitude
+            }}
+            name={destination.name}
+            destination={true}
           />
-        ) : (
-          this.renderNotActiveLayer()
         )}
-      </View>
-    );
-  }
+      </MapView>
+      {active ? (
+        <ActionButton
+          buttonColor="#0099ED"
+          renderIcon={() => <MaterialIcons name="gps-fixed" size={35} color="#fff" />}
+          onPress={clickRefreshBtn}
+          size={60}
+        />
+      ) : (
+        renderNotActiveLayer()
+      )}
+    </View>
+  );
 }
-Map.contextType = GlobalContext;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
