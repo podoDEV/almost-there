@@ -29,3 +29,6 @@ export const uploadImage = () => `${SERVER_DOMAIN}/members/me/profile-images`;
 
 export const getPlaceLocations = (key, placeName, options) =>
   `https://maps.googleapis.com/maps/api/place/textsearch/json?key=${key}&query=${placeName}&language=ko&${options}`;
+
+export const removeMemberFromGroup = (groupId, memberId) =>
+  `${SERVER_DOMAIN}/groups/${groupId}/members/${memberId}/remove`;

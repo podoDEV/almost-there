@@ -6,7 +6,8 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  TextInput
+  TextInput,
+  Alert
 } from 'react-native';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import * as url from '../apiUrl';
@@ -16,6 +17,7 @@ import ScrollTimePicker from './ScrollTimePicker';
 import { getSchedule } from '../time';
 import { GROUP_NAME_MAX_LENGTH } from './registerGroup';
 import { isExistProfilePhoto, getThumbColor } from '../common';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function EditGroup(props) {
   const { accessToken } = useContext(GlobalContext);
@@ -27,7 +29,7 @@ export default function EditGroup(props) {
   const [selectedDay, setSelectedDay] = useState([]);
   const [groupName, setGroupName] = useState('');
 
-  useEffect(() => {
+  const fetchGroupInfo = () => {
     const options = {
       method: 'GET',
       headers: { Authorization: `Bearer ${accessToken}` }
@@ -53,6 +55,10 @@ export default function EditGroup(props) {
       .catch((error) => {
         console.error(error);
       });
+  };
+
+  useEffect(() => {
+    fetchGroupInfo();
   }, []);
 
   useEffect(() => {
@@ -106,6 +112,46 @@ export default function EditGroup(props) {
       });
   };
 
+  const removeUser = (memberId) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+    fetch(url.removeMemberFromGroup(groupId, memberId), options)
+      .then((res) => {
+        if (res.status === 200) {
+          fetchGroupInfo();
+        } else if (res.status === 403) {
+          Alert.alert('띠용👀', '관리자만 탈퇴가 가능합니다');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const confirmRemoveUser = (memberId) => {
+    Alert.alert(
+      '🔥주의🔥',
+      '탈퇴시키시겠습니까?',
+      [
+        {
+          text: '예',
+          onPress: () => {
+            removeUser(memberId);
+          }
+        },
+        { text: '아니오', style: 'cancel' }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  console.log(groupInfo);
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
@@ -135,6 +181,15 @@ export default function EditGroup(props) {
                       {member.name}
                     </Text>
                   </View>
+                  {member.authority !== 'OWNER' && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        confirmRemoveUser(member.id);
+                      }}
+                    >
+                      <MaterialIcons name="clear" size={25} color="#aaa" />
+                    </TouchableOpacity>
+                  )}
                 </View>
               ))}
             </View>
