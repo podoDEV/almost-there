@@ -159,7 +159,17 @@ export default function PlaceSearch(props) {
           })}
         </ScrollView>
       )}
-      <MapView style={styles.map} ref={mapRef} followUserLocation={true}>
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 37.4983638,
+          longitude: 127.0281122,
+          latitudeDelta: 1,
+          longitudeDelta: 0.01
+        }}
+        ref={mapRef}
+        followUserLocation={true}
+      >
         {selectedPlace && (
           <Marker region={selectedPlace.region} name={selectedPlace.name} destination={true} />
         )}
