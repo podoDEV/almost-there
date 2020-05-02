@@ -150,8 +150,6 @@ export default function EditGroup(props) {
     );
   };
 
-  console.log(groupInfo);
-
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">

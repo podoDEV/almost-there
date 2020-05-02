@@ -3,8 +3,10 @@
     "name": "진짜다와가",
     "slug": "almost-there",
     "privacy": "public",
-    "sdkVersion": "34.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,7 +18,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.podo.almostthere",
@@ -38,7 +42,10 @@
           "apiKey": "AIzaSyAMb97KNNqK0DNOLUpY5_QjlcneAFXP4yQ"
         }
       },
-      "permissions": ["ACCESS_COARSE_LOCATIPN", "ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "ACCESS_COARSE_LOCATIPN",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "androidStatusBar": {
       "barStyle": "light-content"
