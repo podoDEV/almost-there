@@ -3,11 +3,8 @@
     "name": "진짜다와가",
     "slug": "almost-there",
     "privacy": "public",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "version": "1.0.2",
+    "platforms": ["ios", "android"],
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -18,13 +15,11 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.podo.almostthere",
-      "buildNumber": "35",
+      "buildNumber": "40",
       "config": {
         "googleMapsApiKey": "AIzaSyDxYFmFvNm31dqnRU30RIOGKzjvqrabRvE"
       },
@@ -42,10 +37,7 @@
           "apiKey": "AIzaSyAMb97KNNqK0DNOLUpY5_QjlcneAFXP4yQ"
         }
       },
-      "permissions": [
-        "ACCESS_COARSE_LOCATIPN",
-        "ACCESS_FINE_LOCATION"
-      ]
+      "permissions": ["ACCESS_COARSE_LOCATIPN", "ACCESS_FINE_LOCATION"]
     },
     "androidStatusBar": {
       "barStyle": "light-content"
