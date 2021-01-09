@@ -1,4 +1,4 @@
-const SERVER_DOMAIN = 'http://13.209.89.169:9090/api';
+const SERVER_DOMAIN = 'http://almostthere.podo.world/api';
 
 export const getMembers = (uuid) => `${SERVER_DOMAIN}/members?uuid=${uuid}`;
 
