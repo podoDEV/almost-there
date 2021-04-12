@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.podo.almostthere",
-      "buildNumber": "35",
+      "buildNumber": "42",
       "config": {
         "googleMapsApiKey": "AIzaSyDxYFmFvNm31dqnRU30RIOGKzjvqrabRvE"
       },
